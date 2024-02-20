@@ -9,43 +9,30 @@ from datetime import datetime, timedelta
 
 
 
-def Sales_History():
-   
-     # Establish start date
+def sales_history():
     start_date = datetime.now() - timedelta(days=365)
-    
-    # Define hours in a day
     hours = ["11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm"]
-
+    
     weekly_sales_inserts = []
     daily_sales_inserts = []
     hourly_sales_inserts = []
 
     yearly_sales = 0
-    # Generate sales data for each hour, day, and week
+    
     for i in range(52):
         weekly_sales = 0
-
-        # Generate sales data for each day of the week
         for day in range(7):
-
-            # Generate sales data for each hour of the day
             daily_sales = 0
             for hour in hours:
-                hourly_sales = random.randint(83, 463)  # Random hourly sales
+                hourly_sales = random.randint(83, 463)
                 daily_sales += hourly_sales
                 hourly_sales_inserts.append(f"INSERT INTO hourly_sales (date_time, sales_amount) VALUES ('{start_date + timedelta(weeks=i, days=day, hours=hours.index(hour))}', {hourly_sales});")
-
-            # Insert daily sales data into the daily_sales_inserts list
             daily_sales_inserts.append(f"INSERT INTO daily_sales (date, sales_amount) VALUES ('{start_date + timedelta(weeks=i, days=day)}', {daily_sales});")
             weekly_sales += daily_sales
-
-        # Insert weekly sales data into the weekly_sales_inserts list
         weekly_sales_inserts.append(f"INSERT INTO weekly_sales (week_start, total_sales) VALUES ('{start_date + timedelta(weeks=i)}', {weekly_sales});")
         yearly_sales += weekly_sales
 
     return weekly_sales_inserts, daily_sales_inserts, hourly_sales_inserts
-
                 
 
 
