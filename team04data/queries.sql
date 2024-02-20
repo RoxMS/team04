@@ -1,4 +1,4 @@
-'''"52 weeks of sales history": select count of orders grouped by week
+'''"52 weeks of sales history": select the count of orders grouped by week
 e.g. "week 1 has 123 orders"'''
 SELECT 
     YEARWEEK(date) AS week_number, 
