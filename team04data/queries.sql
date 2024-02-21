@@ -72,7 +72,7 @@ SELECT ingredient, count FROM ingredients WHERE item = 'Double Stack Cheese Burg
 --do it only for the double stack cheese burger
 
 ---Lowest Inventory Items
-SELECT item, remaining FROM inventory ORDER BY remaining ASC LIMIT 5; 
+SELECT ingredient, amount FROM inventory ORDER BY amount ASC LIMIT 5; 
 -- selects the item and its remaining quantity
 -- item is obtained from inventory table
 -- it is obtained in an ascending order
