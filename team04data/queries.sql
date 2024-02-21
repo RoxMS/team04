@@ -17,7 +17,7 @@ SELECT hour, COUNT(DISTINCT orderID) AS total_orders, SUM(sale) AS total_sales F
 
 -- '''"2 peak days": select top 10 sums of order total grouped by day in descending order by order total
 -- e.g. "30 August has $123456 of sales"'''
-SELECT day, month, year, SUM(sales) FROM orders GROUP BY day, month, year ORDER BY year, month, day LIMIT 10;
+SELECT day, month, year, SUM(sale) as total_sale FROM orders GROUP BY day, month, year ORDER BY total_sales DESC LIMIT 2;
 
 
 -- '''"Inventory items for 20 menu items": select count of inventory items from inventory and menu grouped by menu item
