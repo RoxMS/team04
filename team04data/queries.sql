@@ -22,9 +22,12 @@ GROUP BY
 -- '''"2 peak days": select top 10 sums of order total grouped by day in descending order by order total
 -- e.g. "30 August has $123456 of sales"'''
 SELECT day, month, year, SUM(sales)
-FROM orders
-GROUP BY day, month, year
-ORDER BY year, month, day
+FROM 
+    orders
+GROUP BY 
+    day, month, year
+ORDER BY 
+    year, month, day
 LIMIT 10;
 
 
@@ -32,10 +35,14 @@ LIMIT 10;
 -- e.g. "chicken fingers uses 12 items"'''
 
 SELECT item, COUNT(*) AS inventory_items_count    --  Counting the occurrences of each menu item in the Inventory table
-FROM ingredients
-JOIN inventory ON ingredients.item = inventory.ingredient  -- Joining Ingredients and Inventory tables on menu_item
-GROUP BY item                                  -- Grouping the results by menu_item
-ORDER BY inventory_items_count DESC    -- Ordering the results by inventory_items_count in descending order
+FROM 
+    ingredients
+JOIN 
+    inventory ON ingredients.item = inventory.ingredient  -- Joining Ingredients and Inventory tables on menu_item
+GROUP BY 
+    item                                  -- Grouping the results by menu_item
+ORDER BY 
+    inventory_items_count DESC    -- Ordering the results by inventory_items_count in descending order
 LIMIT 20;            -- Limiting the output to the top 20 menu items with the highest inventory items count
 
 
@@ -57,24 +64,32 @@ LIMIT 10;            -- Limiting the output to the top 10
 SELECT 
     day, month, year, item, COUNT(item) as itemsSold
 FROM orders
-GROUP BY day, month, yeaR, item
-ORDER BY year DESC, month DESC, day DESC, itemsSold DESC
+GROUP BY 
+    day, month, yeaR, item
+ORDER BY 
+    year DESC, month DESC, day DESC, itemsSold DESC
 LIMIT 1;        
 
 
 -- '''"Highest sold item of the month"'''
 SELECT month, year, item, COUNT(item) as itemsSold
-FROM orders
-GROUP BY month, year, item
-ORDER BY year DESC, month DESC, itemsSold DESC
+FROM 
+    orders
+GROUP BY 
+    month, year, item
+ORDER BY 
+    year DESC, month DESC, itemsSold DESC
 LIMIT 1;        
 
 
 -- '''"Most profitable month"'''
 SELECT month, year, SUM(sale) as totalSale          -- This selects the month and year calculates the sum of sales for each month and year, labeling this sum as totalSale
-FROM orders
-GROUP BY month, year                -- ensures that sales are aggregated for each specific month within each year
-ORDER BY totalSale DESC
+FROM 
+    orders
+GROUP BY 
+    month, year                -- ensures that sales are aggregated for each specific month within each year
+ORDER BY 
+    totalSale DESC
 LIMIT 1;
 
 
