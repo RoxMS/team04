@@ -114,13 +114,13 @@ LIMIT 5;  --- we are only looking at the top lowest 5 items but could be updated
 
 -- Most used Ingredient
 SELECT
-    ingredient, SUM(count) as total_count
+    ingredient, SUM(count) as total_count  ---select ingredient column and sum of count column named as total_count
 FROM
-    ingredients
+    ingredients ---obtained from ingredients table
 GROUP BY
-    ingredient
+    ingredient --- grouped by ingredients to aggregate the counts
 ORDER BY
-    total_count DESC;
+    total_count DESC; --- the count of ingredients is than ordered in descending 
 
 -- Total Inventory amount in Stock
 
