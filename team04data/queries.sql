@@ -38,4 +38,18 @@ LIMIT 20;            -- Limiting the output to the top 20 menu items with the hi
 
 
 
+'''"Top 10 Busiest Hours of the Day": select count of orders grouped by hour of the day
+e.g. "The top selling hour was 2pm"'''
+
+SELECT 
+    hour, --this selects the hour column from the orders table
+    COUNT(*) AS total_orders --the COUNT(*) function calculates the total rows for each hour and assigns it to total_orders
+FROM 
+    orders --gets those values from the orders table
+GROUP BY 
+    hour --groups the total_orders by each hour
+ORDER BY 
+    total_orders DESC; --order table results in descending order
+LIMIT 10;            -- Limiting the output to the top 10 
+
 
