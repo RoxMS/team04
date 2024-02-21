@@ -10,44 +10,50 @@ GROUP BY week; --group each count by a week
 '''"Realistic sales history": select count of orders, sum of order total grouped by hour
 e.g. "12pm has 12345 orders totaling $86753"'''
 SELECT 
-    DATE_FORMAT(date_time, '%l%p') AS hour_of_day,
-    COUNT(*) AS num_orders,
-    SUM(sales_amount) AS total_sales
+    hour,
+    COUNT(DISTINCT order_id) AS total_orders, --count of the total orders based on their distinct ids and save it under total_orders for each hours
+    SUM(sale) AS total_sales --add up the total sales for each hours
 FROM 
-    hourly_sales
+    orders --get from the orders table
 GROUP BY 
-    hour_of_day
-ORDER BY 
-    hour_of_day;
+    hour; --group it by hours
 
--- selects the hour of the day using the DATE_FORMAT function applied to the date_time column to display it in the format like "12pm", 
--- then counts the number of orders and calculates the total sales amount grouped by the hour of the day from the hourly_sales table. 
 
 '''"2 peak days": select top 10 sums of order total grouped by day in descending order by order total
 e.g. "30 August has $123456 of sales"'''
-SELECT 
-    DATE(date_time) AS sales_date,
-    SUM(sgitales_amount) AS total_sales
-FROM 
-    daily_sales
-GROUP BY 
-    sales_date
-ORDER BY 
-    total_sales DESC
-LIMIT 
-    10;
+SELECT day, month, year, SUM(sales)
+FROM orders
+GROUP BY day, month, year
+ORDER BY year, month, day
+LIMIT 10;
 
 
 '''"Inventory items for 20 menu items": select count of inventory items from inventory and menu grouped by menu item
 e.g. "chicken fingers uses 12 items"'''
 
-SELECT menu_item, COUNT(*) AS inventory_items_count
-FROM Menu 
-JOIN Inventory ON Menu.menu_item = Inventory.menu_item
-GROUP BY menu_item 
-ORDER BY inventory_items_count DESC 
-LIMIT 20;
+SELECT menu_item, COUNT(*) AS inventory_items_count    --  Counting the occurrences of each menu item in the Inventory table
+FROM Ingredients
+JOIN Inventory ON Ingredients.menu_item = Inventory.Ingredient  -- Joining Ingredients and Inventory tables on menu_item
+GROUP BY menu_item                                  -- Grouping the results by menu_item
+ORDER BY inventory_items_count DESC    -- Ordering the results by inventory_items_count in descending order
+LIMIT 20;            -- Limiting the output to the top 20 menu items with the highest inventory items count
 
+
+'''"Top 10 Busiest Hours of the Day": select count of orders grouped by hour of the day
+e.g. "The top selling hour was 2pm"'''
+
+SELECT 
+    hour, --this selects the hour column from the orders table
+    COUNT(*) AS total_orders --the COUNT(*) function calculates the total rows for each hour and assigns it to total_orders
+FROM 
+    orders --gets those values from the orders table
+GROUP BY 
+    hour --groups the total_orders by each hour
+ORDER BY 
+    total_orders DESC; --order table results in descending order
+LIMIT 10;            -- Limiting the output to the top 10 
+
+--Manisha
 '''"Highest sold item of the day"'''
 SELECT day, month, year, menu_item, COUNT(menu_item) as itemsSold
 FROM orders
@@ -70,3 +76,29 @@ FROM orders
 GROUP BY month, year                -- ensures that sales are aggregated for each specific month within each year
 ORDER BY totalSale DESC
 LIMIT 1;
+
+
+--Roxana
+'''"Highest Valued Order Sales": select count of orders grouped by hour of the day
+e.g. "The second largest sale total was $15.00"'''
+
+SELECT 
+    order_id, SUM(sale) AS total_sale --sums up the total sales
+FROM 
+    orders --get values from orders table
+GROUP BY 
+    order_id --order them by order id
+ORDER BY  
+    total_sale DESC; --sort them in descending order
+LIMIT 30;
+
+'''"Ingredient Items for a Specific Menu Item": select inventory items grouped by a menu item they correspond to
+e.g. "Revs Burger requires Burger Bread, a Patty, ...."'''
+
+SELECT 
+    ingredient, count --get the ingredient column and count column
+FROM 
+    ingredients -- get them from the ingredients table
+WHERE 
+    menu_item = 'Double Stack Cheese Burger'; --do it only for the double stack cheese burger
+
