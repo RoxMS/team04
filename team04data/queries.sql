@@ -11,40 +11,37 @@ GROUP BY week_number;
 '''"Realistic sales history": select count of orders, sum of order total grouped by hour
 e.g. "12pm has 12345 orders totaling $86753"'''
 SELECT 
-    DATE_FORMAT(date_time, '%l%p') AS hour_of_day,
-    COUNT(*) AS num_orders,
-    SUM(sales_amount) AS total_sales
+    day, month, year, menu_item, COUNT(menu_item) AS orderCount, sale, COUNT(sale) AS totalSale
+WHERE
+    day = 1,
+    month = 1,
+    year = 2023
+
 FROM 
-    hourly_sales
+    orders
 GROUP BY 
-    hour_of_day
+    year, month, day, hour
 ORDER BY 
-    hour_of_day;
+    orderCount, totalSale;
 
 -- selects the hour of the day using the DATE_FORMAT function applied to the date_time column to display it in the format like "12pm", 
 -- then counts the number of orders and calculates the total sales amount grouped by the hour of the day from the hourly_sales table. 
 
 '''"2 peak days": select top 10 sums of order total grouped by day in descending order by order total
 e.g. "30 August has $123456 of sales"'''
-SELECT 
-    DATE(date_time) AS sales_date,
-    SUM(sales_amount) AS total_sales
-FROM 
-    daily_sales
-GROUP BY 
-    sales_date
-ORDER BY 
-    total_sales DESC
-LIMIT 
-    10;
+SELECT day, month, year, SUM(sales)
+FROM orders
+GROUP BY day, month, year
+ORDER BY year, month, day
+LIMIT 10;
 
 
 '''"Inventory items for 20 menu items": select count of inventory items from inventory and menu grouped by menu item
 e.g. "chicken fingers uses 12 items"'''
 
-SELECT menu_item, COUNT(*) AS inventory_items_count
-FROM Menu 
-JOIN Inventory ON Menu.menu_item = Inventory.menu_item
-GROUP BY menu_item 
-ORDER BY inventory_items_count DESC 
-LIMIT 20;
+SELECT menu_item, COUNT(*) AS inventory_items_count    --  Counting the occurrences of each menu item in the Inventory table
+FROM Ingredients
+JOIN Inventory ON Ingredients.menu_item = Inventory.Ingredient  -- Joining Ingredients and Inventory tables on menu_item
+GROUP BY menu_item                                  -- Grouping the results by menu_item
+ORDER BY inventory_items_count DESC    -- Ordering the results by inventory_items_count in descending order
+LIMIT 20;            -- Limiting the output to the top 20 menu items with the highest inventory items count
