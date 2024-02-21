@@ -7,7 +7,7 @@ from datetime import date, timedelta
 
 
 
-
+print("CREATE TABLE orders (hour varchar(255), day int, week int, month int, year int, item varchar(255), sale int);")
 
 menu_items = [
     "Rev's Burger",
@@ -16,7 +16,7 @@ menu_items = [
     "Bacon Chesseburger",
     "Three Tender Basket",
     "Four Steak Finger Basket",
-    "Gig 'Em Patty Melt", 
+    "Gig'Em Patty Melt", 
     "Howdy Spicy Ranch Chicken Strip Sandwich",
     "Classic Crispy or Grilled Chicken Tender Sandwich",
     "Grilled Cheese",
@@ -25,7 +25,7 @@ menu_items = [
     "Chocolate Chip Chunk Cookie",
     "Chocolate Fudge Brownie",
     "Salad Bar",
-    "Gig 'Em Sauce",
+    "Gig'Em Sauce",
     "Buffalo",
     "Ranch",
     "BBQ Sauce",
@@ -47,7 +47,7 @@ menu_prices = {
     "Bacon Chesseburger" : 6.99,
     "Three Tender Basket" : 6.79,
     "Four Steak Finger Basket" : 7.29,
-    "Gig 'Em Patty Melt" : 6.29,
+    "Gig'Em Patty Melt" : 6.29,
     "Howdy Spicy Ranch Chicken Strip Sandwich" : 6.99,
     "Classic Crispy or Grilled Chicken Tender Sandwich" : 5.79,
     "Grilled Cheese" : 3.49,
@@ -56,7 +56,7 @@ menu_prices = {
     "Chocolate Chip Chunk Cookie" : 1.99,
     "Chocolate Fudge Brownie" : 1.99,
     "Salad Bar" : 8.99,
-    "Gig 'Em Sauce" : 0.69,
+    "Gig'Em Sauce" : 0.69,
     "Buffalo" : 0.69,
     "Ranch" : 0.69,
     "BBQ Sauce" : 0.69,
@@ -91,7 +91,7 @@ for week in range(52):
                 
                 # number of orders of a specific menu item
                 for num in range(random_num):
-                    print(f"INSERT INTO orders (hour, day, month, year, item, sale) VALUES ('{hour}', {current_date.day}, {current_date.month}, {current_date.year}, '{menu_items[i]}', {menu_prices[menu_items[i]]});")
+                    print(f"INSERT INTO orders VALUES ('{hour}', {current_date.day}, {week}, {current_date.month}, {current_date.year}, '{menu_items[i]}', {menu_prices[menu_items[i]]});")
         
         # changes date at the end of each day
         current_date += timedelta(days=1)
@@ -104,47 +104,100 @@ for week in range(52):
 
 
 inventory_items = {
-
-    "Rev's Burger": ["Burger Bread", "1 Patty", "American Cheese", "Gig-em Sauce", "Pickle"],
-    "Double Stack Cheese Burger": ["2 Patty ", "2 American Cheese", "Gig 'Em Sauce", "Pickles"],
-    "Classic Burger" : ["Burger Bread", "Lettuce ", "Tomato", "Pickles", "Onion"],
-    "Bacon Chesseburger": ["Burger Bread", "2 American Cheese", "Gig 'Em Sauce", "Pickles"],
-    "Three Tender Basket": ["3 Chicken Tenders", "Fries", "Texas Toast", "Gravy"],
-    "Four Steak Finger Basket": ["4 Steak Finger", "Fries", "Texas Toast", "Gravy"],
-    "Gig 'Em Patty Melt": ["Sandwich Bread", "1 Patty", "Texas Toast", "American Swiss Cheese", "Gig-em Sauce", "Grilled Onions"], 
-    "Howdy Spicy Ranch Chicken Strip Sandwich": ["Sandwich Bread", "3 Chicken Tenders", "Toasted Bun", "Spicy Ranch Sauce", "Pepper Jack Cheese"],
-    "Classic Crispy or Grilled Chicken Tender Sandwich": ["Sandwich Bread", "3 Chicken Tenders", "Lettuce", "Tomato", "Pickles", "Onion"],
-    "Grilled Cheese": ["American Grilled Cheese", "Texas Toast"],
-    "Aggie Shake" : ["Milk", "Sugar", "Chocolate", "Vanilla", "Straberry", "Capuccino"],
+    "Rev's Burger": ["2 Burger Bread", "Patty", "American Cheese", "Lettuce", "Tomato", "Gig'em Sauce", "Pickle"],
+    "Double Stack Cheese Burger": ["Burger Bread", "2 Patty", "American Cheese", "2 American Cheese", "Lettuce", "Tomato", "Gig'Em Sauce", "Pickles"],
+    "Classic Burger" : ["2 Burger Bread", "Patty", "American Cheese", "Lettuce", "Tomato", "Pickle"],
+    "Bacon Chesseburger": ["2 Burger Bread", "Patty", "Bacon", "American Cheese", "Lettuce", "Tomato", "Gig'Em Sauce", "Pickle"],
+    "Three Tender Basket": ["3 Chicken Tender", "Fries", "Sandwich Bread", "Gravy"],
+    "Four Steak Finger Basket": ["4 Steak Finger", "Fries", "Sandwich Bread", "Gravy"],
+    "Gig'Em Patty Melt": ["2 Sandwich Bread", "1 Patty", "American Cheese", "Gig-em Sauce", "Onion"], 
+    "Howdy Spicy Ranch Chicken Strip Sandwich": ["Sandwich Bread", "3 Chicken Tender", "Spicy Ranch", "American Cheese"],
+    "Classic Crispy or Grilled Chicken Tender Sandwich": ["Sandwich Bread", "3 Chicken Tender", "Lettuce", "Tomato", "Pickle", "Onion"],
+    "Grilled Cheese": ["Sandwich Bread", "American Cheese"],
+    "Aggie Shake" : ["Chocolate Mix", "Vanilla Mix", "Straberry Mix"],
     "Double Scoop Ice Cream Cup" : ["Ice Cream", "Chocolate Syrup"],
     "Chocolate Chip Chunk Cookie": ["Chocolate Chip Cookie"],
     "Chocolate Fudge Brownie": ["Chocolate Fudge Brownie"],
-    "Salad Bar": ["Lettuce", "Tomatoes", "Cucumbers", "Carrots", "Salad Dressings", "Cheese", "Croutons"],
-    "Gig 'Em Sauce" :["Gig 'Em Sauce"],
-    "Buffalo" :["Gig 'Em Sauce"] ,
-    "Ranch":["Gig 'Em Sauce"],
+    "Salad Bar": ["Lettuce", "Tomato", "Carrot", "Salad Dressing", "Crouton"],
+    "Gig'Em Sauce" :["Gig'Em Sauce"],
+    "Buffalo" :["Buffalo"] ,
+    "Ranch":["Ranch"],
     "BBQ Sauce":["BBQ Sauce"],
     "Honey Mustard":["Honey Mustard"],
     "Spicy Ranch":["Spicy Ranch"],
-    "Fountain Drink":["Fountain Drink Flavorings","Plastic Cups", "Lids", "Straws"],
-    "Drip Coffee":["Coffee Brewed", "Coffee Cup", "Coffee Lids"],
-    "Cold Brew":["Coffee Brewed","Plastic Cups", "Plastic Cup Lids", "Straws"],
-    "Seasoned Fries":["Potatoes", "Oil", "Salt", "Pepper"],
-    "Tater Tots":["Potatoes", "Oil", "Salt", "Pepper"],
-    "Onion Ring":["Onions", "Oil", "Salt", "Pepper"],
-    "Kettle Chips": ["Onions", "Oil", "Salt", "Pepper"],
-    "Cups": ["Plastic Cups", "Coffe Cups"],
-    "Lids": ["Coffee Cup Lids", "Plastic Cup Lids"],
-    "Straws": ["Plastic Straws"],
+    "Fountain Drink":["Fountain Drink Flavorings","Plastic Cup", "Lid", "Straw"],
+    "Drip Coffee":["Coffee", "Plastic Cup", "Lid"],
+    "Cold Brew":["Coffee","Plastic Cup", "Lid"],
+    "Seasoned Fries":["Fries"],
+    "Tater Tots":["Tater Tots"],
+    "Onion Rings":["Onion Rings"],
+    "Kettle Chips": ["Kettle Chips"],
     "Napkins": ["Paper Napkins"],
     "Flatware": ["Plastic Forks", "Plastic Knives", "Plastic Spoons"],
     "To-go boxes": ["Cardboard To-go Boxes"],
     "Bags": ["Plastic Bags"]
 }
 
-inserts = []
+ingredients = [
+    "Burger Bread",
+    "Patty",
+    "Bacon",
+    "American Cheese",
+    "Lettuce",
+    "Tomato",
+    "Gig'Em Sauce",
+    "Pickle",
+    "Chicken Tender",
+    "Fries",
+    "Sandwich Bread",
+    "Gravy",
+    "Steak Finger",
+    "Onion",
+    "Spicy Ranch",
+    "Chocolate Mix",
+    "Vanilla Mix",
+    "Straberry Mix",
+    "Ice Cream",
+    "Chocolate Syrup",
+    "Chocolate Chip Cookie",
+    "Chocolate Fudge Brownie",
+    "Carrot", 
+    "Salad Dressing", 
+    "Crouton",
+    "Buffalo",
+    "Ranch",
+    "BBQ Sauce",
+    "Honey Mustard",
+    "Fountain Drink Flavoring",
+    "Plastic Cup",
+    "Lid", 
+    "Straw",
+    "Coffee",
+    "Tater Tots",
+    "Onion Rings",
+    "Kettle Chips",
+    "Paper Napkins",
+    "Plastic Forks",
+    "Plastic Knives",
+    "Plastic Spoons",
+    "Cardboard To-go Boxes",
+    "Plastic Bags"
+]
+
+print("CREATE TABLE ingredients (item varchar(255), ingredient varchar(255), count int);")
+print("CREATE TABLE inventory (ingredient varchar(255), amount int, capacity int);")
+
 
 for item in menu_items:
-    print(f"INSERT INTO InventoryItems (Menu Item) VALUES ('{item}');")
     for ingredient in inventory_items[item]:
-        print(f"INSERT INTO Ingredients (Menu Item, Inventory Name) VALUES ('{item}', '{ingredient}');")
+        if ingredient[0] == "2":
+            print(f"INSERT INTO ingredients VALUES ('{item}', '{ingredient[2:]}', '{2}');")
+        elif ingredient[0] == "3":
+            print(f"INSERT INTO ingredients VALUES ('{item}', '{ingredient[2:]}', '{3}');")
+        elif ingredient[0] == "4":
+            print(f"INSERT INTO ingredients VALUES ('{item}', '{ingredient[2:]}', '{4}');")
+        else:
+            print(f"INSERT INTO ingredients VALUES ('{item}', '{ingredient}', '{1}');")
+        
+for ingredient in ingredients:
+    print(f"INSERT INTO inventory VALUES ('{ingredient}', '{30}', '{30}');")
