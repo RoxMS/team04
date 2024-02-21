@@ -27,7 +27,7 @@ ORDER BY
 e.g. "30 August has $123456 of sales"'''
 SELECT 
     DATE(date_time) AS sales_date,
-    SUM(sales_amount) AS total_sales
+    SUM(sgitales_amount) AS total_sales
 FROM 
     daily_sales
 GROUP BY 
@@ -47,3 +47,26 @@ JOIN Inventory ON Menu.menu_item = Inventory.menu_item
 GROUP BY menu_item 
 ORDER BY inventory_items_count DESC 
 LIMIT 20;
+
+'''"Highest sold item of the day"'''
+SELECT day, month, year, menu_item, COUNT(menu_item) as itemsSold
+FROM orders
+GROUP BY day, month, yeaR, menu_item
+ORDER BY year DESC, month DESC, day DESC, itemsSold DESC
+LIMIT 1;        
+
+
+'''"Highest sold item of the month"'''
+SELECT month, year, menu_item, COUNT(menu_item) as itemsSold
+FROM orders
+GROUP BY month, year, menu_item
+ORDER BY year DESC, month DESC, itemsSold DESC
+LIMIT 1;        
+
+
+'''"Most profitable month"'''
+SELECT month, year, SUM(sale) as totalSale          -- This selects the month and year calculates the sum of sales for each month and year, labeling this sum as totalSale
+FROM orders
+GROUP BY month, year                -- ensures that sales are aggregated for each specific month within each year
+ORDER BY totalSale DESC
+LIMIT 1;
