@@ -51,5 +51,3 @@ GROUP BY
 ORDER BY 
     total_orders DESC; --order table results in descending order
 LIMIT 10;            -- Limiting the output to the top 10 
-
-
