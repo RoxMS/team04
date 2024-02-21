@@ -45,3 +45,24 @@ JOIN Inventory ON Ingredients.menu_item = Inventory.Ingredient  -- Joining Ingre
 GROUP BY menu_item                                  -- Grouping the results by menu_item
 ORDER BY inventory_items_count DESC    -- Ordering the results by inventory_items_count in descending order
 LIMIT 20;            -- Limiting the output to the top 20 menu items with the highest inventory items count
+
+'''"Highest sold item of the day"'''
+SELECT day, month, year, menu_item, COUNT(menu_item) as itemsSold
+FROM orders
+GROUP BY day, month, yeaR, menu_item
+ORDER BY year DESC, month DESC, day DESC, itemsSold DESC
+LIMIT 1;         
+
+'''"Highest sold item of the month"'''
+SELECT month, year, menu_item, COUNT(menu_item) as itemsSold
+FROM orders
+GROUP BY month, year, menu_item
+ORDER BY year DESC, month DESC, itemsSold DESC
+LIMIT 1;         
+
+'''"Most profitable month"'''
+SELECT month, year, SUM(sale) as totalSale          -- This selects the month and year calculates the sum of sales for each month and year, labeling this sum as totalSale
+FROM orders
+GROUP BY month, year                -- ensures that sales are aggregated for each specific month within each year
+ORDER BY totalSale DESC
+LIMIT 1;
