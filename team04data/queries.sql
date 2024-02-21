@@ -104,12 +104,23 @@ WHERE
     item = 'Double Stack Cheese Burger'; --do it only for the double stack cheese burger
 
 ---Lowest Inventory Items
-SELECT item, remaining
-FROM inventory
-ORDER BY remaining ASC
+SELECT 
+    item, remaining
+FROM 
+    inventory
+ORDER BY 
+    remaining ASC
 LIMIT 5;
 
 -- Most used Ingredient
+SELECT
+    ingredient, SUM(count) as total_count
+FROM
+    ingredients
+GROUP BY
+    ingredient
+ORDER BY
+    total_count DESC;
 
 -- Total Inventory amount in Stock
 
