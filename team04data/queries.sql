@@ -103,3 +103,14 @@ FROM
 WHERE 
     item = 'Double Stack Cheese Burger'; --do it only for the double stack cheese burger
 
+---Lowest Inventory Items
+SELECT item, remaining
+FROM inventory
+ORDER BY remaining ASC
+LIMIT 5;
+
+-- Most used Ingredient
+
+-- Total Inventory amount in Stock
+
+-- Most used Inventory Items
