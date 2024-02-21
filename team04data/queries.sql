@@ -123,5 +123,7 @@ ORDER BY
     total_count DESC; --- the count of ingredients is than ordered in descending 
 
 -- Total Inventory amount in Stock
+SELECT SUM(amount) AS total_inventory_amount ---select sum of column of amount as total_inventory_amount
+FROM inventory; --- the total will be obtained from inventory in stock
 
 -- Most used Inventory Items
