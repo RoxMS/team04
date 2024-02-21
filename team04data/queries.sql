@@ -1,4 +1,4 @@
-'''"52 weeks of sales history": select count of orders grouped by week
+'''"52 weeks of sales history": select the count of orders grouped by week
 e.g. "week 1 has 123 orders"'''
 SELECT
      week, COUNT(DISTINCT order_id) AS total_orders -- selects the week column from the restaurant_orders table and calculates the count of distinct order_id values for each week. 
