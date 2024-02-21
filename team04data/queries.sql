@@ -1,7 +1,7 @@
 -- '''"52 weeks of sales history": select the count of orders grouped by week
 -- e.g. "week 1 has 123 orders"'''
 SELECT
-     week, COUNT(DISTINCT order_id) AS total_orders -- selects the week column from the restaurant_orders table and calculates the count of distinct order_id values for each week. 
+     week, COUNT(DISTINCT orderID) AS total_orders -- selects the week column from the restaurant_orders table and calculates the count of distinct orderID values for each week. 
 FROM 
     orders --gets it from the orders table`
 GROUP BY week; --group each count by a week
@@ -11,7 +11,7 @@ GROUP BY week; --group each count by a week
 -- e.g. "12pm has 12345 orders totaling $86753"'''
 SELECT 
     hour,
-    COUNT(DISTINCT order_id) AS total_orders, --count of the total orders based on their distinct ids and save it under total_orders for each hours
+    COUNT(DISTINCT orderID) AS total_orders, --count of the total orders based on their distinct ids and save it under total_orders for each hours
     SUM(sale) AS total_sales --add up the total sales for each hours
 FROM 
     orders --get from the orders table
@@ -31,10 +31,10 @@ LIMIT 10;
 -- '''"Inventory items for 20 menu items": select count of inventory items from inventory and menu grouped by menu item
 -- e.g. "chicken fingers uses 12 items"'''
 
-SELECT menu_item, COUNT(*) AS inventory_items_count    --  Counting the occurrences of each menu item in the Inventory table
-FROM Ingredients
-JOIN Inventory ON Ingredients.menu_item = Inventory.Ingredient  -- Joining Ingredients and Inventory tables on menu_item
-GROUP BY menu_item                                  -- Grouping the results by menu_item
+SELECT item, COUNT(*) AS inventory_items_count    --  Counting the occurrences of each menu item in the Inventory table
+FROM ingredients
+JOIN inventory ON ingredients.item = inventory.ingredient  -- Joining Ingredients and Inventory tables on menu_item
+GROUP BY item                                  -- Grouping the results by menu_item
 ORDER BY inventory_items_count DESC    -- Ordering the results by inventory_items_count in descending order
 LIMIT 20;            -- Limiting the output to the top 20 menu items with the highest inventory items count
 
@@ -56,17 +56,17 @@ LIMIT 10;            -- Limiting the output to the top 10
 --Manisha
 -- '''"Highest sold item of the day"'''
 SELECT 
-    day, month, year, menu_item, COUNT(menu_item) as itemsSold
+    day, month, year, item, COUNT(item) as itemsSold
 FROM orders
-GROUP BY day, month, yeaR, menu_item
+GROUP BY day, month, yeaR, item
 ORDER BY year DESC, month DESC, day DESC, itemsSold DESC
 LIMIT 1;        
 
 
 -- '''"Highest sold item of the month"'''
-SELECT month, year, menu_item, COUNT(menu_item) as itemsSold
+SELECT month, year, item, COUNT(item) as itemsSold
 FROM orders
-GROUP BY month, year, menu_item
+GROUP BY month, year, item
 ORDER BY year DESC, month DESC, itemsSold DESC
 LIMIT 1;        
 
@@ -84,11 +84,11 @@ LIMIT 1;
 -- e.g. "The second largest sale total was $15.00"'''
 
 SELECT 
-    order_id, SUM(sale) AS total_sale --sums up the total sales
+    orderID, SUM(sale) AS total_sale --sums up the total sales
 FROM 
     orders --get values from orders table
 GROUP BY 
-    order_id --order them by order id
+    orderID --order them by order id
 ORDER BY  
     total_sale DESC; --sort them in descending order
 LIMIT 30;
@@ -101,5 +101,5 @@ SELECT
 FROM 
     ingredients -- get them from the ingredients table
 WHERE 
-    menu_item = 'Double Stack Cheese Burger'; --do it only for the double stack cheese burger
+    item = 'Double Stack Cheese Burger'; --do it only for the double stack cheese burger
 

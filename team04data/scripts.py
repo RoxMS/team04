@@ -33,8 +33,15 @@ def sales_history():
         yearly_sales += weekly_sales
 
     return weekly_sales_inserts, daily_sales_inserts, hourly_sales_inserts
-                
-
+def main():
+    f, k, j = sales_history()
+    print(f)
+    print(k)
+    print(j)
+    return 0
+    
+if __name__ == "__main__":
+    main()
 
 
 def Inventory_items():
