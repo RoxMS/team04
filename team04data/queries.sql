@@ -123,7 +123,16 @@ ORDER BY
     total_count DESC; --- the count of ingredients is than ordered in descending 
 
 -- Total Inventory amount in Stock
-SELECT SUM(amount) AS total_inventory_amount ---select sum of column of amount as total_inventory_amount
-FROM inventory; --- the total will be obtained from inventory in stock
+SELECT 
+    SUM(amount) AS total_inventory_amount ---select sum of column of amount as total_inventory_amount
+FROM 
+    inventory; --- the total will be obtained from inventory in stock
 
 -- Most used Inventory Items
+SELECT item, SUM(sale) AS total_sales --- select from items and find the sum of the sale as total_sales
+FROM 
+    orders ---obtaining the sales information from orders
+GROUP BY 
+    item ---it is than grouped by item to aggregate sales
+ORDER BY 
+    total_sales DESC; ---it is than ordered and resulted in descending order for the total_sales
