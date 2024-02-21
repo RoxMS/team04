@@ -60,15 +60,30 @@ ORDER BY
     total_orders DESC; --order table results in descending order
 LIMIT 10;            -- Limiting the output to the top 10 
 
--- '''"Highest sold item of the day"'''
+-- Highest sold item of each day over 52 weeks
+WITH ranked_items AS (
+    SELECT 
+        day, 
+        month, 
+        year, 
+        item, 
+        COUNT(item) AS itemsSold,
+        RANK() OVER (PARTITION BY day, month, year ORDER BY COUNT(item) DESC) AS rank
+    FROM 
+        orders
+    GROUP BY 
+        day, month, year, item
+)
 SELECT 
-    day, month, year, item, COUNT(item) as itemsSold
-FROM orders
-GROUP BY 
-    day, month, yeaR, item
-ORDER BY 
-    year DESC, month DESC, day DESC, itemsSold DESC
-LIMIT 1;        
+    day, 
+    month, 
+    year, 
+    item,
+    itemsSold
+FROM 
+    ranked_items
+WHERE 
+    rank = 1;
 
 
 -- '''"Highest sold item of the month"'''
@@ -118,12 +133,14 @@ WHERE
 
 ---Lowest Inventory Items
 SELECT 
-    item, remaining --- selects the item and its remaining quantity
+    item,
+    remaining -- selects the item and its remaining quantity
 FROM 
-    inventory ---item is obtained from inventory table
+    inventory -- item is obtained from inventory table
 ORDER BY 
-    remaining ASC  ---it is obtained in an ascending order
-LIMIT 5;  --- we are only looking at the top lowest 5 items but could be updated for more
+    remaining ASC -- it is obtained in an ascending order
+LIMIT 5; -- we are only looking at the top lowest 5 items but could be updated for more
+
 
 -- Most used Ingredient
 SELECT
