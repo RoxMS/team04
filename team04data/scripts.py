@@ -7,6 +7,7 @@ from datetime import date, timedelta
 
 
 
+
 print("CREATE TABLE orders (hour varchar(255), day int, week int, month int, year int, menu_item varchar(255), sale int, orderID int);")
 
 menu_items = [
