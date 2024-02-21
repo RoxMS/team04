@@ -53,7 +53,6 @@ ORDER BY
     total_orders DESC; --order table results in descending order
 LIMIT 10;            -- Limiting the output to the top 10 
 
---Manisha
 -- '''"Highest sold item of the day"'''
 SELECT 
     day, month, year, item, COUNT(item) as itemsSold
@@ -79,7 +78,6 @@ ORDER BY totalSale DESC
 LIMIT 1;
 
 
---Roxana
 -- '''"Highest Valued Order Sales": select count of orders grouped by hour of the day
 -- e.g. "The second largest sale total was $15.00"'''
 
