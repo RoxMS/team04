@@ -7,7 +7,7 @@ from datetime import date, timedelta
 
 
 
-print("CREATE TABLE orders (hour varchar(255), day int, week int, month int, year int, item varchar(255), sale int, orderID int);")
+print("CREATE TABLE orders (hour varchar(255), day int, week int, month int, year int, menu_item varchar(255), sale int, orderID int);")
 
 menu_items = [
     "Rev's Burger",
@@ -76,7 +76,7 @@ hours = ["11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm"]
 
 
 # 52 weeks in a year
-for week in range(52):
+for week in range(104):
 
     # 7 work days in a week
     for day in range(7):
@@ -84,6 +84,7 @@ for week in range(52):
 
         # 10 hours per work day
         for hour in hours:
+            insert_statement = "INSERT INTO orders VALUES "
 
             # menu item orders per hour
             for i in range(len(menu_items)):
@@ -94,8 +95,11 @@ for week in range(52):
                 
                 # number of orders of a specific menu item
                 for num in range(random_num):
-                    print(f"INSERT INTO orders VALUES ('{hour}', {current_date.day}, {week}, {current_date.month}, {current_date.year}, '{menu_items[i]}', {menu_prices[menu_items[i]]}, {orderID});")
+                    insert_statement += f"('{hour}', {current_date.day}, {week}, {current_date.month}, {current_date.year}, '{menu_items[i]}', {menu_prices[menu_items[i]]}, {orderID}), "
                     orderID += 1
+            
+            insert_statement = insert_statement[:len(insert_statement)-2] + ";"
+            print(insert_statement)
         
         # changes date at the end of each day
         current_date += timedelta(days=1)
@@ -188,20 +192,33 @@ ingredients = [
     "Plastic Bags"
 ]
 
-print("CREATE TABLE ingredients (item varchar(255), ingredient varchar(255), count int);")
+print("CREATE TABLE menu (menu_item varchar(255), ingredient varchar(255), count int);")
 print("CREATE TABLE inventory (ingredient varchar(255), amount int, capacity int);")
 
+
+# menu table
+insert_statement = "INSERT INTO menu VALUES "
 
 for item in menu_items:
     for ingredient in inventory_items[item]:
         if ingredient[0] == "2":
-            print(f"INSERT INTO ingredients VALUES ('{item}', '{ingredient[2:]}', '{2}');")
+            insert_statement += f"('{item}', '{ingredient[2:]}', '{2}'), "
         elif ingredient[0] == "3":
-            print(f"INSERT INTO ingredients VALUES ('{item}', '{ingredient[2:]}', '{3}');")
+           insert_statement += f"('{item}', '{ingredient[2:]}', '{3}'), "
         elif ingredient[0] == "4":
-            print(f"INSERT INTO ingredients VALUES ('{item}', '{ingredient[2:]}', '{4}');")
+            insert_statement += f"('{item}', '{ingredient[2:]}', '{4}'), "
         else:
-            print(f"INSERT INTO ingredients VALUES ('{item}', '{ingredient}', '{1}');")
-        
+            insert_statement += f"('{item}', '{ingredient}', '{1}'), "
+
+insert_statement = insert_statement[:len(insert_statement)-2] + ";"
+print(insert_statement)
+
+
+# inventory table
+insert_statement = "INSERT INTO inventory VALUES "
+
 for ingredient in ingredients:
-    print(f"INSERT INTO inventory VALUES ('{ingredient}', '{30}', '{30}');")
+    print(f"('{ingredient}', '{30}', '{30}'), ")
+
+insert_statement = insert_statement[:len(insert_statement)-2] + ";"
+print(insert_statement)
