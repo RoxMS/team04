@@ -105,12 +105,12 @@ WHERE
 
 ---Lowest Inventory Items
 SELECT 
-    item, remaining
+    item, remaining --- selects the item and its remaining quantity
 FROM 
-    inventory
+    inventory ---item is obtained from inventory table
 ORDER BY 
-    remaining ASC
-LIMIT 5;
+    remaining ASC  ---it is obtained in an ascending order
+LIMIT 5;  --- we are only looking at the top lowest 5 items but could be updated for more
 
 -- Most used Ingredient
 SELECT
