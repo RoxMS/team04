@@ -35,3 +35,7 @@ JOIN Inventory ON Ingredients.menu_item = Inventory.Ingredient  -- Joining Ingre
 GROUP BY menu_item                                  -- Grouping the results by menu_item
 ORDER BY inventory_items_count DESC    -- Ordering the results by inventory_items_count in descending order
 LIMIT 20;            -- Limiting the output to the top 20 menu items with the highest inventory items count
+
+
+
+
