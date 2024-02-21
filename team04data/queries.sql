@@ -17,13 +17,13 @@ SELECT hour, COUNT(DISTINCT orderID) AS total_orders, SUM(sale) AS total_sales F
 
 -- '''"2 peak days": select top 10 sums of order total grouped by day in descending order by order total
 -- e.g. "30 August has $123456 of sales"'''
-SELECT day, month, year, SUM(sale) as total_sale FROM orders GROUP BY day, month, year ORDER BY total_sales DESC LIMIT 2;
+SELECT day, month, year, SUM(sale) as total_sale FROM orders GROUP BY day, month, year ORDER BY total_sale DESC LIMIT 2;
 
 
 -- '''"Inventory items for 20 menu items": select count of inventory items from inventory and menu grouped by menu item
 -- e.g. "chicken fingers uses 12 items"'''
 
-SELECT item, COUNT(*) AS inventory_items_count FROM ingredients JOIN inventory ON ingredients.item = inventory.ingredient GROUP BY item ORDER BY inventory_items_count DESC LIMIT 20;            -- Limiting the output to the top 20 menu items with the highest inventory items count
+SELECT menu_item, COUNT(*) AS inventory_items_count FROM menu JOIN inventory ON menu.item = inventory.ingredient GROUP BY menu_item ORDER BY inventory_items_count DESC LIMIT 20;            -- Limiting the output to the top 20 menu items with the highest inventory items count
  --  Counting the occurrences of each menu item in the Inventory table
  -- Joining Ingredients and Inventory tables on menu_item
  -- Grouping the results by menu_item
@@ -41,12 +41,12 @@ SELECT hour, COUNT(*) AS total_orders FROM orders GROUP BY hour ORDER BY total_o
 -- Limiting the output to the top 10
 
 -- Highest sold item of each day over 52 weeks
-WITH ranked_items AS ( SELECT day, month, year, item, COUNT(item) AS itemsSold, RANK() OVER (PARTITION BY day, month, year ORDER BY COUNT(item) DESC) AS rank FROM orders GROUP BY day, month, year, item)
-SELECT day, month, year, item, itemsSold FROM ranked_items WHERE rank = 1;
+WITH ranked_items AS ( SELECT day, month, year, menu_item, COUNT(menu_item) AS itemsSold, RANK() OVER (PARTITION BY day, month, year ORDER BY COUNT(menu_item) DESC) AS rank FROM orders GROUP BY day, month, year, menu_item)
+SELECT day, month, year, menu_item, itemsSold FROM ranked_items WHERE rank = 1;
 
 
 -- '''"Highest sold item of the month"'''
-SELECT month, year, item, COUNT(item) as itemsSold FROM orders GROUP BY month, year, item ORDER BY year DESC, month DESC, itemsSold DESC LIMIT 1;        
+SELECT month, year, menu_item, COUNT(menu_item) as itemsSold FROM orders GROUP BY month, year, menu_item ORDER BY year DESC, month DESC, itemsSold DESC LIMIT 1;        
 
 
 -- '''"Most profitable month"'''
@@ -65,21 +65,21 @@ SELECT orderID, SUM(sale) AS total_sale FROM orders GROUP BY orderID ORDER BY  t
 -- '''"Ingredient Items for a Specific Menu Item": select inventory items grouped by a menu item they correspond to
 -- e.g. "Revs Burger requires Burger Bread, a Patty, ...."'''
 
-SELECT ingredient, count FROM ingredients WHERE item = 'Double Stack Cheese Burger'; 
+SELECT ingredient, count FROM menu WHERE menu_item = 'Double Stack Cheese Burger'; 
 --get the ingredient column and count column
 --get the ingredient column and count column
 -- get them from the ingredients table
 --do it only for the double stack cheese burger
 
 ---Lowest Inventory Items
-SELECT ingredient, amount FROM inventory ORDER BY amount ASC LIMIT 5; 
+SELECT menu_item, remaining FROM inventory ORDER BY remaining ASC LIMIT 5; 
 -- selects the item and its remaining quantity
 -- item is obtained from inventory table
 -- it is obtained in an ascending order
 -- we are only looking at the top lowest 5 items but could be updated for more
 
 -- Most used Ingredient
-SELECT ingredient, SUM(count) as total_count FROM ingredients GROUP BY ingredient ORDER BY total_count DESC; 
+SELECT ingredient, SUM(count) as total_count FROM menu GROUP BY ingredient ORDER BY total_count DESC; 
     ---select ingredient column and sum of count column named as total_count
     ---obtained from ingredients table
     --- grouped by ingredients to aggregate the counts
@@ -91,7 +91,7 @@ SELECT SUM(amount) AS total_inventory_amount FROM inventory;
 --- the total will be obtained from inventory in stock
 
 -- Most used Inventory Items
-SELECT item, SUM(sale) AS total_sales FROM orders GROUP BY item ORDER BY total_sales DESC; 
+SELECT menu_item, SUM(sale) AS total_sales FROM orders GROUP BY menu_item ORDER BY total_sales DESC; 
     --- select from items and find the sum of the sale as total_sales
     ---obtaining the sales information from orders
     ---it is than grouped by item to aggregate sales
