@@ -7,7 +7,7 @@ from datetime import date, timedelta
 
 
 
-print("CREATE TABLE orders (hour varchar(255), day int, week int, month int, year int, item varchar(255), sale int);")
+print("CREATE TABLE orders (hour varchar(255), day int, week int, month int, year int, item varchar(255), sale int, orderID int);")
 
 menu_items = [
     "Rev's Burger",
@@ -36,7 +36,7 @@ menu_items = [
     "Cold Brew",
     "Seasoned Fries",
     "Tater Tots",
-    "Onion Ring",
+    "Onion Rings",
     "Kettle Chips"
 ]
 
@@ -67,7 +67,7 @@ menu_prices = {
     "Cold Brew" : 3.65,
     "Seasoned Fries" : 2.99,
     "Tater Tots" : 2.99,
-    "Onion Ring" : 2.99,
+    "Onion Rings" : 2.99,
     "Kettle Chips" : 2.99
 }
 
@@ -80,18 +80,22 @@ for week in range(52):
 
     # 7 work days in a week
     for day in range(7):
+        orderID = 1
 
         # 10 hours per work day
         for hour in hours:
-            orderID = 0
 
             # menu item orders per hour
             for i in range(len(menu_items)):
-                random_num = random.randint(0, 5)
+                if (current_date.day == 31 and current_date.month == 8) or (current_date.day == 31 and current_date.month == 1):
+                    random_num = random.randint(5, 6)
+                else:
+                    random_num = random.randint(0, 5)
                 
                 # number of orders of a specific menu item
                 for num in range(random_num):
-                    print(f"INSERT INTO orders VALUES ('{hour}', {current_date.day}, {week}, {current_date.month}, {current_date.year}, '{menu_items[i]}', {menu_prices[menu_items[i]]});")
+                    print(f"INSERT INTO orders VALUES ('{hour}', {current_date.day}, {week}, {current_date.month}, {current_date.year}, '{menu_items[i]}', {menu_prices[menu_items[i]]}, {orderID});")
+                    orderID += 1
         
         # changes date at the end of each day
         current_date += timedelta(days=1)
