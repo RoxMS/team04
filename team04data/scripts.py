@@ -4,7 +4,7 @@ from datetime import date, timedelta
 # Open a file in write mode to store the SQL statements
 with open('output.sql', 'w') as sql_file:
     # Write CREATE TABLE statement for 'orders' table
-    sql_file.write("CREATE TABLE orders (hour varchar(255), day int, week int, month int, year int, menu_item varchar(255), sale int, orderID int);\n")
+    sql_file.write("CREATE TABLE orders (hour varchar(255), day int, week int, month int, year int, menu_item varchar(255), sale float, orderID int);\n")
 
     # Define menu items and prices
     menu_items = [
