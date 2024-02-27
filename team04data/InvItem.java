@@ -28,3 +28,18 @@ public class InvItem { //each row
     }
 
 }
+
+
+@FXML private TableView<InvItem> invitemTable; //Declaration of TableView control to display InvItem type items
+@FXML private TableColumn<InvItem, String> itemColumn; //Declaration of TableView column to display String type items
+@FXML private TableColumn<InvItem, Float> quantityColumn; //Declaration of TableView column to display float type items
+@FXML private TableColumn<InvItem, Float> capacityColumn; //Declaration of TableView column to display float type items
+
+TableColumn<InvItem, String> itemColumn = new TableColumn<>("Item"); //Instantiate TableColumn with header text "Item"
+TableColumn<InvItem, Float> quantityColumn = new TableColumn<>("Quanity"); //Instantiate TableColumn with header text "Quantity"
+TableColumn<InvItem, Float> capacityColumn = new TableColumn<>("Capacity"); //Instantiate TableColumn with header text "Capacity"
+
+itemColumn.setCellValueFactory(new PropertyValueFactory<InvItem, String>("item")); //extracts data from item property of class
+quantityColumn.setCellValueFactory(new PropertyValueFactory<InvItem, Float>("quantity")); //extracts data from quanitity property of class
+capacityColumn.setCellValueFactory(new PropertyValueFactory<InvItem, Float>("capacity")); //extracts data from capacity property of class
+invitemTable.setPlaceholder(new Label(" ")); //Place holder for when table is empty
