@@ -43,3 +43,17 @@ itemColumn.setCellValueFactory(new PropertyValueFactory<InvItem, String>("item")
 quantityColumn.setCellValueFactory(new PropertyValueFactory<InvItem, Float>("quantity")); //extracts data from quanitity property of class
 capacityColumn.setCellValueFactory(new PropertyValueFactory<InvItem, Float>("capacity")); //extracts data from capacity property of class
 invitemTable.setPlaceholder(new Label(" ")); //Place holder for when table is empty
+
+
+try {//try statement to retrieve data from the "Inventory" table in the database and add to invitemTable Tableview
+    Statement stmt = conn.createStatement();
+    String sqlStatement = " SELECT ingredient, amount, capacity FROM inventory"; //SQL query statement to grab data from database
+    ResultSet result = stmt.executeQuery(sqlStatement);
+    while (result.next()) {
+        String ingredient = result.getString("ingredient");
+        float quanitity = result.getFloat("amount");
+        float capacity = result.getFloat("capacity");
+        invitemTable.getItems().add(new InvItem(ingredient, quantity, capacity) );    
+    }
+
+}
