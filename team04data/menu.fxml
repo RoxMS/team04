@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="472.0" prefWidth="829.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SceneController">
+   <children>
+      <SplitPane dividerPositions="0.6955958549222798" prefHeight="472.0" prefWidth="829.0">
+         <items>
+            <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="684.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="BURGERS">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <SplitPane fx:id="Rev1s_Burger" dividerPositions="0.8" layoutX="97.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                <items>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="140.0" fitWidth="210.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/revs_burger.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="70.0" layoutY="6.0" text="Rev's Burger " />
+                                       </children>
+                                    </AnchorPane>
+                                </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Double_Stack_Cheese_Burger" dividerPositions="0.8" layoutX="382.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="150.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/double_steak_cheese_burger.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="10.0" layoutY="6.0" text="Double Stack Cheese Burger" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Classic_Burger" dividerPositions="0.8" layoutX="97.0" layoutY="244.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="148.0" fitWidth="233.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/classic_burger.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="67.0" layoutY="6.0" text="Classic Burger" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Bacon_Cheeseburger" dividerPositions="0.8" layoutX="382.0" layoutY="244.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="146.0" fitWidth="226.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/bacon_cheeseburger.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="49.0" layoutY="6.0" text="Bacon Cheeseburger" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </children></AnchorPane>
+                     </content>
+                  </Tab>
+                <Tab text="BASKETS">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <SplitPane fx:id="Three_Tender_Basket" dividerPositions="0.8" layoutX="34.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="135.0" fitWidth="233.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/three_tender_basket.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="37.0" layoutY="6.0" text="Three Tender Basket" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Four_Steak_Finger_Basket" dividerPositions="0.8" layoutX="277.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="144.0" fitWidth="219.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/four_steak_finger_basket.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="23.0" layoutY="6.0" text="Four Steak Finger Basket" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </children>
+                        </AnchorPane>
+                     </content></Tab>
+                  <Tab text="SANDWICHES">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <SplitPane fx:id="Gig1Em_Patty_Melt" dividerPositions="0.8" layoutX="35.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="151.0" fitWidth="212.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@images/gigem_patty_melt.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="57.0" layoutY="6.0" text="Gig'Em Patty Melt" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Howdy_Spicy_Ranch_Chicken_Sandwich" dividerPositions="0.6845238095238095" layoutX="277.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="150.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/howdy_spicy_ranch_chicken_sandwich.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="3.0" layoutY="1.0" prefHeight="47.0" prefWidth="203.0" text="Howdy Spicy Ranch Chicken Sandwich" textAlignment="CENTER" wrapText="true" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Classic_Crispy_2_Grilled_Chicken_Tender_Sandwich" dividerPositions="0.6785714285714286" layoutX="35.0" layoutY="244.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="153.0" fitWidth="212.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/grilled_chicken_tender_sandwich.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="14.0" prefHeight="50.0" prefWidth="181.0" text="Classic Crispy / Grilled Chicken Tender Sandwich" textAlignment="CENTER" wrapText="true" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Grilled_Cheese" dividerPositions="0.8" layoutX="277.0" layoutY="244.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="146.0" fitWidth="226.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/grilled_cheese.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="66.0" layoutY="6.0" text="Grilled Cheese" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </children>
+                        </AnchorPane>
+                     </content></Tab>
+                  <Tab text="SIDES">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <SplitPane fx:id="Seasoned_Fries" dividerPositions="0.8" layoutX="35.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                <items>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="140.0" fitWidth="210.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/seasoned_fries.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="65.0" layoutY="6.0" text="Seasoned Fries" />
+                                       </children>
+                                    </AnchorPane>
+                                </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Tator_Tots" dividerPositions="0.8" layoutX="277.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="150.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/tator_tots.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="77.0" layoutY="7.0" text="Tator Tots" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Onion_Rings" dividerPositions="0.8" layoutX="35.0" layoutY="244.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="151.0" fitWidth="212.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/onion_rings.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="72.0" layoutY="6.0" text="Onion Rings" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Kettle_Chips" dividerPositions="0.8" layoutX="277.0" layoutY="244.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="146.0" fitWidth="226.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/kettle_chips.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="72.0" layoutY="7.0" text="Kettle Chips" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </children></AnchorPane>
+                     </content></Tab>
+                  <Tab text="DESSERT">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <SplitPane fx:id="Aggie_Shake" dividerPositions="0.8" layoutX="35.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="144.0" fitWidth="212.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/aggie_shake.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="71.0" layoutY="6.0" text="Aggie Shake" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Double_Scoop_Ice_Cream_Cup" dividerPositions="0.8" layoutX="277.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="145.0" fitWidth="233.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/double_scoop_ice_cream_cup.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="7.0" layoutY="5.0" text="Double Scoop Ice Cream Cup" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Chocolate_Chip_Chunk_Cookie" dividerPositions="0.6607142857142857" layoutX="35.0" layoutY="244.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="139.0" fitWidth="243.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/chocolate_chip_chunk_cookie.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="8.0" layoutY="1.0" prefHeight="52.0" prefWidth="193.0" text="Chocolate Chip Chunk Cookie" textAlignment="CENTER" wrapText="true" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Chocolate_Fudge_Brownie" dividerPositions="0.8" layoutX="277.0" layoutY="244.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="146.0" fitWidth="226.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/chocolate_fudge_brownie.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="19.0" layoutY="4.0" text="Chocolate Fudge Brownie" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </children>
+                        </AnchorPane>
+                     </content></Tab>
+                  <Tab text="BEVERAGES">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <SplitPane fx:id="Fountain_Drink" dividerPositions="0.8" layoutX="35.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="140.0" fitWidth="210.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/fountain_drink.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="71.0" layoutY="6.0" text="Fountain Drink" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Drip_Coffee" dividerPositions="0.8" layoutX="277.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="150.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/drip_coffee.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="74.0" layoutY="7.0" text="Drip Coffee" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Cold_Brew" dividerPositions="0.8035714285714286" layoutX="35.0" layoutY="244.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="148.0" fitWidth="233.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/cold_brew.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="77.0" layoutY="6.0" text="Cold Brew" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </children>
+                        </AnchorPane>
+                     </content></Tab>
+                  <Tab text="SAUCES">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <SplitPane fx:id="Gig1Em_Sauce" dividerPositions="0.8" layoutX="38.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="117.0" prefWidth="205.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="89.0" fitWidth="210.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@images/revs_burger.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="66.0" layoutY="2.0" text="Gig'Em Sauce" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Buffalo" dividerPositions="0.8" layoutX="276.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="117.0" prefWidth="205.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="101.0" fitWidth="219.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/buffalo.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="83.0" layoutY="2.0" text="Buffalo" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Ranch" dividerPositions="0.8" layoutX="38.0" layoutY="162.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="117.0" prefWidth="205.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="92.0" fitWidth="205.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/ranch.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="85.0" layoutY="2.0" text="Ranch" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="BBQ_Sauce" dividerPositions="0.8" layoutX="276.0" layoutY="162.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="117.0" prefWidth="205.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="100.0" fitWidth="219.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/bbq_sauce.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="73.0" layoutY="2.0" text="BBQ Sauce" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Honey_Mustard" dividerPositions="0.8" layoutX="38.0" layoutY="291.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="117.0" prefWidth="205.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="116.0" fitWidth="205.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/honey_mustard.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="61.0" layoutY="2.0" text="Honey Mustard" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                              <SplitPane fx:id="Spicy_Ranch" dividerPositions="0.8" layoutX="276.0" layoutY="291.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="117.0" prefWidth="205.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="95.0" fitWidth="205.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="file:/C:/Users/olivi/eclipse-workspace/revs_POS/src/application/images/spicy_ranch.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="70.0" layoutY="2.0" text="Spicy Ranch" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </children>
+                        </AnchorPane>
+                     </content></Tab>
+                  <Tab text="SALAD BAR">
+                     <content>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <SplitPane fx:id="Salad_Bar" dividerPositions="0.8" layoutX="35.0" layoutY="35.0" onMouseClicked="#addMenuItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
+                                 <items>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
+                                       <children>
+                                          <ImageView fitHeight="140.0" fitWidth="210.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@images/revs_burger.png" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
+                                       <children>
+                                          <Label layoutX="79.0" layoutY="6.0" text="Salad Bar" />
+                                       </children>
+                                    </AnchorPane>
+                                 </items>
+                              </SplitPane>
+                           </children>
+                        </AnchorPane>
+                     </content></Tab>
+              </tabs>
+            </TabPane>
+            <AnchorPane prefHeight="470.0" prefWidth="241.0">
+               <children>
+                <Button fx:id="tender" layoutX="31.0" layoutY="433.0" mnemonicParsing="false" onAction="#menuScreen" prefHeight="25.0" prefWidth="212.0" text="Tender" />
+                  <ScrollPane layoutX="29.0" layoutY="14.0" prefHeight="419.0" prefWidth="219.0">
+                     <content>
+                        <TableView fx:id="orderTable" prefHeight="417.0" prefWidth="208.0">
+                          <columns>
+                            <TableColumn fx:id="menuItemColumn" prefWidth="146.0" text="Order" />
+                            <TableColumn fx:id="totalColumn" prefWidth="71.0" text="Total" />
+                          </columns>
+                        </TableView>
+                     </content>
+                  </ScrollPane>
+               </children>
+            </AnchorPane>
+         </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
