@@ -12,7 +12,7 @@
 -- '''"Top 10 Busiest Hours of the Day": select count of orders grouped by hour of the day -- e.g. "The top selling hour was 2pm"'''
 --this selects the hour column from the orders table --the COUNT() function calculates the total rows for each hour and assigns it to total_orders --gets those values from the orders table --groups the total_orders by each hour --order table results in descending order -- Limiting the output to the top 10
 
-6.) WITH ranked_items AS ( SELECT day, month, year, menu_item, COUNT(menu_item) AS itemsSold, RANK() OVER (PARTITION BY day, month, year ORDER BY COUNT(menu_item) DESC) AS rank FROM orders GROUP BY day, month, year, menu_item)
+6.) WITH ranked_items AS ( SELECT day, month, year, menu_item, COUNT(menu_item) AS itemsSold, RANK() OVER (PARTITION BY day, month, year ORDER BY COUNT(menu_item) DESC) FROM orders GROUP BY day, month, year, menu_item) SELECT * FROM ranked_items;
  -- Highest sold item of each day over 52 weeks SELECT day, month, year, menu_item, itemsSold FROM ranked_items WHERE rank = 1 ORDER BY year, month, day;
 
 7.) WITH ranked_items AS ( SELECT month, year, menu_item, COUNT(menu_item) AS itemsSold, RANK() OVER (PARTITION BY month, year ORDER BY COUNT(menu_item) DESC) AS rank FROM orders GROUP BY month, year, menu_item) SELECT month, year, menu_item, itemsSold FROM ranked_items WHERE rank = 1 ORDER BY year, month;
