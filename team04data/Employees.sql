@@ -1,21 +1,37 @@
-CREATE TABLE Employees (
-    employeeID SERIAL PRIMARY KEY,
-    name VARCHAR(255),
-    status VARCHAR(255)
-);
+package application;
 
-INSERT INTO Employees (name, status) VALUES ('David Taylor', 'employee');
-INSERT INTO Employees (name, status) VALUES ('Jane Miller', 'manager');
-INSERT INTO Employees (name, status) VALUES ('Bob Wilson', 'employee');
-INSERT INTO Employees (name, status) VALUES ('John Johnson', 'manager');
-INSERT INTO Employees (name, status) VALUES ('John Taylor', 'employee');
-INSERT INTO Employees (name, status) VALUES ('David Miller',  'manager');
-INSERT INTO Employees (name, status) VALUES ('Frank Williams',  'manager');
-INSERT INTO Employees (name, status) VALUES ('Henry Brown',  'employee');
-INSERT INTO Employees (name, status) VALUES ('Alice Wilson',  'employee');
-INSERT INTO Employees (name, status) VALUES ('Grace Jones',  'manager');
-INSERT INTO Employees (name, status) VALUES ('Bob Williams',  'employee');
-INSERT INTO Employees (name, status) VALUES ('Grace Jones',  'employee');
-INSERT INTO Employees (name, status) VALUES ('Charlie Davis',  'manager');
-INSERT INTO Employees (name, status) VALUES ('Eva Smith',  'manager');
-INSERT INTO Employees (name, status) VALUES ('Jane Williams', 'manager');
+public class Employee {
+	//variables
+    private int employeeID = 0;
+    private String name = null;
+    private String status = null;
+
+    //initializer
+    public Employee(int employeeID, String name, String status) {
+    	this.employeeID = employeeID;
+        this.name = name;
+        this.status = status;
+    }
+
+    //getters
+    public int getEmployeeID() {
+        return employeeID;
+    }
+    public String getName() {
+        return name;
+    }
+    public String getStatus() {
+        return status;
+    }
+    
+  //setters
+    public void setEmployeeID(int employeeID) {
+    	this.employeeID = employeeID;
+    }
+    public void setName(String name) {
+    	this.name = name;
+    }
+    public void setStatus(String status) {
+    	this.status = status;
+    }
+}
