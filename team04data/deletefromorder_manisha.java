@@ -21,6 +21,9 @@ try {
         }
         orders_text.setText(orders_string);
     }
+    orders_text.setText(employees_string);
+    del_emp.setText("");
+    orders.remove(del_index);
 }
 catch (Exception error) {
     // handle SQL exception
