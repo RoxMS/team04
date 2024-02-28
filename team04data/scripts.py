@@ -86,7 +86,7 @@ with open('output.sql', 'w') as sql_file:
                     random_num = random.randint(0, 5)
                     # Generate orders for a specific menu item
                     for num in range(random_num):
-                        insert_statement += f"('{hour}', {current_date.day}, {week}, {current_date.month}, {current_date.year}, '{menu_items[i]}', {menu_prices[menu_items[i]]}, {orderID}), "
+                        insert_statement += f"('{hour}', {current_date.day}, {week+1}, {current_date.month}, {current_date.year}, '{menu_items[i]}', {menu_prices[menu_items[i]]}, {orderID}), "
                         orderID += 1
                 # Write the insert statement to the SQL file
                 sql_file.write(insert_statement[:-2] + ";\n")
