@@ -86,7 +86,7 @@ with open('output.sql', 'w') as sql_file:
                     random_num = random.randint(0, 5)
                     # Generate orders for a specific menu item
                     for num in range(random_num):
-                        insert_statement += f"({orderID},'{hour}', {current_date.day}, {week}, {current_date.month}, {current_date.year}, '{menu_items[i]}', {menu_prices[menu_items[i]]}), "
+                        insert_statement += f"({orderID}, '{hour}', {current_date.day}, {week+1}, {current_date.month}, {current_date.year}, '{menu_items[i]}', {menu_prices[menu_items[i]]}), "
                         orderID += 1
                 # Write the insert statement to the SQL file
                 sql_file.write(insert_statement[:-2] + ";\n")
@@ -174,27 +174,30 @@ with open('output.sql', 'w') as sql_file:
     "Plastic Bags"
 ]
 
-    # Write CREATE TABLE statement for 'menu' table
+    # Create 'ingredient' table
     sql_file.write("CREATE TABLE ingredients (menu_item varchar(255), ingredient varchar(255), count int);\n")
+    # Write CREATE TABLE statement for 'menu' table
+    sql_file.write("CREATE TABLE menu (menu_itemID int NOT NULL AUTO_INCREMENT, menu_item varchar(255), price float, PRIMARY KEY (menu_itemID));\n")
     # Write CREATE TABLE statement for 'inventory' table
-    sql_file.write("CREATE TABLE inventory (inventoryID int,ingredient varchar(255), amount int, capacity int);\n")
+    sql_file.write("CREATE TABLE inventory (inventoryID SERIAL PRIMARY KEY, ingredient varchar(255), amount int, capacity int);\n")
 
     # Generate and write INSERT INTO statements for 'menu' table
-    insert_statement = "INSERT INTO menu VALUES "
-    for item in menu_items:
-        for ingredient in inventory_items[item]:
-            if ingredient[0] == "2":
-                insert_statement += f"('{item}', '{ingredient[2:]}', '{2}'), "
-            elif ingredient[0] == "3":
-               insert_statement += f"('{item}', '{ingredient[2:]}', '{3}'), "
-            elif ingredient[0] == "4":
-                insert_statement += f"('{item}', '{ingredient[2:]}', '{4}'), "
-            else:
-                insert_statement += f"('{item}', '{ingredient}', '{1}'), "
+    insert_statement = "INSERT INTO menu (menu_item, price) VALUES "
+    for item, price in menu_prices.items():
+        insert_statement += f"('{item}', {price}), "
+    sql_file.write(insert_statement[:-2] + ";\n")
+
+    # Generate and write INSERT INTO statements for 'ingredient' table
+    insert_statement = "INSERT INTO ingredients (menu_item, ingredient, count) VALUES "
+    for item, ingredients_list in inventory_items.items():
+        for ingredient in ingredients_list:
+            count = ingredient.split()[0]
+            ingredient_name = ''.join(ingredient.split()[1:])
+            insert_statement += f"('{item}', '{ingredient_name}', {count}), "
     sql_file.write(insert_statement[:-2] + ";\n")
 
     # Generate and write INSERT INTO statements for 'inventory' table
-    insert_statement = "INSERT INTO inventory VALUES "
+    insert_statement = "INSERT INTO inventory (ingredient, amount, capacity) VALUES "
     for ingredient in ingredients:
         insert_statement += f"('{ingredient}', '{30}', '{30}'), "
     sql_file.write(insert_statement[:-2] + ";\n")
