@@ -56,4 +56,6 @@ try {//try statement to retrieve data from the "Inventory" table in the database
         invitemTable.getItems().add(new InvItem(ingredient, quantity, capacity) );    
     }
 
+
 }
+
