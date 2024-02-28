@@ -79,15 +79,14 @@ public class SceneController {
     public void menuScreen(ActionEvent e) throws IOException {
 		root = (AnchorPane)FXMLLoader.load(getClass().getResource("menu.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		scene = new Scene(root,979,574);
+		scene = new Scene(root,979,581);
 		stage.setScene(scene);
 		stage.show();
 	}
-    
     public void managerScreen(ActionEvent e) throws IOException {
 		root = (AnchorPane)FXMLLoader.load(getClass().getResource("manager.fxml"));
 		stage = (Stage)((Node)e.getSource()).getScene().getWindow();
-		scene = new Scene(root,979,574);
+		scene = new Scene(root,783,482);
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -105,11 +104,11 @@ public class SceneController {
 		        int year = result.getInt("year");
 		        float sale = result.getFloat("totalSale");
 		        sales_string += month;
-		    	for(int i = 1; i <= 100; i++) {
+		    	for(int i = 1; i <= 39-(month+"").length(); i++) {
 		    		sales_string += " ";
 		    	}
 		    	sales_string += year;
-		    	for(int i = 1; i <= 100; i++) {
+		    	for(int i = 1; i <= 31-(year+"").length(); i++) {
 		    		sales_string += " ";
 		    	}
 		    	sales_string += sale + "\n";
@@ -196,10 +195,10 @@ public class SceneController {
 		    		menu_string += " ";
 		    	}
 		    	menu_string += "   " + menu_item;
-		    	for(int i = 1; i <= 46-menu_item.length(); i++) {
+		    	for(int i = 1; i <= 51-menu_item.length(); i++) {
 		    		menu_string += " ";
 		    	}
-		    	menu_string += "        " + price + "\n";
+		    	menu_string += "     " + price + "\n";
 		    	//adding to menu ArrayList
 		    	menu.add(new MenuItem(menu_itemID, menu_item, price));
 		    }
@@ -227,7 +226,7 @@ public class SceneController {
 		    ResultSet result = stmt.executeQuery(sqlStatement);
 		    while (result.next()) {
 		    	float price = result.getFloat("price");
-		    	orders_string += "  " + count + "    " + name;
+		    	orders_string += "  " + count + "   " + name;
 		    	for(int i = 1; i <= 41-name.length(); i++) {
 		    		orders_string += " ";
 		    	}
@@ -242,41 +241,40 @@ public class SceneController {
         close();
     }
     public void deleteOrderItem(MouseEvent e) throws IOException {
-        try {
-        	//deleting menu item from orders array
-        	int orderID = Integer.parseInt(del_ord.getText());
-            
-            orders_string = "";
-            for(Order item : orders) {
-            	if (item.getOrderID() == orderID) {
-            		orders.remove(item);
-            	}
-            	else {
-                	orders_string += " " + item.getOrderID();
-    		    	for(int i = 1; i <= 3-(item.getOrderID()+"").length(); i++) {
+    	try {
+    	    //deleting menu item from orders array
+    	    int orderID = Integer.parseInt(del_ord.getText());
+
+    	    int del_index = 0;
+    	    orders_string = "";
+    	    for(int i = 0; i < orders.size(); i++) {
+    	        if (orders.get(i).getOrderID() == orderID) {
+    	            del_index = i;
+    	        }
+    	        else {
+                	orders_string += "  " + orders.get(i).getOrderID() + "   " + orders.get(i).getMenuItem();
+    		    	for(int j = 1; j <= 41-orders.get(i).getMenuItem().length(); j++) {
     		    		orders_string += " ";
     		    	}
-    		    	orders_string += "   " + item.getMenuItem();
-    		    	for(int i = 1; i <= 46-item.getMenuItem().length(); i++) {
-    		    		orders_string += " ";
-    		    	}
-    		    	orders_string += "     " + item.getPrice() + "\n";
-    		    }
-            	orders_text.setText(orders_string);
-            }
-        }
-        catch (Exception error) {
-            // handle SQL exception
-            error.printStackTrace();
-        }
-        close();
+    		    	orders_string += "$" + orders.get(i).getPrice() + "\n";
+    	        }
+    	    }
+    	    orders_text.setText(orders_string);
+	        orders.remove(del_index);
+	        del_ord.setText("");
+    	}
+    	catch (Exception error) {
+    	    // handle SQL exception
+    	    error.printStackTrace();
+    	}
+    	close();
     }
     public void updateOrderItem(MouseEvent e) throws IOException {
         try {
         	//updating order item
-        	int orderID = Integer.parseInt(upd_inv.getText());
-        	String menu_item = upd_dish.getText();
-            float price = Float.parseFloat(upd_price.getText());
+        	int orderID = Integer.parseInt(upd_ord.getText());
+        	String menu_item = upd_food.getText();
+            float price = Float.parseFloat(upd_total.getText());
             
             orders_string = "";
             for(Order item : orders) {
@@ -285,17 +283,16 @@ public class SceneController {
             		item.setPrice(price);
             	}
         		//changing employee table GUI
-            	orders_string += " " + item.getOrderID();
-		    	for(int i = 1; i <= 3-(item.getOrderID()+"").length(); i++) {
+            	orders_string += "  " + item.getOrderID() + "   " + item.getMenuItem();
+		    	for(int i = 1; i <= 41-item.getMenuItem().length(); i++) {
 		    		orders_string += " ";
 		    	}
-		    	orders_string += "   " + item.getMenuItem();
-		    	for(int i = 1; i <= 46-(item.getMenuItem()+"").length(); i++) {
-		    		orders_string += " ";
-		    	}
-		    	orders_string += "        " + item.getPrice();
+		    	orders_string += "$" + item.getPrice() + "\n";
             }
             orders_text.setText(orders_string);
+            upd_ord.setText("");
+            upd_food.setText("");
+            upd_total.setText("");
         }
         catch (Exception error) {
             // handle SQL exception
@@ -341,6 +338,9 @@ public class SceneController {
 			    inventory.add(new InvItem(inventoryID, ingredient, amount, capacity));
 		    }
 	    	inventory_text.setText(inventory_string);
+	    	add_item.setText("");
+	    	add_quant.setText("");
+	    	add_cap.setText("");
         }
         catch (SQLException error) {
             // handle SQL exception
@@ -350,38 +350,41 @@ public class SceneController {
     }
     public void deleteInventoryItem(MouseEvent e) throws IOException {
         try {
-        	connect();
-        	
-        	//deleting inventory item in database
-        	int inventoryID = Integer.parseInt(del_inv.getText());
-        	
+            connect();
+
+            //deleting inventory item in database
+            int inventoryID = Integer.parseInt(del_inv.getText());
+
             Statement stmt = conn.createStatement();
             String sqlStatement = "DELETE FROM inventory WHERE inventoryID=" + inventoryID;
             stmt.executeUpdate(sqlStatement);
-            
+
+            int del_index = 0;
             inventory_string = "";
-            for(InvItem item : inventory) {
-            	if (item.getInventoryID() == inventoryID) {
-            		inventory.remove(item);
-            	}
-            	else {
-            		//changing inventory table GUI
-    		    	inventory_string += " " + item.getInventoryID();
-    		    	for(int i = 1; i <= 3-(item.getInventoryID()+"").length(); i++) {
-    		    		inventory_string += " ";
-    		    	}
-    		    	inventory_string += "   " + item.getIngredient();
-    		    	for(int i = 1; i <= 35-(item.getIngredient()+"").length(); i++) {
-    		    		inventory_string += " ";
-    		    	}
-    		    	inventory_string += "        " + item.getAmount();
-    		    	for(int i = 1; i <= 3-(item.getAmount()+"").length(); i++) {
-    		    		inventory_string += " ";
-    		    	}
-    		    	inventory_string += "            " + item.getCapacity() + "\n";
-            	}
+            for(int i = 0; i < inventory.size(); i++) {
+                if (inventory.get(i).getInventoryID() == inventoryID) {
+                    del_index = i;
+                }
+                else {
+                    //changing inventory table GUI
+                    inventory_string += " " + inventory.get(i).getInventoryID();
+                    for(int j = 1; j <= 3-(inventory.get(i).getInventoryID()+"").length(); j++) {
+                        inventory_string += " ";
+                    }
+                    inventory_string += "   " + inventory.get(i).getIngredient();
+                    for(int j = 1; j <= 35-(inventory.get(i).getIngredient()+"").length(); j++) {
+                        inventory_string += " ";
+                    }
+                    inventory_string += "        " + inventory.get(i).getAmount();
+                    for(int j = 1; j <= 3-(inventory.get(i).getAmount()+"").length(); j++) {
+                        inventory_string += " ";
+                    }
+                    inventory_string += "            " + inventory.get(i).getCapacity() + "\n";
+                }
             }
+            inventory.remove(del_index);
             inventory_text.setText(inventory_string);
+            del_inv.setText("");
         }
         catch (SQLException error) {
             // handle SQL exception
@@ -426,6 +429,10 @@ public class SceneController {
 		    	inventory_string += "            " + item.getCapacity() + "\n";
             }
             inventory_text.setText(inventory_string);
+            upd_inv.setText("");
+            upd_item.setText("");
+            upd_quant.setText("");
+            upd_cap.setText("");
         }
         catch (SQLException error) {
             // handle SQL exception
@@ -446,7 +453,7 @@ public class SceneController {
             String sqlStatement = "INSERT INTO employees(name, status) VALUES('" + name + "', '" + status + "')";
             stmt.executeUpdate(sqlStatement);
             
-            //retrieving inventoryID number
+            //retrieving employeeID number
             sqlStatement = "SELECT employeeID FROM employees WHERE name='" + name + "'";
             ResultSet result = stmt.executeQuery(sqlStatement);
             
@@ -466,6 +473,8 @@ public class SceneController {
 			    employees.add(new Employee(employeeID, name, status));
 		    }
 	    	employees_text.setText(employees_string);
+	    	add_name.setText("");
+	    	add_status.setText("");
         }
         catch (SQLException error) {
             // handle SQL exception
@@ -481,27 +490,37 @@ public class SceneController {
         	int employeeID = Integer.parseInt(del_emp.getText());
         	
             Statement stmt = conn.createStatement();
-            String sqlStatement = "DELETE FROM employee WHERE employeeID=" + employeeID;
+            String sqlStatement = "DELETE FROM employees WHERE employeeID=" + employeeID;
             stmt.executeUpdate(sqlStatement);
             
+            int del_index = 0;
             employees_string = "";
-            for(Employee item : employees) {
-            	if (item.getEmployeeID() == employeeID) {
-            		employees.remove(item);
+            for(int i = 0; i < employees.size(); i++) {
+            	System.out.print(i + ": ");
+            	if (employees.get(i).getEmployeeID() == employeeID) {
+            		del_index = i;
             	}
             	else {
-                	employees_string += " " + item.getEmployeeID();
-    		    	for(int i = 1; i <= 3-(item.getEmployeeID()+"").length(); i++) {
+            		System.out.println("1");
+                	employees_string += " " + employees.get(i).getEmployeeID();
+                	System.out.println("2");
+    		    	for(int j = 1; j <= 3-(employees.get(i).getEmployeeID()+"").length(); j++) {
     		    		employees_string += " ";
     		    	}
-    		    	employees_string += "   " + item.getName();
-    		    	for(int i = 1; i <= 46-item.getName().length(); i++) {
+    		    	System.out.println("3");
+    		    	employees_string += "   " + employees.get(i).getName();
+    		    	System.out.println("4");
+    		    	for(int j = 1; j <= 46-employees.get(i).getName().length(); j++) {
     		    		employees_string += " ";
     		    	}
-    		    	employees_string += "     " + item.getStatus() + "\n";
+    		    	System.out.println("5");
+    		    	employees_string += "     " + employees.get(i).getStatus() + "\n";
+    		    	System.out.println("6");
     		    }
-    	    	employees_text.setText(employees_string);
             }
+            employees_text.setText(employees_string);
+            del_emp.setText("");
+            employees.remove(del_index);
         }
         catch (SQLException error) {
             // handle SQL exception
@@ -519,7 +538,7 @@ public class SceneController {
             String status = upd_status.getText();
             
             Statement stmt = conn.createStatement();
-            String sqlStatement = "UPDATE employee SET name='" + name + "', status='" + status + "' WHERE employeeID=" + employeeID;
+            String sqlStatement = "UPDATE employees SET name='" + name + "', status='" + status + "' WHERE employeeID=" + employeeID;
             stmt.executeUpdate(sqlStatement);
             
             employees_string = "";
@@ -537,9 +556,12 @@ public class SceneController {
 		    	for(int i = 1; i <= 46-(item.getName()+"").length(); i++) {
 		    		employees_string += " ";
 		    	}
-		    	employees_string += "        " + item.getStatus();
+		    	employees_string += "        " + item.getStatus() + "\n";
             }
             employees_text.setText(employees_string);
+            upd_name.setText("");
+            upd_status.setText("");
+            upd_emp.setText("");
         }
         catch (SQLException error) {
             // handle SQL exception
@@ -572,14 +594,16 @@ public class SceneController {
 		    		menu_string += " ";
 		    	}
 		    	menu_string += "   " + menu_item;
-		    	for(int i = 1; i <= 46-menu_item.length(); i++) {
+		    	for(int i = 1; i <= 51-menu_item.length(); i++) {
 		    		menu_string += " ";
 		    	}
-		    	menu_string += "       " + price + "\n";
+		    	menu_string += "     " + price + "\n";
 		    	//adding to menu ArrayList
 			    menu.add(new MenuItem(menu_itemID, menu_item, price));
 		    }
 	    	menu_text.setText(menu_string);
+	    	add_dish.setText("");
+	    	add_price.setText("");
         }
         catch (SQLException error) {
             // handle SQL exception
@@ -589,33 +613,36 @@ public class SceneController {
     }
     public void deleteMenuItem(MouseEvent e) throws IOException {
         try {
-        	connect();
-        	
-        	//deleting menu item in database
-        	int menu_itemID = Integer.parseInt(del_menu.getText());
-        	
+            connect();
+
+            //deleting menu item in database
+            int menu_itemID = Integer.parseInt(del_menu.getText());
+
             Statement stmt = conn.createStatement();
             String sqlStatement = "DELETE FROM menu WHERE menu_itemID=" + menu_itemID;
             stmt.executeUpdate(sqlStatement);
-            
+
             menu_string = "";
-            for(MenuItem item : menu) {
-            	if (item.getMenu_ItemID() == menu_itemID) {
-            		menu.remove(item);
-            	}
-            	else {
-                	menu_string += " " + item.getMenu_ItemID();
-    		    	for(int i = 1; i <= 3-(item.getMenu_ItemID()+"").length(); i++) {
-    		    		menu_string += " ";
-    		    	}
-    		    	menu_string += "   " + item.getMenu_Item();
-    		    	for(int i = 1; i <= 46-item.getMenu_Item().length(); i++) {
-    		    		menu_string += " ";
-    		    	}
-    		    	menu_string += "     " + item.getPrice() + "\n";
-    		    }
-    	    	menu_text.setText(menu_string);
+            int del_index = 0;
+            for(int i = 0; i < menu.size(); i++) {
+                if (menu.get(i).getMenu_ItemID() == menu_itemID) {
+                    del_index = i;
+                }
+                else {
+                    menu_string += " " + menu.get(i).getMenu_ItemID();
+                    for(int j = 1; j <= 3-(menu.get(i).getMenu_ItemID()+"").length(); j++) {
+                        menu_string += " ";
+                    }
+                    menu_string += "   " + menu.get(i).getMenu_Item();
+                    for(int j = 1; j <= 51-menu.get(i).getMenu_Item().length(); j++) {
+                        menu_string += " ";
+                    }
+                    menu_string += "     " + menu.get(i).getPrice() + "\n";
+                }
             }
+            menu_text.setText(menu_string);
+            del_menu.setText("");
+            menu.remove(del_index);
         }
         catch (SQLException error) {
             // handle SQL exception
@@ -648,12 +675,15 @@ public class SceneController {
 		    		menu_string += " ";
 		    	}
 		    	menu_string += "   " + item.getMenu_Item();
-		    	for(int i = 1; i <= 46-(item.getMenu_Item()+"").length(); i++) {
+		    	for(int i = 1; i <= 51-(item.getMenu_Item()+"").length(); i++) {
 		    		menu_string += " ";
 		    	}
-		    	menu_string += "        " + item.getPrice();
+		    	menu_string += "     " + item.getPrice() + "\n";
             }
             menu_text.setText(menu_string);
+            upd_menu.setText("");
+            upd_dish.setText("");
+            upd_price.setText("");
         }
         catch (SQLException error) {
             // handle SQL exception
@@ -752,3 +782,4 @@ public class SceneController {
 	    }
 	}
 }
+
