@@ -175,9 +175,9 @@ with open('output.sql', 'w') as sql_file:
 ]
 
     # Write CREATE TABLE statement for 'menu' table
-    sql_file.write("CREATE TABLE menu (menu_item varchar(255), ingredient varchar(255), count int);\n")
+    sql_file.write("CREATE TABLE ingredients (menu_item varchar(255), ingredient varchar(255), count int);\n")
     # Write CREATE TABLE statement for 'inventory' table
-    sql_file.write("CREATE TABLE inventory (ingredient varchar(255), amount int, capacity int);\n")
+    sql_file.write("CREATE TABLE inventory (inventoryID int,ingredient varchar(255), amount int, capacity int);\n")
 
     # Generate and write INSERT INTO statements for 'menu' table
     insert_statement = "INSERT INTO menu VALUES "
