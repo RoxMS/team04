@@ -5,7 +5,7 @@
 3.) SELECT day, month, year, SUM(sale) as total_sale FROM orders GROUP BY day, month, year ORDER BY total_sale DESC LIMIT 10;
 -- '''"2 peak days": select top 10 sums of order total grouped by day in descending order by order total -- e.g. "30 August has $123456 of sales"'''
 
-4.) SELECT menu_item, COUNT(*) AS ingredients_count FROM menu GROUP BY menu_item ORDER BY menu_item LIMIT 20;
+4.) SELECT menu_item, COUNT(*) AS ingredients_count FROM ingredients GROUP BY menu_item ORDER BY menu_item LIMIT 20;
 -- '''"Inventory items for 20 menu items": select count of inventory items from inventory and menu grouped by menu item -- e.g. "chicken fingers uses 12 items"''' -- Limiting the output to the top 20 menu items with the highest inventory items count -- Counting the occurrences of each menu item in the Inventory table -- Joining Ingredients and Inventory tables on menu_item -- Grouping the results by menu_item -- Ordering the results by inventory_items_count in descending order
 
 5.) SELECT hour, COUNT() AS total_orders FROM orders GROUP BY hour ORDER BY total_orders DESC LIMIT 10;
