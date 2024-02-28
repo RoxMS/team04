@@ -36,8 +36,7 @@
 13.) SELECT menu.menu_item, menu.ingredient, menu.count, inventory.amount, inventory.capacity FROM inventory INNER JOIN menu ON inventory.ingredient=menu.ingredient;
 --Joint table with menu ingredients having amount and capacity added
 
-14.) WITH menu_inventory AS (SELECT menu.menu_item, menu.ingredient, menu.count, inventory.amount, inventory.capacity FROM inventory INNER JOIN menu ON inventory.ingredient=menu.ingredient) SELECT ingredient, amount, (amount / count) AS burgers FROM menu_inventory WHERE menu_item='Double Stack Cheese Burger';
--- Number of Rev's Burgers that can be made out of ingredients in stock
+14.) SELECT day, SUM(sale) AS total_sale FROM orders GROUP BY day ORDER BY total_sale DESC LIMIT 10;
 
 15.)SELECT ingredient, (count * (SELECT COUNT(*) FROM ingredients WHERE menu_item = 'Double Stack Cheese Burger')) AS total_ingredients FROM ingredients WHERE menu_item = 'Double Stack Cheese Burger' GROUP BY ingredient, count;
 -- Total ingredient items for a Double Stack Cheese Burger --
