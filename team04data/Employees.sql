@@ -1,16 +1,21 @@
 CREATE TABLE Employees (
-    name TEXT,
-    id INT,
-    status TEXT
+    employeeID SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    status VARCHAR(255)
 );
 
-INSERT INTO Employees (name, id, status) VALUES ('David Wilson', 1784, 'manager');
-INSERT INTO Employees (name, id, status) VALUES ('Grace Wilson', 1737, 'manager');
-INSERT INTO Employees (name, id, status) VALUES ('David Davis', 9896, 'employee');
-INSERT INTO Employees (name, id, status) VALUES ('Eva Williams', 2560, 'employee');
-INSERT INTO Employees (name, id, status) VALUES ('Grace Williams', 2630, 'employee');
-INSERT INTO Employees (name, id, status) VALUES ('David Moore', 7725, 'employee');
-INSERT INTO Employees (name, id, status) VALUES ('Alice Williams', 2497, 'employee');
-INSERT INTO Employees (name, id, status) VALUES ('David Smith', 7042, 'employee');
-INSERT INTO Employees (name, id, status) VALUES ('Charlie Brown', 9043, 'employee');
-INSERT INTO Employees (name, id, status) VALUES ('Alice Jones', 1119, 'manager');
+INSERT INTO Employees (name, status) VALUES ('David Taylor', 'employee');
+INSERT INTO Employees (name, status) VALUES ('Jane Miller', 'manager');
+INSERT INTO Employees (name, status) VALUES ('Bob Wilson', 'employee');
+INSERT INTO Employees (name, status) VALUES ('John Johnson', 'manager');
+INSERT INTO Employees (name, status) VALUES ('John Taylor', 'employee');
+INSERT INTO Employees (name, status) VALUES ('David Miller',  'manager');
+INSERT INTO Employees (name, status) VALUES ('Frank Williams',  'manager');
+INSERT INTO Employees (name, status) VALUES ('Henry Brown',  'employee');
+INSERT INTO Employees (name, status) VALUES ('Alice Wilson',  'employee');
+INSERT INTO Employees (name, status) VALUES ('Grace Jones',  'manager');
+INSERT INTO Employees (name, status) VALUES ('Bob Williams',  'employee');
+INSERT INTO Employees (name, status) VALUES ('Grace Jones',  'employee');
+INSERT INTO Employees (name, status) VALUES ('Charlie Davis',  'manager');
+INSERT INTO Employees (name, status) VALUES ('Eva Smith',  'manager');
+INSERT INTO Employees (name, status) VALUES ('Jane Williams', 'manager');
