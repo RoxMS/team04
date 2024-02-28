@@ -8,7 +8,7 @@
 4.) SELECT menu_item, COUNT(*) AS ingredients_count FROM ingredients GROUP BY menu_item ORDER BY menu_item LIMIT 20;
 -- '''"Inventory items for 20 menu items": select count of inventory items from inventory and menu grouped by menu item -- e.g. "chicken fingers uses 12 items"''' -- Limiting the output to the top 20 menu items with the highest inventory items count -- Counting the occurrences of each menu item in the Inventory table -- Joining Ingredients and Inventory tables on menu_item -- Grouping the results by menu_item -- Ordering the results by inventory_items_count in descending order
 
-5.) SELECT hour, COUNT() AS total_orders FROM orders GROUP BY hour ORDER BY total_orders DESC LIMIT 10;
+5.) SELECT hour, COUNT(*) AS total_orders FROM orders GROUP BY hour ORDER BY total_orders DESC LIMIT 10;
 -- '''"Top 10 Busiest Hours of the Day": select count of orders grouped by hour of the day -- e.g. "The top selling hour was 2pm"'''
 --this selects the hour column from the orders table --the COUNT() function calculates the total rows for each hour and assigns it to total_orders --gets those values from the orders table --groups the total_orders by each hour --order table results in descending order -- Limiting the output to the top 10
 
