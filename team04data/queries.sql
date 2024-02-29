@@ -37,6 +37,7 @@
 --Joint table with menu ingredients having amount and capacity added
 
 14. SELECT day, SUM(sale) AS total_sale FROM orders GROUP BY day ORDER BY total_sale DESC LIMIT 10;
+-- The total sales for each day from the "orders" table, orders them in descending order of total sales, and displays only the top 10 days with the highest total sales.
 
 15. SELECT ingredient, (count * (SELECT COUNT(*) FROM ingredients WHERE menu_item = 'Double Stack Cheese Burger')) AS total_ingredients FROM ingredients WHERE menu_item = 'Double Stack Cheese Burger' GROUP BY ingredient, count;
 -- Total ingredient items for a Double Stack Cheese Burger --
