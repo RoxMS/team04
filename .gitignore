@@ -3,6 +3,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 javafx-sdk-21.0.2
+postgresql-42.7.2.jar
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
