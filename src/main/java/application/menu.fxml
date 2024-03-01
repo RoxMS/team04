@@ -27,7 +27,7 @@
                     <SplitPane fx:id="Double_Stack_Cheese_Burger" dividerPositions="0.8" layoutX="317.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                             <ImageView fitHeight="150.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="images/double_steak_cheese_burger.png" />
+                                <Image url="@../application/images/double_steak_cheese_burger.png" />
                             </ImageView>
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
