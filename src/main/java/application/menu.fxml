@@ -17,7 +17,7 @@
                     <SplitPane fx:id="Revs_Burger" dividerPositions="0.8" layoutX="47.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                             <ImageView fitHeight="140.0" fitWidth="210.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
-                                <Image url="images/revs_burger.png" />
+                                <Image url="@../application/images/revs_burger.png"/>
                             </ImageView>
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
