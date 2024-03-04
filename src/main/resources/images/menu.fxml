@@ -435,4 +435,5 @@
    <TextField fx:id="upd_total" layoutX="794.0" layoutY="535.0" promptText="total" />
    <TextField fx:id="del_ord" layoutX="115.0" layoutY="494.0" promptText="number" />
    <TextField fx:id="upd_food" layoutX="298.0" layoutY="535.0" prefHeight="25.0" prefWidth="465.0" promptText="order" />
+   <Button fx:id="loginScreen" layoutX="851.0" layoutY="494.0" mnemonicParsing="false" text="Sign Out" />
 </AnchorPane>
