@@ -206,35 +206,6 @@ public class SceneController {
             error.printStackTrace();
             System.err.println(error.getClass().getName()+": "+error.getMessage());
         }
-        try {
-            // Prepare SQL query to fetch the most recent thirty orders
-            String sqlStatement = "SELECT * FROM orders ORDER BY order_date DESC LIMIT 30";
-            PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
-
-            // Execute query
-            ResultSet result = stmt.executeQuery();
-
-            // Process results and update UI
-            while (result.next()) {
-                // Process each order and update UI accordingly
-                // For example, you can extract order details like order ID, date, total amount, etc.
-                int orderId = result.getInt("order_id");
-                Date orderDate = result.getDate("order_date");
-                float totalAmount = result.getFloat("total_amount");
-
-                // Update UI to display the order details
-                // You can append this information to your sales_text or display in a different UI component
-                this.sales_string += "Order ID: " + orderId + ", Date: " + orderDate + ", Total Amount: " + totalAmount + "\n";
-            }
-
-            // Close resources
-            result.close();
-            stmt.close();
-        }
-        catch (Exception error) {
-            error.printStackTrace();
-            System.err.println(error.getClass().getName()+": "+error.getMessage());
-        }
 
         close();
     }
