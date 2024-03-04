@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.time.LocalDateTime;
 
 import java.sql.*;
+import java.util.List;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,8 +23,8 @@ public class SceneController {
     private Connection conn = null;
 
     public static ArrayList<Order> orders = new ArrayList<>();
-    @FXML private TableView<Misc> misc_list = new TableView<Misc>();
-    @FXML private TableColumn misc_col = new TableColumn("Menu Item");
+    @FXML private TableView<Misc> misc_list;
+    @FXML private TableColumn<Misc, String> misc_col;
 
 
     String orders_string = "";
@@ -340,23 +341,23 @@ public class SceneController {
         }
     }
     public void listMiscMenuItems(MouseEvent e) {
-
         try {
-            misc_col.setCellValueFactory(new PropertyValueFactory<>("menu_item"));
-            misc_list.getColumns().addAll(misc_col);
+            misc_col.setCellValueFactory(new PropertyValueFactory<Misc, String>("menuitem"));
+            misc_list.setVisible(true);
 
+            List<Misc> list = new ArrayList<Misc>();
             this.connect();
             String sqlStatement = "SELECT menu_item FROM menu WHERE menu_itemid > 29";
             PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
             ResultSet result = stmt.executeQuery();
 
             while (result.next()) {
-                int menuItemId = result.getInt("menu_itemid");
                 String menuItem = result.getString("menu_item");
-                float price = result.getFloat("price");
 
-                misc_list.getItems().add(new Misc(menuItem));
+                list.add(new Misc(menuItem));
             }
+
+            misc_list.getItems().setAll(list);
 
         } catch (Exception error) {
             orders_warning.setText("Unable to load items.");
@@ -364,7 +365,7 @@ public class SceneController {
     }
 
     public void addMiscItem(MouseEvent e) {
-        String name = misc_list.getSelectionModel().getSelectedItem().getMenu_Item();
+        String name = misc_list.getSelectionModel().getSelectedItem().getMenuitem();
 
         connect();
 
@@ -921,6 +922,7 @@ public class SceneController {
         try {
             if (orders.isEmpty()) {
                 orders_warning.setText("Must have at least one order before tender.");
+                return;
             }
             this.connect();
             LocalDateTime currentTime = LocalDateTime.now();
@@ -972,7 +974,8 @@ public class SceneController {
 
                 // Print and execute SQL statement
                 System.out.println(menuItem + ", " + price);
-                String sqlStatement = "INSERT INTO orders VALUES ('" + hour + "', " + day + ", " + week + ", " + month + ", " + year + ", '" + menuItem + "', " + price + ", " + orderID + ")";
+                // String sqlStatement = "INSERT INTO orders VALUES ('" + hour + "', " + day + ", " + week + ", " + month + ", " + year + ", '" + menuItem + "', " + price + ", " + orderID + ")";
+                String sqlStatement = "INSERT INTO orders VALUES (" + orderID + ", '" + hour + "', " + day + ", " + week + ", " + month + ", " + year + ", '" + menuItem + "', " + price + ")";
                 stmt.executeUpdate(sqlStatement);
             }
 
@@ -980,7 +983,10 @@ public class SceneController {
             orders.clear();
             this.count = 1;
 
-        } catch (SQLException error) {
+            orders_text.setText("");
+            orders_warning.setText("");
+        }
+        catch (SQLException error) {
             error.printStackTrace();
         } finally {
             this.close();
