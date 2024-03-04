@@ -405,7 +405,7 @@
                                      <TableColumn fx:id="misc_col" prefWidth="552.0000038146973" text="Menu Item" />
                                    </columns>
                                  </TableView>
-                                 <Button fx:id="listMiscMenuItems" layoutY="2.0" mnemonicParsing="false" text="Load" />
+                                 <Button fx:id="listMiscMenuItems" layoutY="2.0" mnemonicParsing="false" onAction="#listMiscMenuItems" text="Load" />
                               </children>
                            </AnchorPane>
                        </content>
