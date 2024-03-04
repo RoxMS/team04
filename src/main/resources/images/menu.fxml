@@ -398,7 +398,11 @@
                        <content>
                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="745.0" prefWidth="578.0">
                               <children>
-                                 <Label layoutY="1.0" prefHeight="42.0" prefWidth="572.0" text="Label" />
+                                 <Label layoutY="1.0" prefHeight="600.0" prefWidth="572.0">
+                                    <font>
+                                       <Font name="Monospaced Regular" size="15.0" />
+                                    </font>
+                                 </Label>
                               </children>
                            </AnchorPane>
                        </content>
