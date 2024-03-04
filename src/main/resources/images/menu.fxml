@@ -6,6 +6,8 @@
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -398,11 +400,12 @@
                        <content>
                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="745.0" prefWidth="578.0">
                               <children>
-                                 <Label layoutY="1.0" prefHeight="600.0" prefWidth="572.0">
-                                    <font>
-                                       <Font name="Monospaced Regular" size="15.0" />
-                                    </font>
-                                 </Label>
+                                 <TableView fx:id="misc_list" layoutY="27.0" prefHeight="401.0" prefWidth="553.0">
+                                   <columns>
+                                     <TableColumn fx:id="misc_col" prefWidth="552.0000038146973" text="Menu Item" />
+                                   </columns>
+                                 </TableView>
+                                 <Button fx:id="listMiscMenuItems" layoutY="2.0" mnemonicParsing="false" text="Load" />
                               </children>
                            </AnchorPane>
                        </content>
@@ -414,7 +417,7 @@
       </TabPane>
       <AnchorPane prefHeight="470.0" prefWidth="241.0">
          <Button layoutX="86.0" layoutY="429.0" mnemonicParsing="false" onMouseClicked="#tender" prefHeight="25.0" prefWidth="212.0" text="Tender" />
-         <Label fx:id="orders_text" alignment="TOP_LEFT" layoutY="38.0" prefHeight="391.0" prefWidth="384.0">
+         <Label fx:id="menuItem" alignment="TOP_LEFT" layoutY="38.0" prefHeight="391.0" prefWidth="384.0">
             <font>
                <Font name="Monospaced Regular" size="12.0" />
             </font></Label>

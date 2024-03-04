@@ -2,7 +2,7 @@ package application;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+
 import java.time.LocalDateTime;
 
 import java.sql.*;
@@ -14,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.*;
 import javafx.scene.input.MouseEvent;
 
 public class SceneController {
@@ -21,6 +22,9 @@ public class SceneController {
     private Connection conn = null;
 
     public static ArrayList<Order> orders = new ArrayList<>();
+    @FXML private TableView<Misc> misc_list = new TableView<Misc>();
+    @FXML private TableColumn misc_col = new TableColumn("Menu Item");
+
 
     String orders_string = "";
     String sales_string = "";
@@ -333,6 +337,55 @@ public class SceneController {
         catch(Exception error) {
             error.printStackTrace();
             System.err.println(error.getClass().getName()+": "+error.getMessage());
+        }
+    }
+    public void listMiscMenuItems(MouseEvent e) {
+
+        try {
+            misc_col.setCellValueFactory(new PropertyValueFactory<>("menu_item"));
+            misc_list.getColumns().addAll(misc_col);
+
+            this.connect();
+            String sqlStatement = "SELECT menu_item FROM menu WHERE menu_itemid > 29";
+            PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
+            ResultSet result = stmt.executeQuery();
+
+            while (result.next()) {
+                int menuItemId = result.getInt("menu_itemid");
+                String menuItem = result.getString("menu_item");
+                float price = result.getFloat("price");
+
+                misc_list.getItems().add(new Misc(menuItem));
+            }
+
+        } catch (Exception error) {
+            orders_warning.setText("Unable to load items.");
+        }
+    }
+
+    public void addMiscItem(MouseEvent e) {
+        String name = misc_list.getSelectionModel().getSelectedItem().getMenu_Item();
+
+        connect();
+
+        //querying the database for price
+        try {
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT price FROM menu WHERE menu_item='" + name + "' LIMIT 1";
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            while (result.next()) {
+                float price = result.getFloat("price");
+                orders_string += "  " + count + "   " + name;
+                for(int i = 1; i <= 41-name.length(); i++) {
+                    orders_string += " ";
+                }
+                orders_string += "$" + price + "\n";
+                orders_text.setText(orders_string);
+                orders.add(new Order(count, name, price));
+                count += 1;
+            }
+        } catch(Exception error) {
+            orders_warning.setText("Unable to add item.");
         }
     }
 
@@ -803,14 +856,14 @@ public class SceneController {
             int year = Integer.parseInt(del_yr.getText());
 
             Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT menu_item FROM orders WHERE orderID=" + orderID + ", hour=" + hour + ", day=" + day + ", month=" + month + ", week=" + week + ", year=" + year;
+            String sqlStatement = "SELECT menu_item FROM orders WHERE orderID=" + orderID + " AND hour='" + hour + "' AND day=" + day + " AND month=" + month + " AND week=" + week + " AND year=" + year;
             ResultSet result = stmt.executeQuery(sqlStatement);
             if (!result.next()) {
-                history_warning.setText("There is no menu history item with the input date and order ID.");
+                history_warning.setText("There is no order item with the input date and order ID.");
                 return;
             }
 
-            sqlStatement = "DELETE FROM orders WHERE orderID=" + orderID + ", hour=" + hour + ", day=" + day + ", month=" + month + ", week=" + week + ", year=" + year;
+            sqlStatement = "DELETE FROM orders WHERE orderID=" + orderID + " AND hour='" + hour + "' AND day=" + day + " AND month=" + month + " AND week=" + week + " AND year=" + year;
             stmt.executeUpdate(sqlStatement);
 
             loadOrderHistoryTable();
@@ -837,7 +890,7 @@ public class SceneController {
             float sale = Float.parseFloat(upd_sale.getText());
 
             Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT menu_item FROM orders WHERE orderID=" + orderID + ", hour=" + hour + ", day=" + day + ", month=" + month + ", week=" + week + ", year=" + year;
+            String sqlStatement = "SELECT menu_item FROM orders WHERE orderID=" + orderID + " AND hour='" + hour + "' AND day=" + day + " AND month=" + month + " AND week=" + week + " AND year=" + year;
             ResultSet result = stmt.executeQuery(sqlStatement);
             if (!result.next()) {
                 history_warning.setText("There is no menu item with the input date and order ID.");
@@ -850,7 +903,7 @@ public class SceneController {
             }
 
             stmt = conn.createStatement();
-            sqlStatement = "UPDATE orders SET menu_item='" + menu_item + "', sale=" + sale + " WHERE orderID=" + orderID + ", hour=" + hour + ", day=" + day + ", month=" + month + ", week=" + week + ", year=" + year;
+            sqlStatement = "UPDATE orders SET menu_item='" + menu_item + "', sale=" + sale + " WHERE orderID=" + orderID + " AND hour='" + hour + "' AND day=" + day + " AND month=" + month + " AND week=" + week + " AND year=" + year;
             stmt.executeUpdate(sqlStatement);
 
             loadOrderHistoryTable();
@@ -866,6 +919,9 @@ public class SceneController {
 
     public void tender(MouseEvent e) {
         try {
+            if (orders.isEmpty()) {
+                orders_warning.setText("Must have at least one order before tender.");
+            }
             this.connect();
             LocalDateTime currentTime = LocalDateTime.now();
             int year = currentTime.getYear();
@@ -901,10 +957,9 @@ public class SceneController {
                 var17.printStackTrace();
             }
 
-            Iterator<Order> iterator = orders.iterator();
 
-            while (iterator.hasNext()) {
-                Order order = iterator.next();
+            for (int i = 0; i < orders.size(); i++) {
+                Order order = orders.get(i);
                 String menuItem = order.getMenuItem();
                 float price = order.getPrice();
 
@@ -931,9 +986,6 @@ public class SceneController {
             this.close();
         }
     }
-
-
-
 
     private boolean checkInventory(String menuItem) throws SQLException {
         String sqlStatement = "SELECT i.inventoryid, i.amount AS inventory_amount, t.count AS required_count " +
