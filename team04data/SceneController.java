@@ -14,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.*;
 import javafx.scene.input.MouseEvent;
 
 public class SceneController {
@@ -21,7 +22,9 @@ public class SceneController {
     private Connection conn = null;
 
     public static ArrayList<Order> orders = new ArrayList<>();
-    public static ArrayList<MenuItem> misc = new ArrayList<>();
+    @FXML private TableView<Misc> misc_list = new TableView<Misc>();
+    @FXML private TableColumn misc_col = new TableColumn("Menu Item");
+
 
     String orders_string = "";
     String sales_string = "";
@@ -336,76 +339,83 @@ public class SceneController {
             System.err.println(error.getClass().getName()+": "+error.getMessage());
         }
     }
+    public void listMiscMenuItems(MouseEvent e) {
 
-    public void addOrderItem(MouseEvent e) {
-    // Getting name of menu item
-    String name = ((Node) e.getSource()).getId();
-    name = name.replaceAll("_", " ");
+        try {
+            misc_col.setCellValueFactory(new PropertyValueFactory<>("menu_item"));
+            misc_list.getColumns().addAll(misc_col);
 
-    connect();
+            this.connect();
+            String sqlStatement = "SELECT menu_item FROM menu WHERE menu_itemid > 29";
+            PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
+            ResultSet result = stmt.executeQuery();
 
-    // Querying the database for price
-    try {
-        Statement stmt = conn.createStatement();
-        String sqlStatement = "SELECT price FROM menu WHERE menu_item='" + name + "' LIMIT 1";
-        ResultSet result = stmt.executeQuery(sqlStatement);
-        while (result.next()) {
-            float price = result.getFloat("price");
-            // Check inventory before adding the item to the order
-            if (checkInventory(name)) {
-                // If inventory is sufficient, add the item to the order
+            while (result.next()) {
+                int menuItemId = result.getInt("menu_itemid");
+                String menuItem = result.getString("menu_item");
+                float price = result.getFloat("price");
+
+                misc_list.getItems().add(new Misc(menuItem));
+            }
+
+        } catch (Exception error) {
+            orders_warning.setText("Unable to load items.");
+        }
+    }
+
+    public void addMiscItem(MouseEvent e) {
+        String name = misc_list.getSelectionModel().getSelectedItem().getMenu_Item();
+
+        connect();
+
+        //querying the database for price
+        try {
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT price FROM menu WHERE menu_item='" + name + "' LIMIT 1";
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            while (result.next()) {
+                float price = result.getFloat("price");
                 orders_string += "  " + count + "   " + name;
-                for (int i = 1; i <= 41 - name.length(); i++) {
+                for(int i = 1; i <= 41-name.length(); i++) {
                     orders_string += " ";
                 }
                 orders_string += "$" + price + "\n";
                 orders_text.setText(orders_string);
                 orders.add(new Order(count, name, price));
                 count += 1;
-            } else {
-                // If inventory is insufficient, display a warning
-                orders_warning.setText("Insufficient inventory for item: " + name);
             }
+        } catch(Exception error) {
+            orders_warning.setText("Unable to add item.");
         }
-    } catch (Exception error) {
-        orders_warning.setText("Unable to add item inventory too low.");
     }
-}
 
+    public void addOrderItem(MouseEvent e) {
+        //getting name of menu item
+        String name = ((Node)e.getSource()).getId();
+        name = name.replaceAll("_", " ");
 
-     private boolean checkInventory(String menuItem) throws SQLException {
-        String sqlStatement = "SELECT i.inventoryid, i.amount AS inventory_amount, t.count AS required_count " +
-                "FROM ingredients t " +
-                "JOIN inventory i ON t.ingredient = i.ingredient " +
-                "WHERE t.menu_item = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sqlStatement)) {
-            stmt.setString(1, menuItem);
-            ResultSet result = stmt.executeQuery();
-            if (result.next()) {
-                int inventoryId = result.getInt("inventoryid");
-                int inventoryAmount = result.getInt("inventory_amount");
-                int requiredCount = result.getInt("required_count");
-                // Calculate the available inventory after deducting the required count
-                int availableInventory = inventoryAmount - requiredCount;
-                if (availableInventory >= 0) {
-                    // Update the inventory amount in the database
-                    String updateStatement = "UPDATE inventory SET amount = ? WHERE inventoryid = ?";
-                    try (PreparedStatement updateStmt = conn.prepareStatement(updateStatement)) {
-                        updateStmt.setInt(1, availableInventory);
-                        updateStmt.setInt(2, inventoryId);
-                        updateStmt.executeUpdate();
-                    }
-                    return true;
-                } else {
-                    // If available inventory is less than zero, return false
-                    return false;
+        connect();
+
+        //querying the database for price
+        try {
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT price FROM menu WHERE menu_item='" + name + "' LIMIT 1";
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            while (result.next()) {
+                float price = result.getFloat("price");
+                orders_string += "  " + count + "   " + name;
+                for(int i = 1; i <= 41-name.length(); i++) {
+                    orders_string += " ";
                 }
+                orders_string += "$" + price + "\n";
+                orders_text.setText(orders_string);
+                orders.add(new Order(count, name, price));
+                count += 1;
             }
+        } catch(Exception error) {
+            orders_warning.setText("Unable to add item.");
         }
-        // If the ingredient is not found, or there was an error, return false
-        return false;
     }
-
     public void deleteOrderItem(MouseEvent e) throws IOException {
         //deleting menu item from orders array
         int orderID = Integer.parseInt(del_ord.getText());
@@ -954,11 +964,11 @@ public class SceneController {
                 float price = order.getPrice();
 
                 // Check inventory before adding sale
-                /*if (!checkInventory(menuItem)) {
+                if (!checkInventory(menuItem)) {
                     // If inventory is below zero, display warning message
                     orders_warning.setText("Inventory for item " + menuItem + " is below zero.");
                     continue; // Skip processing this order
-                }*/
+                }
 
                 // Print and execute SQL statement
                 System.out.println(menuItem + ", " + price);
@@ -977,7 +987,39 @@ public class SceneController {
         }
     }
 
-   
+    private boolean checkInventory(String menuItem) throws SQLException {
+        String sqlStatement = "SELECT i.inventoryid, i.amount AS inventory_amount, t.count AS required_count " +
+                "FROM ingredients t " +
+                "JOIN inventory i ON t.ingredient = i.ingredient " +
+                "WHERE t.menu_item = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sqlStatement)) {
+            stmt.setString(1, menuItem);
+            ResultSet result = stmt.executeQuery();
+            if (result.next()) {
+                int inventoryId = result.getInt("inventoryid");
+                int inventoryAmount = result.getInt("inventory_amount");
+                int requiredCount = result.getInt("required_count");
+                // Calculate the available inventory after deducting the required count
+                int availableInventory = inventoryAmount - requiredCount;
+                if (availableInventory >= 0) {
+                    // Update the inventory amount in the database
+                    String updateStatement = "UPDATE inventory SET amount = ? WHERE inventoryid = ?";
+                    try (PreparedStatement updateStmt = conn.prepareStatement(updateStatement)) {
+                        updateStmt.setInt(1, availableInventory);
+                        updateStmt.setInt(2, inventoryId);
+                        updateStmt.executeUpdate();
+                    }
+                    return true;
+                } else {
+                    // If available inventory is less than zero, return false
+                    return false;
+                }
+            }
+        }
+        // If the ingredient is not found, or there was an error, return false
+        return false;
+    }
+
     public void connect() {
         //setting up database
         String database_name = "csce331_903_04_db";
