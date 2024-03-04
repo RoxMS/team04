@@ -909,8 +909,9 @@ public class SceneController {
 
                 // Check inventory before adding sale
                 if (!checkInventory(menuItem)) {
-                    // If inventory is below zero, throw an error
-                    throw new IOException("Inventory for item " + menuItem + " is below zero.");
+                    // If inventory is below zero, display warning message
+                    orders_warning.setText("Inventory for item " + menuItem + " is below zero.");
+                    continue; // Skip processing this order
                 }
 
                 // Print and execute SQL statement
@@ -929,6 +930,7 @@ public class SceneController {
             this.close();
         }
     }
+
 
     private boolean checkInventory(String menuItem) throws SQLException {
         String sqlStatement = "SELECT i.inventoryid, i.amount AS inventory_amount, t.count AS required_count " +
