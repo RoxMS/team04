@@ -954,11 +954,11 @@ public class SceneController {
                 float price = order.getPrice();
 
                 // Check inventory before adding sale
-                if (!checkInventory(menuItem)) {
+                /*if (!checkInventory(menuItem)) {
                     // If inventory is below zero, display warning message
                     orders_warning.setText("Inventory for item " + menuItem + " is below zero.");
                     continue; // Skip processing this order
-                }
+                }*/
 
                 // Print and execute SQL statement
                 System.out.println(menuItem + ", " + price);
