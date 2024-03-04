@@ -1,4 +1,4 @@
-package application.revs_pos_331;
+package application;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -864,28 +864,29 @@ public class SceneController {
         close();
     }
 
-    public void tender(MouseEvent e) throws IOException {
+    public void tender(MouseEvent e) {
         try {
             this.connect();
             LocalDateTime currentTime = LocalDateTime.now();
             int year = currentTime.getYear();
             int month = currentTime.getMonthValue();
             int day = currentTime.getDayOfMonth();
+
+            // Determine the hour in 24-hour format
             int military = currentTime.getHour();
-            String period;
-            if (military >= 12) {
-                period = "PM";
-                if (military > 12) {
-                    military -= 12;
-                }
+            String period = (military >= 12) ? "PM" : "AM";
+            String hour;
+            if (military > 12) {
+                hour = String.format("%02d", military - 12); // Convert to 12-hour format
+            } else if (military == 0) {
+                hour = "12"; // Midnight
             } else {
-                period = "AM";
-                if (military == 0) {
-                    military = 12;
-                }
+                hour = String.format("%02d", military); // Keep in 24-hour format
             }
 
-            String hour = "" + military + period;
+            // Construct the complete hour string
+            hour = hour + ":00 " + period;
+
             int week = 105;
             Statement stmt = this.conn.createStatement();
             int orderID = 1;
@@ -894,7 +895,7 @@ public class SceneController {
                 System.out.println("made it");
                 String sqlQuery = "SELECT MAX(orderID) AS max_order FROM orders WHERE week = 0 AND day = 27";
 
-                for(ResultSet result = stmt.executeQuery(sqlQuery); result.next(); orderID = result.getInt("max_order")) {
+                for (ResultSet result = stmt.executeQuery(sqlQuery); result.next(); orderID = result.getInt("max_order")) {
                 }
             } catch (SQLException var17) {
                 var17.printStackTrace();
@@ -902,7 +903,7 @@ public class SceneController {
 
             Iterator<Order> iterator = orders.iterator();
 
-            while(iterator.hasNext()) {
+            while (iterator.hasNext()) {
                 Order order = iterator.next();
                 String menuItem = order.getMenuItem();
                 float price = order.getPrice();
@@ -924,12 +925,14 @@ public class SceneController {
             orders.clear();
             this.count = 1;
 
-        } catch (SQLException | IOException var18) {
-            var18.printStackTrace();
+        } catch (SQLException error) {
+            error.printStackTrace();
         } finally {
             this.close();
         }
     }
+
+
 
 
     private boolean checkInventory(String menuItem) throws SQLException {
