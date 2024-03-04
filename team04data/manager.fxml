@@ -426,4 +426,5 @@
     <Line endX="75.0" endY="25.0" layoutX="-75.0" layoutY="-25.0" startX="74.99998474121094" startY="497.0" stroke="#590404" strokeWidth="15.0" />
     <Line endX="682.3933715820312" layoutX="101.0" layoutY="483.0" startX="-100.0" stroke="#590404" strokeWidth="15.0" />
     <Line endX="143.23297119140625" endY="94.00000762939453" layoutX="640.0" layoutY="-94.0" startX="143.23297119140625" startY="569.5" stroke="#590404" strokeWidth="15.0" />
+    <Button contentDisplay="CENTER" layoutX="569.0" layoutY="6.0" mnemonicParsing="false" onAction="#loginScreen" style="-fx-background-color: #fcba03; -fx-font-weight: bold;" text="SIGN OUT" />
 </AnchorPane>
