@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -391,7 +392,19 @@
             </content></Tab>
          <Tab style="-fx-background-color: #fcba03;" text="MISCELLANEOUS">
            <content>
-             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="433.0" prefWidth="568.0">
+                  <children>
+                     <ScrollPane layoutX="11.0" layoutY="1.0" prefHeight="436.0" prefWidth="569.0">
+                       <content>
+                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="745.0" prefWidth="578.0">
+                              <children>
+                                 <Label layoutY="1.0" prefHeight="42.0" prefWidth="572.0" text="Label" />
+                              </children>
+                           </AnchorPane>
+                       </content>
+                     </ScrollPane>
+                  </children>
+               </AnchorPane>
            </content>
          </Tab>
       </TabPane>
