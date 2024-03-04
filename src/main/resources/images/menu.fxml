@@ -2,12 +2,9 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -16,7 +13,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SceneController">
+<AnchorPane id="orders_warning" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.revs_pos_331.SceneController">
    <SplitPane dividerPositions="0.7319148936170212" prefHeight="472.0" prefWidth="979.0">
       <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="470.0" prefWidth="580.0" tabClosingPolicy="UNAVAILABLE">
          <Tab style="-fx-background-color: #fcba03;" text="BURGER">
@@ -24,7 +21,7 @@
                <SplitPane fx:id="Revs_Burger" dividerPositions="0.8" layoutX="47.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="140.0" fitWidth="210.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/revs_burger.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/revs_burger.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -34,7 +31,7 @@
                <SplitPane fx:id="Double_Stack_Cheese_Burger" dividerPositions="0.8" layoutX="317.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="150.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/double_steak_cheese_burger.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/double_steak_cheese_burger.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -44,7 +41,7 @@
                <SplitPane fx:id="Classic_Burger" dividerPositions="0.8" layoutX="47.0" layoutY="234.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="148.0" fitWidth="233.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/classic_burger.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/classic_burger.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -54,7 +51,7 @@
                <SplitPane fx:id="Bacon_Chesseburger" dividerPositions="0.8" layoutX="317.0" layoutY="234.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="146.0" fitWidth="226.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/bacon_cheeseburger.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/bacon_cheeseburger.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -68,7 +65,7 @@
                <SplitPane fx:id="Three_Tender_Basket" dividerPositions="0.8" layoutX="48.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="135.0" fitWidth="233.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/three_tender_basket.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/three_tender_basket.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -78,7 +75,7 @@
                <SplitPane fx:id="Four_Steak_Finger_Basket" dividerPositions="0.8" layoutX="319.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="144.0" fitWidth="219.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/four_steak_finger_basket.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/four_steak_finger_basket.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -92,7 +89,7 @@
                <SplitPane fx:id="Gig_Em_Patty_Melt" dividerPositions="0.8" layoutX="47.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="151.0" fitWidth="212.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/gigem_patty_melt.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/gigem_patty_melt.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -102,7 +99,7 @@
                <SplitPane fx:id="Howdy_Spicy_Ranch_Chicken_Strip_Sandwich" dividerPositions="0.6845238095238095" layoutX="317.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="150.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/howdy_spicy_ranch_chicken_sandwich.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/howdy_spicy_ranch_chicken_sandwich.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -112,7 +109,7 @@
                <SplitPane fx:id="Classic_Crispy_or_Grilled_Chicken_Tender_Sandwich" dividerPositions="0.6785714285714286" layoutX="47.0" layoutY="233.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="153.0" fitWidth="212.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/grilled_chicken_tender_sandwich.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/grilled_chicken_tender_sandwich.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -122,7 +119,7 @@
                <SplitPane fx:id="Grilled_Cheese" dividerPositions="0.8" layoutX="317.0" layoutY="233.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="146.0" fitWidth="226.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/grilled_cheese.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/grilled_cheese.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -136,7 +133,7 @@
                <SplitPane fx:id="Seasoned_Fries" dividerPositions="0.8" layoutX="45.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="140.0" fitWidth="210.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/seasoned_fries.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/seasoned_fries.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -146,7 +143,7 @@
                <SplitPane fx:id="Tater_Tots" dividerPositions="0.8" layoutX="314.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="150.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/tator_tots.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/tator_tots.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -156,7 +153,7 @@
                <SplitPane fx:id="Onion_Rings" dividerPositions="0.8" layoutX="45.0" layoutY="235.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="151.0" fitWidth="212.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/onion_rings.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/onion_rings.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -166,7 +163,7 @@
                <SplitPane fx:id="Kettle_Chips" dividerPositions="0.8" layoutX="314.0" layoutY="235.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="146.0" fitWidth="226.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/kettle_chips.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/kettle_chips.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -180,7 +177,7 @@
                <SplitPane fx:id="Aggie_Shake" dividerPositions="0.8" layoutX="48.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="144.0" fitWidth="212.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/aggie_shake.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/aggie_shake.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -190,7 +187,7 @@
                <SplitPane fx:id="Double_Scoop_Ice_Cream_Cup" dividerPositions="0.8" layoutX="312.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="145.0" fitWidth="233.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/double_scoop_ice_cream_cup.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/double_scoop_ice_cream_cup.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -200,7 +197,7 @@
                <SplitPane fx:id="Chocolate_Chip_Chunk_Cookie" dividerPositions="0.6607142857142857" layoutX="48.0" layoutY="232.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="139.0" fitWidth="243.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/chocolate_chip_chunk_cookie.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/chocolate_chip_chunk_cookie.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -210,7 +207,7 @@
                <SplitPane fx:id="Chocolate_Fudge_Brownie" dividerPositions="0.8" layoutX="312.0" layoutY="232.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="146.0" fitWidth="226.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/chocolate_fudge_brownie.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/chocolate_fudge_brownie.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -224,7 +221,7 @@
                <SplitPane fx:id="Fountain_Drink" dividerPositions="0.8" layoutX="48.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="140.0" fitWidth="210.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/fountain_drink.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/fountain_drink.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -234,7 +231,7 @@
                <SplitPane fx:id="Drip_Coffee" dividerPositions="0.8" layoutX="314.0" layoutY="35.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="150.0" fitWidth="219.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/drip_coffee.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/drip_coffee.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -244,7 +241,7 @@
                <SplitPane fx:id="Cold_Brew" dividerPositions="0.8035714285714286" layoutX="48.0" layoutY="229.0" onMouseClicked="#addOrderItem" orientation="VERTICAL" prefHeight="170.0" prefWidth="210.0">
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="208.0">
                      <ImageView fitHeight="148.0" fitWidth="233.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/cold_brew.png" />
+                        <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/cold_brew.png" />
                      </ImageView>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="158.0">
@@ -262,7 +259,7 @@
                            <children>
                               <ImageView fitHeight="121.0" fitWidth="256.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/gigem_sauce.png" />
+                                    <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/gigem_sauce.png" />
                                  </image>
                               </ImageView>
                            </children>
@@ -280,7 +277,7 @@
                            <children>
                               <ImageView fitHeight="101.0" fitWidth="219.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/buffalo.png" />
+                                    <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/buffalo.png" />
                                  </image>
                               </ImageView>
                            </children>
@@ -298,7 +295,7 @@
                            <children>
                               <ImageView fitHeight="92.0" fitWidth="205.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/ranch.png" />
+                                    <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/ranch.png" />
                                  </image>
                               </ImageView>
                            </children>
@@ -316,7 +313,7 @@
                            <children>
                               <ImageView fitHeight="100.0" fitWidth="219.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/bbq_sauce.png" />
+                                    <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/bbq_sauce.png" />
                                  </image>
                               </ImageView>
                            </children>
@@ -334,7 +331,7 @@
                            <children>
                               <ImageView fitHeight="116.0" fitWidth="205.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/honey_mustard.png" />
+                                    <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/honey_mustard.png" />
                                  </image>
                               </ImageView>
                            </children>
@@ -352,7 +349,7 @@
                            <children>
                               <ImageView fitHeight="95.0" fitWidth="205.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/spicy_ranch.png" />
+                                    <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/spicy_ranch.png" />
                                  </image>
                               </ImageView>
                            </children>
@@ -377,7 +374,7 @@
                               <children>
                                  <ImageView fitHeight="140.0" fitWidth="210.0" layoutX="-1.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                       <Image url="file:/C:/Users/nicol/IdeaProjects/revs_pos_331/src/main/resources/images/salad_bar.png" />
+                                       <Image url="file:/C:/Users/user/IdeaProjects/revs_POS_331/src/main/resources/application/revs_pos_331/images/salad_bar.png" />
                                     </image>
                                  </ImageView>
                               </children>
@@ -393,31 +390,31 @@
                </AnchorPane>
             </content></Tab>
          <Tab style="-fx-background-color: #fcba03;" text="MISCELLANEOUS">
-           <content>
-             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="433.0" prefWidth="568.0">
+            <content>
+               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="433.0" prefWidth="568.0">
                   <children>
                      <ScrollPane layoutX="11.0" layoutY="1.0" prefHeight="436.0" prefWidth="569.0">
-                       <content>
-                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="745.0" prefWidth="578.0">
+                        <content>
+                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="745.0" prefWidth="578.0">
                               <children>
                                  <TableView fx:id="misc_list" layoutY="27.0" prefHeight="401.0" prefWidth="553.0">
-                                   <columns>
-                                     <TableColumn fx:id="misc_col" prefWidth="552.0000038146973" text="Menu Item" />
-                                   </columns>
+                                    <columns>
+                                       <TableColumn fx:id="misc_col" prefWidth="552.0000038146973" text="Menu Item" />
+                                    </columns>
                                  </TableView>
-                                 <Button fx:id="listMiscMenuItems" layoutY="2.0" mnemonicParsing="false" onAction="#listMiscMenuItems" text="Load" />
+                                 <Button fx:id="listMiscMenuItems" layoutY="2.0" mnemonicParsing="false" onMouseClicked="#listMiscMenuItems" text="Load" />
                               </children>
                            </AnchorPane>
-                       </content>
+                        </content>
                      </ScrollPane>
                   </children>
                </AnchorPane>
-           </content>
+            </content>
          </Tab>
       </TabPane>
       <AnchorPane prefHeight="470.0" prefWidth="241.0">
          <Button layoutX="86.0" layoutY="429.0" mnemonicParsing="false" onMouseClicked="#tender" prefHeight="25.0" prefWidth="212.0" text="Tender" />
-         <Label fx:id="menuItem" alignment="TOP_LEFT" layoutY="38.0" prefHeight="391.0" prefWidth="384.0">
+         <Label fx:id="orders_text" alignment="TOP_LEFT" layoutY="38.0" prefHeight="391.0" prefWidth="384.0">
             <font>
                <Font name="Monospaced Regular" size="12.0" />
             </font></Label>
@@ -439,4 +436,9 @@
    <TextField fx:id="del_ord" layoutX="115.0" layoutY="494.0" promptText="number" />
    <TextField fx:id="upd_food" layoutX="298.0" layoutY="535.0" prefHeight="25.0" prefWidth="465.0" promptText="order" />
    <Button fx:id="loginScreen" layoutX="851.0" layoutY="494.0" mnemonicParsing="false" text="Sign Out" />
+   <Label fx:id="orders_warning" layoutX="301.0" layoutY="496.0" text=" " textFill="#a42818">
+      <font>
+         <Font size="18.0" />
+      </font>
+   </Label>
 </AnchorPane>
