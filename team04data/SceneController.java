@@ -103,6 +103,9 @@ public class SceneController {
     @FXML private TextField upd_hist_item = new TextField();
     @FXML private TextField upd_sale = new TextField();
 
+    // excess report text field
+    @FXML private TextField from_hr = new TextField();
+
     public void login(ActionEvent e) throws IOException {
         connect();
 
@@ -368,7 +371,6 @@ public class SceneController {
         String name = misc_list.getSelectionModel().getSelectedItem().getMenuitem();
 
         connect();
-
         //querying the database for price
         try {
             Statement stmt = conn.createStatement();
@@ -529,6 +531,13 @@ public class SceneController {
         upd_sale.setText("");
     }
 
+    /**
+     * This allows the manager to add items to the inventory.
+     * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
+     * Includes an SQL statement that gets a list of all the items currently in inventory after adding item
+     * Clears the text field once item has been added to inventory
+    @author Olivia Lee
+    */
     public void addInventoryItem(MouseEvent e) throws IOException {
         try {
             connect();
@@ -564,6 +573,15 @@ public class SceneController {
         }
         close();
     }
+
+    /**
+     * This allows the manager to remove items from the inventory.
+     * Manager has to enter the item id in the text field to remove it
+     * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
+     * Includes an SQL command to ensure that item is removed from database
+     * Clears the text field once item has been removed from inventory
+     @author Olivia Lee
+     */
     public void deleteInventoryItem(MouseEvent e) throws IOException {
         try {
             connect();
@@ -591,6 +609,15 @@ public class SceneController {
         }
         close();
     }
+
+    /**
+     * This allows the manager to add extra items to the inventory when stock is running low.
+     * Manager has to enter the item id, amount, and capacity of each the item to be updated
+     * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
+     * Includes an SQL command to ensure that change occurs in database as well
+     * Clears the text field once item has been updated in inventory
+     @author Olivia Lee
+     */
     public void updateInventoryItem(MouseEvent e) throws IOException {
         try {
             connect();
@@ -845,6 +872,14 @@ public class SceneController {
         close();
     }
 
+    /**
+     * This allows the manager to delete an order from order history
+     * Manager has to enter the order id, hour, day, week, month, and year
+     * Takes care of error handling, ensuring that an order from a different date is not accidentally deleted
+     * Includes an SQL command to delete the order from order history
+     * Clears the text field once item has been deleted
+     @author Olivia Lee
+     */
     public void deleteHistoryItem(MouseEvent e) throws IOException {
         try {
             connect();
@@ -877,6 +912,15 @@ public class SceneController {
         }
         close();
     }
+
+    /**
+     * This allows the manager to update an order from order history
+     * Manager has to enter the order id, hour, day, week, month, year, and sale
+     * Takes care of error handling, ensuring that an order from a different date is not accidentally updated
+     * Includes an SQL command to update the order from order history
+     * Clears the text field once item has been deleted
+     @author Olivia Lee
+     */
     public void updateHistoryItem(MouseEvent e) throws IOException {
         try {
             connect();
@@ -1026,6 +1070,24 @@ public class SceneController {
         return false;
     }
 
+    public void excessReport(){
+        String statement = "SELECT DISTINCT i.ingredient FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item WHERE o.hour >= '11am' AND o.hour <= '12pm'";
+        try (PreparedStatement stmt = conn.prepareStatement(statement)) {
+            ResultSet ingsBwTime = stmt.executeQuery();
+
+            while(ingsBwTime.next())
+            {
+                String ing = ingsBwTime.getString("ingredient");
+            }
+        }
+        catch(SQLException error)
+        {
+            return;
+        }
+    }
+
+
+    
     public void connect() {
         //setting up database
         String database_name = "csce331_903_04_db";
