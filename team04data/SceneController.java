@@ -1094,10 +1094,17 @@ public class SceneController {
             String year = from_year.getText();
 
             int stop_hour = LocalTime.now().getHour();
-            String stop_string = Integer.toString(stop_hour);
-            // Updated SQL statement to include amount and capacity in the SELECT
-//            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '11am' AND o.hour <= '1pm' AND o.day = '15' AND o.month = '6' AND o.year = '2023' AND inv.amount >= 0.9 * inv.capacity";
-            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '" + hour + "' AND o.hour <= '" + stop_string + "' AND o.day = '" + day + "' AND o.month = '" + month + "' AND o.year = '" + year + "' AND inv.amount >= 0.9 * inv.capacity";
+            int twelveHourFormat = stop_hour % 12 == 0 ? 12 : stop_hour % 12; // Convert 24-hour format to 12-hour format
+            boolean isPM = stop_hour >= 12; // Check if it's PM
+            String stop_string; // Declare stop_string here
+            if(isPM) {
+                stop_string = Integer.toString(twelveHourFormat) + "pm";
+            } else {
+                stop_string = Integer.toString(twelveHourFormat) + "am";
+            }
+
+            // Ensure SQL uses correct format and comparisons based on your database's time storage format
+            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '" + hour + "' AND o.hour < '" + stop_string + "' AND o.day = '" + day + "' AND o.month = '" + month + "' AND o.year = '" + year + "' AND inv.amount >= 0.9 * inv.capacity";
             ResultSet loadExcess = stmt.executeQuery(sqlStatement);
             while (loadExcess.next()) {
                 String ingredient = loadExcess.getString("ingredient");
@@ -1108,7 +1115,6 @@ public class SceneController {
                 String monthDisplay = loadExcess.getString("month");
                 String yearDisplay = loadExcess.getString("year");
 
-                // Corrected format string to match the expected number of arguments
                 excessStringBuilder.append(String.format("%-25s %-10s %-7s %2s %9s %10d %10d%n", ingredient, hourDisplay, dayDisplay, monthDisplay, yearDisplay, amount, capacity));
             }
             excess_text.setText(excessStringBuilder.toString());
@@ -1118,8 +1124,6 @@ public class SceneController {
             System.err.println("Exception: " + error.getClass().getName() + ": " + error.getMessage());
         }
     }
-
-
 
     public void connect() {
         //setting up database
