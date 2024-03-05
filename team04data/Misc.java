@@ -2,20 +2,20 @@ package application.revs_pos_331;
 
 public class Misc {
     //variables
-    private String menu_item = "";
+    private String menuitem = "";
 
     //initializer
-    public Misc(String menu_item) {
-        this.menu_item = menu_item;
+    public Misc(String menuitem) {
+        this.menuitem = menuitem;
     }
 
     //getters
-    public String getMenu_Item() {
-        return menu_item;
+    public String getMenuitem() {
+        return menuitem;
     }
 
     //setters
-    public void setMenu_Item(String menu_item) {
-        this.menu_item =  menu_item;
+    public void setMenuitem(String menuitem) {
+        this.menuitem =  menuitem;
     }
 }
