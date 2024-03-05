@@ -41,6 +41,7 @@ public class SceneController {
     @FXML private Label employees_text = new Label("");
     @FXML private Label menu_text = new Label("");
     @FXML private Label history_text = new Label("");
+    @FXML private Label excess_text = new Label("");
 
     //warnings
     @FXML private Label login_warning = new Label("");
@@ -80,6 +81,9 @@ public class SceneController {
     @FXML private TextField upd_status = new TextField();
 
     //menu text fields
+    @FXML private TextField from_hour = new TextField();
+
+    // excess report text fields
     @FXML private TextField del_menu = new TextField();
     @FXML private TextField upd_menu = new TextField();
     @FXML private TextField add_dish = new TextField();
@@ -102,9 +106,6 @@ public class SceneController {
     @FXML private TextField upd_yr = new TextField();
     @FXML private TextField upd_hist_item = new TextField();
     @FXML private TextField upd_sale = new TextField();
-
-    // excess report text field
-    @FXML private TextField from_hr = new TextField();
 
     public void login(ActionEvent e) throws IOException {
         connect();
@@ -1070,24 +1071,37 @@ public class SceneController {
         return false;
     }
 
-    public void excessReport(){
-        String statement = "SELECT DISTINCT i.ingredient FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item WHERE o.hour >= '11am' AND o.hour <= '12pm'";
-        try (PreparedStatement stmt = conn.prepareStatement(statement)) {
-            ResultSet ingsBwTime = stmt.executeQuery();
+    public void loadExcessReport(MouseEvent e) {
+        StringBuilder excessStringBuilder = new StringBuilder();
 
-            while(ingsBwTime.next())
-            {
-                String ing = ingsBwTime.getString("ingredient");
+        try {
+            connect(); // Ensure this method properly initializes and sets 'conn'
+            Statement stmt = conn.createStatement();
+            // Updated SQL statement to include amount and capacity in the SELECT
+            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '11am' AND o.hour <= '2pm' AND o.day = '1' AND o.month = '5' AND o.year = '2023' AND inv.amount >= 0.9 * inv.capacity";
+            ResultSet loadExcess = stmt.executeQuery(sqlStatement);
+            while (loadExcess.next()) {
+                String ingredient = loadExcess.getString("ingredient");
+                int amount = loadExcess.getInt("amount");
+                int capacity = loadExcess.getInt("capacity");
+                String hour = loadExcess.getString("hour");
+                String day = loadExcess.getString("day");
+                String month = loadExcess.getString("month");
+                String year = loadExcess.getString("year");
+
+                // Corrected format string to match the expected number of arguments
+                excessStringBuilder.append(String.format("%-25s %-10s %-7s %2s %9s %10d %10d%n", ingredient, hour, day, month, year, amount, capacity));
             }
-        }
-        catch(SQLException error)
-        {
-            return;
+            excess_text.setText(excessStringBuilder.toString());
+        } catch (SQLException error) {
+            error.printStackTrace(); // This will print the SQL exception stack trace to the console
+        } catch (Exception error) {
+            System.err.println("Exception: " + error.getClass().getName() + ": " + error.getMessage());
         }
     }
 
 
-    
+
     public void connect() {
         //setting up database
         String database_name = "csce331_903_04_db";
