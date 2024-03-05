@@ -18,6 +18,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.input.MouseEvent;
 
+import java.time.LocalTime;          // to get current hour for excess report
+
 public class SceneController {
 
     private Connection conn = null;
@@ -81,15 +83,18 @@ public class SceneController {
     @FXML private TextField upd_status = new TextField();
 
     //menu text fields
-    @FXML private TextField from_hour = new TextField();
-
-    // excess report text fields
+    @FXML private TextField add_dish = new TextField();
+    @FXML private TextField add_price = new TextField();
     @FXML private TextField del_menu = new TextField();
     @FXML private TextField upd_menu = new TextField();
-    @FXML private TextField add_dish = new TextField();
     @FXML private TextField upd_dish = new TextField();
-    @FXML private TextField add_price = new TextField();
     @FXML private TextField upd_price = new TextField();
+
+    // excess report text fields
+    @FXML private TextField from_hr = new TextField();
+    @FXML private TextField from_day = new TextField();
+    @FXML private TextField from_month = new TextField();
+    @FXML private TextField from_year = new TextField();
 
     //order history text fields
     @FXML private TextField del_id = new TextField();
@@ -514,6 +519,12 @@ public class SceneController {
         upd_menu.setText("");
         upd_dish.setText("");
         upd_price.setText("");
+
+        // excess report text fields
+        from_hr.setText("");
+        from_month.setText("");
+        from_day.setText("");
+        from_year.setText("");
 
         //order history fields
         del_id.setText("");
@@ -1077,20 +1088,28 @@ public class SceneController {
         try {
             connect(); // Ensure this method properly initializes and sets 'conn'
             Statement stmt = conn.createStatement();
+            String hour = from_hr.getText();
+            String day = from_day.getText();
+            String month = from_month.getText();
+            String year = from_year.getText();
+
+            int stop_hour = LocalTime.now().getHour();
+            String stop_string = Integer.toString(stop_hour);
             // Updated SQL statement to include amount and capacity in the SELECT
-            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '11am' AND o.hour <= '2pm' AND o.day = '1' AND o.month = '5' AND o.year = '2023' AND inv.amount >= 0.9 * inv.capacity";
+//            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '11am' AND o.hour <= '1pm' AND o.day = '15' AND o.month = '6' AND o.year = '2023' AND inv.amount >= 0.9 * inv.capacity";
+            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '" + hour + "' AND o.hour <= '" + stop_string + "' AND o.day = '" + day + "' AND o.month = '" + month + "' AND o.year = '" + year + "' AND inv.amount >= 0.9 * inv.capacity";
             ResultSet loadExcess = stmt.executeQuery(sqlStatement);
             while (loadExcess.next()) {
                 String ingredient = loadExcess.getString("ingredient");
                 int amount = loadExcess.getInt("amount");
                 int capacity = loadExcess.getInt("capacity");
-                String hour = loadExcess.getString("hour");
-                String day = loadExcess.getString("day");
-                String month = loadExcess.getString("month");
-                String year = loadExcess.getString("year");
+                String hourDisplay = loadExcess.getString("hour");
+                String dayDisplay = loadExcess.getString("day");
+                String monthDisplay = loadExcess.getString("month");
+                String yearDisplay = loadExcess.getString("year");
 
                 // Corrected format string to match the expected number of arguments
-                excessStringBuilder.append(String.format("%-25s %-10s %-7s %2s %9s %10d %10d%n", ingredient, hour, day, month, year, amount, capacity));
+                excessStringBuilder.append(String.format("%-25s %-10s %-7s %2s %9s %10d %10d%n", ingredient, hourDisplay, dayDisplay, monthDisplay, yearDisplay, amount, capacity));
             }
             excess_text.setText(excessStringBuilder.toString());
         } catch (SQLException error) {
