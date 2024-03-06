@@ -35,6 +35,7 @@ public class SceneController {
     String history_string = "";
     String sales_report_string = "";
     String restock_report_string = "";
+    String seasonal_string = "";
     int count = 1;
 
     @FXML private Label orders_text = new Label("");
@@ -45,6 +46,7 @@ public class SceneController {
     @FXML private Label history_text = new Label("");
     @FXML private Label sales_report_text = new Label("");
     @FXML private Label restock_report_text = new Label("");
+    @FXML private Label seasonal_text = new Label("");
 
     //warnings
     @FXML private Label login_warning = new Label("");
@@ -667,6 +669,7 @@ public class SceneController {
 
 
 
+
     /**
      * This clears all the text fields in all the manager side tabs.
      *
@@ -726,6 +729,39 @@ public class SceneController {
         sales_yr2.setText("");
     }
 
+    public void loadSeasonalTable() {
+        seasonal_string = "";
+        //querying for menu table
+        try {
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT * FROM seasonal";
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            while (result.next()) {
+                int menu_itemID = result.getInt("menu_itemID");
+                String menu_item = result.getString("menu_item");
+                int start_month = result.getInt("start_month");
+                int end_month = result.getInt("end_month");
+                seasonal_string += " " + menu_itemID;
+                for(int i = 1; i <= 3-(menu_itemID+"").length(); i++) {
+                    seasonal_string += " ";
+                }
+                seasonal_string += "   " + menu_item;
+                for(int i = 1; i <= 51-menu_item.length(); i++) {
+                    seasonal_string += " ";
+                }
+                seasonal_string += "     " + start_month;
+                for(int i = 1; i <= 3-(menu_itemID+"").length(); i++) {
+                    seasonal_string += " ";
+                }
+                seasonal_string += "     " + end_month + "\n";
+            }
+            seasonal_text.setText(seasonal_string);
+        }
+        catch(Exception error) {
+            error.printStackTrace();
+            System.err.println(error.getClass().getName()+": "+error.getMessage());
+        }
+    }
 
 
     /**
