@@ -52,6 +52,7 @@ public class SceneController {
     @FXML private Label menu_warning = new Label("");
     @FXML private Label orders_warning = new Label("");
     @FXML private Label history_warning = new Label("");
+    @FXML private Label excess_warning = new Label("");
 
 
     //login text fields
@@ -548,8 +549,8 @@ public class SceneController {
      * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
      * Includes an SQL statement that gets a list of all the items currently in inventory after adding item
      * Clears the text field once item has been added to inventory
-    @author Olivia Lee
-    */
+     @author Olivia Lee
+     */
     public void addInventoryItem(MouseEvent e) throws IOException {
         try {
             connect();
@@ -1104,7 +1105,11 @@ public class SceneController {
             }
 
             // Ensure SQL uses correct format and comparisons based on your database's time storage format
-            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '" + hour + "' AND o.hour < '" + stop_string + "' AND o.day = '" + day + "' AND o.month = '" + month + "' AND o.year = '" + year + "' AND inv.amount >= 0.9 * inv.capacity";
+            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, " +
+                    "o.year FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON " +
+                    "i.ingredient = inv.ingredient WHERE o.hour >= '" + hour + "' AND o.hour < '" + stop_string + "' " +
+                    "AND o.day = '" + day + "' AND o.month = '" + month + "' AND o.year = '" + year + "' AND " +
+                    "inv.amount >= 0.9 * inv.capacity";
             ResultSet loadExcess = stmt.executeQuery(sqlStatement);
             while (loadExcess.next()) {
                 String ingredient = loadExcess.getString("ingredient");
@@ -1118,6 +1123,28 @@ public class SceneController {
                 excessStringBuilder.append(String.format("%-25s %-10s %-7s %2s %9s %10d %10d%n", ingredient, hourDisplay, dayDisplay, monthDisplay, yearDisplay, amount, capacity));
             }
             excess_text.setText(excessStringBuilder.toString());
+
+            //error checking input good
+            if (!hour.equals("11am") && !hour.equals("12pm") && !hour.equals("1pm") && !hour.equals("2pm") && !hour.equals("3pm") && !hour.equals("4pm") && !hour.equals("5pm") && !hour.equals("6pm") && !hour.equals("7pm") && !hour.equals("8pm")) {
+                excess_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
+                return;
+            }
+
+            if (Integer.valueOf(day) > Integer.valueOf("31") || Integer.valueOf(day) < Integer.valueOf("1"))
+            {
+                excess_warning.setText("The days must be a number between 1 and 31.");
+                return;
+            }
+            if (Integer.valueOf(month) > Integer.valueOf("31") || Integer.valueOf(month) < Integer.valueOf("1"))
+            {
+                excess_warning.setText("The months must be a number between 1 and 12.");
+                return;
+            }
+            if (year.length() != 4) {
+                excess_warning.setText("The year must be four digits long.");
+                return;
+            }
+
         } catch (SQLException error) {
             error.printStackTrace(); // This will print the SQL exception stack trace to the console
         } catch (Exception error) {
@@ -1148,4 +1175,3 @@ public class SceneController {
         }
     }
 }
-
