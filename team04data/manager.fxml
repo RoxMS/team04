@@ -629,7 +629,7 @@
                         <Font size="16.0" />
                     </font>
                 </Label>
-                <Label fx:id="restock_report_warning1" layoutX="122.0" layoutY="376.0" text="The minimum quantity before needing to restock is 5 items." textFill="#111010">
+                <Label fx:id="restock_report_warning1" layoutX="122.0" layoutY="376.0" text="The minimum quantity before needing to restock is 10 items." textFill="#111010">
                     <font>
                         <Font size="16.0" />
                     </font>
