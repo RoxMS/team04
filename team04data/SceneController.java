@@ -18,8 +18,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.input.MouseEvent;
 
-import java.time.LocalTime;          // to get current hour for excess report
-
 public class SceneController {
 
     private Connection conn = null;
@@ -27,6 +25,7 @@ public class SceneController {
     public static ArrayList<Order> orders = new ArrayList<>();
     @FXML private TableView<Misc> misc_list;
     @FXML private TableColumn<Misc, String> misc_col;
+
 
 
     String orders_string = "";
@@ -39,6 +38,7 @@ public class SceneController {
     String restock_report_string = "";
     String seasonal_string = "";
     int count = 1;
+    String ingredientstring = "";
 
     @FXML private Label orders_text = new Label("");
     @FXML private Label sales_text = new Label("");
@@ -46,11 +46,9 @@ public class SceneController {
     @FXML private Label employees_text = new Label("");
     @FXML private Label menu_text = new Label("");
     @FXML private Label history_text = new Label("");
-    @FXML private Label excess_text = new Label("");
-    @FXML private Label trends_text = new Label("");
     @FXML private Label sales_report_text = new Label("");
     @FXML private Label restock_report_text = new Label("");
-    @FXML private Label seasonal_text = new Label("");
+    @FXML private Label ingredient_text = new Label("");
 
     //warnings
     @FXML private Label login_warning = new Label("");
@@ -59,8 +57,6 @@ public class SceneController {
     @FXML private Label menu_warning = new Label("");
     @FXML private Label orders_warning = new Label("");
     @FXML private Label history_warning = new Label("");
-    @FXML private Label excess_warning = new Label("");
-    @FXML private Label order_trends_warning = new Label("");
     @FXML private Label sales_report_warning = new Label("");
     @FXML private Label restock_report_warning = new Label("");
 
@@ -83,6 +79,8 @@ public class SceneController {
     @FXML private TextField upd_quant = new TextField();
     @FXML private TextField add_cap = new TextField();
     @FXML private TextField upd_cap = new TextField();
+    @FXML private TextField deletion_Month = new TextField();
+
 
     //employees text fields
     @FXML private TextField del_emp = new TextField();
@@ -93,28 +91,12 @@ public class SceneController {
     @FXML private TextField upd_status = new TextField();
 
     //menu text fields
-    @FXML private TextField add_dish = new TextField();
-    @FXML private TextField add_price = new TextField();
     @FXML private TextField del_menu = new TextField();
     @FXML private TextField upd_menu = new TextField();
+    @FXML private TextField add_dish = new TextField();
     @FXML private TextField upd_dish = new TextField();
+    @FXML private TextField add_price = new TextField();
     @FXML private TextField upd_price = new TextField();
-
-    // excess report text fields
-    @FXML private TextField from_hr = new TextField();
-    @FXML private TextField from_day = new TextField();
-    @FXML private TextField from_month = new TextField();
-    @FXML private TextField from_year = new TextField();
-
-    // order trend report text fields
-    @FXML private TextField st_trend_hr = new TextField();
-    @FXML private TextField st_trend_day = new TextField();
-    @FXML private TextField st_trend_month = new TextField();
-    @FXML private TextField st_trend_year = new TextField();
-    @FXML private TextField end_trend_hr = new TextField();
-    @FXML private TextField end_trend_day = new TextField();
-    @FXML private TextField end_trend_month = new TextField();
-    @FXML private TextField end_trend_year = new TextField();
 
     //order history text fields
     @FXML private TextField del_id = new TextField();
@@ -142,12 +124,218 @@ public class SceneController {
     @FXML private TextField sales_mth2 = new TextField();
     @FXML private TextField sales_yr2 = new TextField();
 
-    // excess report text fields
-    @FXML private TextField from_hr = new TextField();
-    @FXML private TextField from_day = new TextField();
-    @FXML private TextField from_month = new TextField();
-    @FXML private TextField from_year = new TextField();
+    @FXML private TextField yearTextField = new TextField();
+    @FXML private TextField startTimeTextField = new TextField();
+    @FXML private TextField stopTimeTextField = new TextField();
+    @FXML private TextField monthTextField = new TextField();
+    @FXML private Label ingredientcount_warning = new Label("");
 
+    @FXML private TextField dish_nameTextField = new TextField();
+    @FXML private TextField start_monthTextField = new TextField();
+    @FXML private TextField end_monthTextField = new TextField();
+    @FXML private TextField price_textTextField = new TextField();
+
+
+    @FXML private TextField ingredient = new TextField();
+    @FXML private TextField ingredientCount = new TextField();
+
+    @FXML private Label seasonalitem_warning = new Label("");
+
+    @FXML private TextField ingredientTextField = new TextField();
+    @FXML private TextField intgr_countTextField = new TextField();
+
+    @FXML private TextField seasonal_text = new TextField();
+
+
+    public void loadSeasonalTable() {
+        seasonal_string = "";
+        //querying for menu table
+        try {
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT * FROM seasonal";
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            while (result.next()) {
+                int menu_itemID = result.getInt("menu_itemID");
+                String menu_item = result.getString("menu_item");
+                int start_month = result.getInt("start_month");
+                int end_month = result.getInt("end_month");
+                seasonal_string += " " + menu_itemID;
+                for(int i = 1; i <= 3-(menu_itemID+"").length(); i++) {
+                    seasonal_string += " ";
+                }
+                seasonal_string += "   " + menu_item;
+                for(int i = 1; i <= 51-menu_item.length(); i++) {
+                    seasonal_string += " ";
+                }
+                seasonal_string += "     " + start_month;
+                for(int i = 1; i <= 3-(menu_itemID+"").length(); i++) {
+                    seasonal_string += " ";
+                }
+                seasonal_string += "     " + end_month + "\n";
+            }
+            seasonal_text.setText(seasonal_string);
+        }
+        catch(Exception error) {
+            error.printStackTrace();
+            System.err.println(error.getClass().getName()+": "+error.getMessage());
+        }
+    }
+
+
+    //connected to the add
+    public void addSeasonalItem(MouseEvent e) {
+        try {
+            String dishName = dish_nameTextField.getText();
+
+            int startMonth = Integer.parseInt(start_monthTextField.getText());
+            int endMonth = Integer.parseInt(end_monthTextField.getText());
+            float price = Float.parseFloat(price_textTextField.getText());
+
+
+            if (dishName.isEmpty()) {
+                seasonalitem_warning.setText("You must enter a value for all fields");
+                return;
+            }
+            if (!(startMonth <= 3 && 3 <= endMonth)) { // Modified condition
+                seasonalitem_warning.setText("Season is out of range");
+                return;
+            }
+            if (price < 0) {
+                seasonalitem_warning.setText("Price cannot be negative");
+                return;
+            }
+
+            // Insert item into menu table
+            this.connect();
+            String insertMenuStatement = "INSERT INTO menu (menu_item, price) VALUES (?, ?)";
+            PreparedStatement insertMenuStmt = this.conn.prepareStatement(insertMenuStatement);
+            insertMenuStmt.setString(1, dishName);
+            insertMenuStmt.setFloat(2, price);
+            insertMenuStmt.executeUpdate();
+
+            // Get menu item ID
+            String getMenuIdStatement = "SELECT menu_itemid FROM menu WHERE menu_item = ?";
+            PreparedStatement getMenuIdStmt = this.conn.prepareStatement(getMenuIdStatement);
+            getMenuIdStmt.setString(1, dishName);
+            ResultSet result = getMenuIdStmt.executeQuery();
+            int menuId = -1; // Initialize with a default value
+            if (result.next()) {
+                menuId = result.getInt("menu_itemid");
+            }
+
+            // Insert item into seasonal table
+            if (menuId != -1) { // Check if menu ID was retrieved successfully
+                String insertSeasonalStatement = "INSERT INTO seasonal (menu_itemID, start_month, end_month) VALUES (?, ?, ?)";
+                PreparedStatement insertSeasonalStmt = this.conn.prepareStatement(insertSeasonalStatement);
+                insertSeasonalStmt.setInt(1, menuId);
+                insertSeasonalStmt.setInt(2, startMonth);
+                insertSeasonalStmt.setInt(3, endMonth);
+                insertSeasonalStmt.executeUpdate();
+            } else {
+                seasonalitem_warning.setText("Unable to find menu item ID.");
+                return;
+            }
+
+            seasonalitem_warning.setText("");
+            loadSeasonalTable();
+
+
+        } catch (Exception error) {
+            seasonalitem_warning.setText("Unable to add seasonal item.");
+        }
+    }
+
+    // connected to add ingrediesnts
+    public void addSeasonalItemIngredients(MouseEvent e) {
+        try {
+            // Retrieve values from text fields
+            String dishName = dish_nameTextField.getText();
+            String ingredient = ingredientTextField.getText();
+            int ingredientCount = Integer.parseInt(intgr_countTextField.getText());
+            if (dishName.isEmpty() || ingredient.isEmpty()) {
+                seasonalitem_warning.setText("You must enter a value for all fields");
+                return;
+            }
+            if(ingredientCount < 0){
+                seasonalitem_warning.setText("no negatives");
+                return;
+            }
+            // Create SQL insert statement
+            String insertStatement = "INSERT INTO ingredients (menu_item, ingredient, count) VALUES (?, ?, ?)";
+
+            // Prepare and execute the statement
+            PreparedStatement stmt = conn.prepareStatement(insertStatement);
+            stmt.setString(1, dishName);
+            stmt.setString(2, ingredient);
+            stmt.setInt(3, ingredientCount);
+            stmt.executeUpdate();
+
+            // Clear text fields after successful insertion
+            dish_nameTextField.setText("");
+            ingredientTextField.setText("");
+            intgr_countTextField.setText("");
+        } catch (Exception error) {
+            error.printStackTrace();
+            // Handle any exceptions, e.g., display an error message
+        }
+
+    }
+    public void listIngredientCounts(MouseEvent e) {
+        try {
+            // Clear any previous warning messages
+            ingredientcount_warning.setText("");
+
+            // Get values from text fields
+            String startTime = startTimeTextField.getText();
+            String stopTime = stopTimeTextField.getText();
+            int month = Integer.parseInt(monthTextField.getText());
+            int year = Integer.parseInt(yearTextField.getText());
+            if (startTime.isEmpty() || stopTime.isEmpty()) {
+                ingredientcount_warning.setText("You must enter a value for all fields");
+                return;
+            }
+            if (year > 2023 || year < 2022) {
+                ingredientcount_warning.setText("Year is out of range");
+                return;
+            }
+            if (month > 12 || month < 1){
+                ingredientcount_warning.setText("Month entry is invalid");
+                return;
+            }
+
+            // Clear existing table data
+
+
+            this.connect();
+            String sqlStatement = "SELECT ingredients.ingredient, SUM(ingredients.count) AS total_count " +
+                    "FROM orders " +
+                    "JOIN ingredients ON orders.menu_item = ingredients.menu_item " +
+                    "WHERE orders.hour >= ? AND orders.hour <= ? " +
+                    "AND orders.month = ? AND orders.year = ? " +
+                    "GROUP BY ingredients.ingredient";
+            PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
+            stmt.setString(1, startTime);
+            stmt.setString(2, stopTime);
+            stmt.setInt(3, month);
+            stmt.setInt(4, year);
+
+            ResultSet result = stmt.executeQuery();
+            ingredientstring = "";
+            // Iterate over the result set and update the UI directly
+            while (result.next()) {
+                String ingredient = result.getString("ingredient");
+                int totalCount = result.getInt("total_count");
+                ingredientstring += ingredient + "            " + totalCount + "\n";
+                // Update UI directly
+
+            }
+            ingredient_text.setText(ingredientstring);
+
+        } catch (Exception error) {
+            ingredientcount_warning.setText("Unable to load ingredient counts.");
+            error.printStackTrace();
+        }
+    }
 
     /**
      * This finds whether to login in to the manager side or the menu side.
@@ -266,6 +454,7 @@ public class SceneController {
      *
      * @author Olivia Lee
      */
+
     public void loadSalesTable() {
         sales_string = "";
         //querying for sales table
@@ -476,32 +665,16 @@ public class SceneController {
         try {
             misc_col.setCellValueFactory(new PropertyValueFactory<Misc, String>("menuitem"));
             misc_list.setVisible(true);
-            //getting misc menu items
+
             List<Misc> list = new ArrayList<Misc>();
             this.connect();
-
-            String sqlStatement = "SELECT menu_item FROM seasonal WHERE start_month>" + LocalDateTime.now().getMonthValue() + " OR end_month<" + LocalDateTime.now().getMonthValue();
+            String sqlStatement = "SELECT menu_item FROM menu WHERE menu_itemid > 29";
             PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
             ResultSet result = stmt.executeQuery();
 
             while (result.next()) {
-                String menu_item = result.getString("menu_item");
-                String deletion = "DELETE FROM seasonal WHERE menu_item='" + menu_item + "'";
-                PreparedStatement del_stmt = this.conn.prepareStatement(deletion);
-                del_stmt.executeUpdate();
-                deletion = "DELETE FROM menu WHERE menu_item='" + menu_item + "'";
-                del_stmt = this.conn.prepareStatement(deletion);
-                del_stmt.executeUpdate();
-                deletion = "DELETE FROM ingredients WHERE menu_item='" + menu_item + "'";
-                del_stmt = this.conn.prepareStatement(deletion);
-                del_stmt.executeUpdate();
-            }
-
-            sqlStatement = "SELECT menu_item FROM menu WHERE menu_itemid > 29";
-            stmt = this.conn.prepareStatement(sqlStatement);
-            result = stmt.executeQuery();
-            while (result.next()) {
                 String menuItem = result.getString("menu_item");
+
                 list.add(new Misc(menuItem));
             }
 
@@ -521,6 +694,7 @@ public class SceneController {
         String name = misc_list.getSelectionModel().getSelectedItem().getMenuitem();
 
         connect();
+
         //querying the database for price
         try {
             Statement stmt = conn.createStatement();
@@ -690,7 +864,6 @@ public class SceneController {
 
 
 
-
     /**
      * This clears all the text fields in all the manager side tabs.
      *
@@ -723,22 +896,6 @@ public class SceneController {
         upd_dish.setText("");
         upd_price.setText("");
 
-        // excess report text fields
-        from_hr.setText("");
-        from_month.setText("");
-        from_day.setText("");
-        from_year.setText("");
-
-        // order trend report text fields
-        st_trend_hr.setText("");
-        st_trend_day.setText("");
-        st_trend_month.setText("");
-        st_trend_year.setText("");
-        end_trend_hr.setText("");
-        end_trend_day.setText("");
-        end_trend_month.setText("");
-        end_trend_year.setText("");
-
         //order history fields
         del_id.setText("");
         del_hr.setText("");
@@ -766,39 +923,6 @@ public class SceneController {
         sales_yr2.setText("");
     }
 
-    public void loadSeasonalTable() {
-        seasonal_string = "";
-        //querying for menu table
-        try {
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT * FROM seasonal";
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            while (result.next()) {
-                int menu_itemID = result.getInt("menu_itemID");
-                String menu_item = result.getString("menu_item");
-                int start_month = result.getInt("start_month");
-                int end_month = result.getInt("end_month");
-                seasonal_string += " " + menu_itemID;
-                for(int i = 1; i <= 3-(menu_itemID+"").length(); i++) {
-                    seasonal_string += " ";
-                }
-                seasonal_string += "   " + menu_item;
-                for(int i = 1; i <= 51-menu_item.length(); i++) {
-                    seasonal_string += " ";
-                }
-                seasonal_string += "     " + start_month;
-                for(int i = 1; i <= 3-(menu_itemID+"").length(); i++) {
-                    seasonal_string += " ";
-                }
-                seasonal_string += "     " + end_month + "\n";
-            }
-            seasonal_text.setText(seasonal_string);
-        }
-        catch(Exception error) {
-            error.printStackTrace();
-            System.err.println(error.getClass().getName()+": "+error.getMessage());
-        }
-    }
 
 
     /**
@@ -842,10 +966,6 @@ public class SceneController {
                 sales_report_warning.setText("The year must be four digits long.");
                 return;
             }
-            if (year1 < 2023 || year2 > 2025) {
-                sales_report_warning.setText("There is only data in the years 2023-2025.");
-                return;
-            }
             //error checking start time/date before end time/date
             if (hour1.compareTo(hour2) > 0) {
                 sales_report_warning.setText("The second hour cannot be earlier than the first hour.");
@@ -870,22 +990,22 @@ public class SceneController {
             String sqlStatement;
             if(year1 != year2) {
                 sqlStatement = "SELECT menu_item, SUM(sale) AS total_sales FROM orders " +
-                               "WHERE hour>='" + hour1 + "' AND hour<'"+ hour2 + "' " +
-                               "AND ((year>" + year1 + " AND year<"+ year2 + ") " +
-                                 "OR (year=" + year1 + " AND month>" + month1 + ") " +
-                                 "OR (year=" + year1 + " AND month=" + month1 + " AND day>=" + day1 + ") " +
-                                 "OR (year=" + year2 + " AND month<" + month2 + ") " +
-                                 "OR (year=" + year2 + " AND month=" + month2 + " AND day<=" + day2 + ")) " +
-                               "GROUP BY menu_item";
+                        "WHERE hour>='" + hour1 + "' AND hour<'"+ hour2 + "' " +
+                        "AND ((year>" + year1 + " AND year<"+ year2 + ") " +
+                        "OR (year=" + year1 + " AND month>" + month1 + ") " +
+                        "OR (year=" + year1 + " AND month=" + month1 + " AND day>=" + day1 + ") " +
+                        "OR (year=" + year2 + " AND month<" + month2 + ") " +
+                        "OR (year=" + year2 + " AND month=" + month2 + " AND day<=" + day2 + ")) " +
+                        "GROUP BY menu_item";
             }
             else if (month1 != month2) {
                 sqlStatement = "SELECT menu_item, SUM(sale) AS total_sales FROM orders " +
-                               "WHERE hour>='" + hour1 + "' AND hour<'"+ hour2 + "' " +
-                               "AND year=" + year1 + " " +
-                               "AND ((month>" + month1 + " AND month<"+ month2 + ") " +
-                                 "OR (month=" + month1 + " AND day>=" + day1 + ") " +
-                                 "OR (month=" + month2 + " AND day<=" + day2 + ") " +
-                               "GROUP BY menu_item";
+                        "WHERE hour>='" + hour1 + "' AND hour<'"+ hour2 + "' " +
+                        "AND year=" + year1 + " " +
+                        "AND ((month>" + month1 + " AND month<"+ month2 + ") " +
+                        "OR (month=" + month1 + " AND day>=" + day1 + ") " +
+                        "OR (month=" + month2 + " AND day<=" + day2 + ") " +
+                        "GROUP BY menu_item";
             }
             else {
                 sqlStatement = "SELECT menu_item, SUM(sale) AS total_sales FROM orders " +
@@ -969,6 +1089,9 @@ public class SceneController {
         close();
     }
 
+
+
+
     /**
      * This allows the manager to add items to the inventory.
      * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
@@ -1013,14 +1136,12 @@ public class SceneController {
         }
         close();
     }
-
     /**
      * This allows the manager to remove items from the inventory.
      * Manager has to enter the item id in the text field to remove it
      * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
      * Includes an SQL command to ensure that item is removed from database
      * Clears the text field once item has been removed from inventory
-     * 
      * @author Olivia Lee
      * @param e the MouseEvent that triggers this function
      */
@@ -1051,14 +1172,12 @@ public class SceneController {
         }
         close();
     }
-
     /**
      * This allows the manager to add extra items to the inventory when stock is running low.
      * Manager has to enter the item id, amount, and capacity of each the item to be updated
      * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
      * Includes an SQL command to ensure that change occurs in database as well
      * Clears the text field once item has been updated in inventory
-     * 
      * @author Olivia Lee
      * @param e the MouseEvent that triggers this function
      */
@@ -1268,20 +1387,57 @@ public class SceneController {
      * @param e The MouseEvent triggered by the user action.
      * @throws IOException if there is an issue with input/output operations.
      */
+//    public void addMenuItem(MouseEvent e) throws IOException {
+//        try {
+//            connect();
+//
+//            //inserting menu item into database
+//            String menu_item = add_dish.getText();
+//            float price = Float.parseFloat(add_price.getText());
+//
+//            if (menu_item.isEmpty()) {
+//                menu_warning.setText("You must enter a menu item.");
+//                return;
+//            }
+//            if (price <= 0) {
+//                menu_warning.setText("Price cannot be negative or zero.");
+//                return;
+//            }
+//
+//            Statement stmt = conn.createStatement();
+//            String sqlStatement = "INSERT INTO menu(menu_item, price) VALUES('" + menu_item + "', " + price + ")";
+//            stmt.executeUpdate(sqlStatement);
+//
+//            loadMenuTable();
+//
+//            clearTextFields();
+//            menu_warning.setText("");
+//        }
+//        catch (Exception error) {
+//            menu_warning.setText("Invalid value types.");
+//        }
+//        close();
+//    }
+
     public void addMenuItem(MouseEvent e) throws IOException {
         try {
             connect();
 
-            //inserting menu item into database
+            // Inserting menu item into the database
             String menu_item = add_dish.getText();
             float price = Float.parseFloat(add_price.getText());
+            int deletionMonth = Integer.parseInt(deletion_Month.getText()); // Retrieving the entered month
 
             if (menu_item.isEmpty()) {
-                menu_warning.setText("You must enter a menu item.");
+                orders_warning.setText("You must enter a menu item.");
                 return;
             }
             if (price <= 0) {
                 menu_warning.setText("Price cannot be negative or zero.");
+                return;
+            }
+            if (deletionMonth > 12 | deletionMonth < 1){
+                orders_warning.setText("Month entry is invalid");
                 return;
             }
 
@@ -1293,13 +1449,19 @@ public class SceneController {
 
             clearTextFields();
             menu_warning.setText("");
-        }
-        catch (Exception error) {
+            LocalDateTime currentTime = LocalDateTime.now();
+            // Check if the current month matches the deletion month and delete the item if it does
+            int month = currentTime.getMonthValue();
+            if (month == deletionMonth) {
+                String deleteStatement = "DELETE FROM menu WHERE menu_item = '" + menu_item + "'";
+                stmt.executeUpdate(deleteStatement);
+                orders_warning.setText("The seasonal menu item has been deleted.");
+            }
+        }  catch (SQLException error) {
             menu_warning.setText("Invalid value types.");
         }
         close();
     }
-
     /**
      * Deletes a menu item from the database.
      * This method deletes a menu item identified by its menu item ID from the database.
@@ -1405,13 +1567,15 @@ public class SceneController {
         close();
     }
 
+
+
+
     /**
      * This allows the manager to delete an order from order history
      * Manager has to enter the order id, hour, day, week, month, and year
      * Takes care of error handling, ensuring that an order from a different date is not accidentally deleted
      * Includes an SQL command to delete the order from order history
      * Clears the text field once item has been deleted
-     *
      * @author Olivia Lee
      * @param e the MouseEvent that triggers this function
      */
@@ -1454,7 +1618,6 @@ public class SceneController {
      * Takes care of error handling, ensuring that an order from a different date is not accidentally updated
      * Includes an SQL command to update the order from order history
      * Clears the text field once item has been deleted
-     *
      * @author Olivia Lee
      * @param e the MouseEvent that triggers this function
      */
@@ -1627,197 +1790,6 @@ public class SceneController {
         // If the ingredient is not found, or there was an error, return false
         return false;
     }
-
-    public void loadExcessReport(MouseEvent e) {
-        StringBuilder excessStringBuilder = new StringBuilder();
-
-        try {
-            connect(); // Ensure this method properly initializes and sets 'conn'
-            Statement stmt = conn.createStatement();
-            String hour = from_hr.getText();
-            int day = Integer.parseInt(from_day.getText());
-            int month = Integer.parseInt(from_month.getText());
-            int year = Integer.parseInt(from_year.getText());
-
-            int stop_hour = LocalTime.now().getHour();
-            int twelveHourFormat = stop_hour % 12 == 0 ? 12 : stop_hour % 12; // Convert 24-hour format to 12-hour format
-            boolean isPM = stop_hour >= 12; // Check if it's PM
-            String stop_string; // Declare stop_string here
-            if(isPM) {
-                stop_string = Integer.toString(twelveHourFormat) + "pm";
-            } else {
-                stop_string = Integer.toString(twelveHourFormat) + "am";
-            }
-            System.out.println("stop string is " + stop_string);
-            // Ensure SQL uses correct format and comparisons based on your database's time storage format
-            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients " +
-                    "i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '" + hour + "' " +
-                    "AND o.hour <= '12pm' AND o.day = " + day + " AND o.month = " + month + " AND o.year = " + year + " AND inv.amount >= 0.9 * inv.capacity";
-            ResultSet loadExcess = stmt.executeQuery(sqlStatement);
-
-            System.out.println("while loop");
-            while (loadExcess.next()) {
-                System.out.println("giving values");
-                String ingredient = loadExcess.getString("ingredient");
-                int amount = loadExcess.getInt("amount");
-                int capacity = loadExcess.getInt("capacity");
-                String hourDisplay = loadExcess.getString("hour");
-                int dayDisplay = loadExcess.getInt("day");
-                int monthDisplay = loadExcess.getInt("month");
-                int yearDisplay = loadExcess.getInt("year");
-
-                System.out.println("printing stuff out");
-                excessStringBuilder.append(String.format("%-25s %-7s %-7s %10d %10d %10d %10d%n", ingredient, hourDisplay, dayDisplay, monthDisplay, yearDisplay, amount, capacity));
-                excess_text.setText(excessStringBuilder.toString());
-                System.out.println("done printing");
-            }
-
-            System.out.println("error handling");
-            //error checking input good
-            if (!hour.equals("11am") && !hour.equals("12pm") && !hour.equals("1pm") && !hour.equals("2pm") && !hour.equals("3pm") && !hour.equals("4pm") && !hour.equals("5pm") && !hour.equals("6pm") && !hour.equals("7pm") && !hour.equals("8pm")) {
-                excess_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
-                return;
-            }
-
-            if (day > 31 || day < 1)
-            {
-                excess_warning.setText("The days must be a number between 1 and 31.");
-                return;
-            }
-            if (month > 12 || month < 1)
-            {
-                excess_warning.setText("The months must be a number between 1 and 12.");
-                return;
-            }
-
-            if ((year + "").length() != 4){
-                excess_warning.setText("The year must be four digits long.");
-                return;
-            }
-
-            if( (year > 2025) || (year < 2023)) {
-                excess_warning.setText("Year has to be within 2023 - 2025.");
-                return;
-            }
-
-            clearTextFields();
-            excess_warning.setText("");
-        }
-        catch (Exception error) {
-            error.printStackTrace();
-            excess_warning.setText("Invalid value types");
-//            System.out.println("invalid value type");
-
-        }
-    }
-
-    public void loadOrderTrendReport(MouseEvent e)
-    {
-        StringBuilder trendStringBuilder = new StringBuilder();
-        System.out.println("load button clicked");
-
-        try {
-            String hour1 = st_trend_hr.getText();
-            String hour2 = end_trend_hr.getText();
-            int day1 = Integer.parseInt(st_trend_day.getText());
-            int day2 = Integer.parseInt(st_trend_day.getText());
-            int month1 = Integer.parseInt(st_trend_month.getText());
-            int month2 = Integer.parseInt(st_trend_month.getText());
-            int year1 = Integer.parseInt(st_trend_year.getText());
-            int year2 = Integer.parseInt(st_trend_year.getText());
-
-            if (hour1.isEmpty() || hour2.isEmpty()) {
-                order_trends_warning.setText("You must enter an hour.");
-                return;
-            }
-
-//            if (day1 ==  || hour2.isEmpty()) {
-//                order_trends_warning.setText("You must enter an hour.");
-//                return;
-//            }
-
-            connect();
-            Statement stmt = conn.createStatement();
-//            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders " +
-//                    "AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.day BETWEEN '2' AND '3' " +
-//                    "AND o1.month BETWEEN '2' AND '3' AND o1.year BETWEEN '2024' AND '2024' GROUP BY o1.menu_item, o2.menu_item ORDER BY " +
-//                    "times_ordered_together DESC";
-            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.hour BETWEEN '"+ hour1 + "' AND '" + hour2 + "' AND o1.day BETWEEN '"+ day1 + "' AND '"+ day2 + "'AND o1.month BETWEEN '" + month1 + "' AND '" + month2 + "' AND o1.year BETWEEN '" + year1 + "' AND '" + year2 + "' GROUP BY o1.menu_item, o2.menu_item ORDER BY times_ordered_together DESC";
-
-            System.out.println("sending sql command");
-            ResultSet loadOrderTrend = stmt.executeQuery(sqlStatement);
-            System.out.println("Entering while loop");
-            while(loadOrderTrend.next())
-            {
-                String menu1 = loadOrderTrend.getString("item1");
-                String menu2 = loadOrderTrend.getString("item2");
-                int frequency = loadOrderTrend.getInt("times_ordered_together");
-
-                System.out.println("printing stuff out");
-                trendStringBuilder.append(String.format("%-27s %-27s %10d%n", menu1, menu2, frequency));
-                trends_text.setText(trendStringBuilder.toString());
-                System.out.println("done printing");
-            }
-
-            if (!hour1.equals("11am") && !hour1.equals("12pm") && !hour1.equals("1pm") && !hour1.equals("2pm") && !hour1.equals("3pm") && !hour1.equals("4pm") && !hour1.equals("5pm") && !hour1.equals("6pm") && !hour1.equals("7pm") && !hour1.equals("8pm")) {
-                order_trends_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
-                return;
-            }
-
-            if (!hour2.equals("11am") && !hour2.equals("12pm") && !hour2.equals("1pm") && !hour2.equals("2pm") && !hour2.equals("3pm") && !hour2.equals("4pm") && !hour2.equals("5pm") && !hour2.equals("6pm") && !hour2.equals("7pm") && !hour2.equals("8pm")) {
-                order_trends_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
-                return;
-            }
-
-            if (hour1.compareTo(hour2) > 0) {
-                order_trends_warning.setText("The second hour cannot be earlier than the first hour.");
-                return;
-            }
-
-            if (day1 > 31 || day1 < 1)
-            {
-                order_trends_warning.setText("The days must be a number between 1 and 31.");
-                return;
-            }
-            if (month1 > 12 || month1 < 1 || month2 > 12 || month2 < 1)
-            {
-                order_trends_warning.setText("The months must be a number between 1 and 12.");
-                return;
-            }
-
-            if(year1 > year2)
-            {
-                order_trends_warning.setText("Second year must come after first year");
-                return;
-            }
-            if ((year1 + "").length() != 4 || (year2 + "").length() != 4) {
-                order_trends_warning.setText("The year must be four digits long.");
-                return;
-            }
-
-            if( (year1 > 2025)|| (year2 > 2025) || (year1 < 2023)|| (year2 < 2023)) {
-                order_trends_warning.setText("Year has to be within 2023 - 2025.");
-                return;
-            }
-
-            if (year1 == year2 && month1 > month2) {
-                order_trends_warning.setText("The second month cannot be earlier than the first month in the same year.");
-                return;
-            }
-
-            if (year1 == year2 && month1 == month2 && day1 > day2) {
-                order_trends_warning.setText("The second day cannot be earlier than the first in the same month and year.");
-                return;
-            }
-
-            clearTextFields();
-            order_trends_warning.setText("");
-        }
-        catch (Exception error) {
-            order_trends_warning.setText("Invalid value types");
-        }
-    }
-
 
     /**
      * Opens the connection to the PostGres Database
