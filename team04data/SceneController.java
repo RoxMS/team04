@@ -45,7 +45,6 @@ public class SceneController {
     @FXML private Label history_text = new Label("");
     @FXML private Label sales_report_text = new Label("");
     @FXML private Label restock_report_text = new Label("");
-    @FXML private Label trends_text = new Label("");
 
     //warnings
     @FXML private Label login_warning = new Label("");
@@ -56,7 +55,6 @@ public class SceneController {
     @FXML private Label history_warning = new Label("");
     @FXML private Label sales_report_warning = new Label("");
     @FXML private Label restock_report_warning = new Label("");
-    @FXML private Label order_trends_warning = new Label("");
 
     //login text fields
     @FXML private TextField id = new TextField();
@@ -126,15 +124,6 @@ public class SceneController {
     @FXML private TextField from_month = new TextField();
     @FXML private TextField from_year = new TextField();
 
-    // order trend report text fields
-    @FXML private TextField st_trend_hr = new TextField();
-    @FXML private TextField st_trend_day = new TextField();
-    @FXML private TextField st_trend_month = new TextField();
-    @FXML private TextField st_trend_year = new TextField();
-    @FXML private TextField end_trend_hr = new TextField();
-    @FXML private TextField end_trend_day = new TextField();
-    @FXML private TextField end_trend_month = new TextField();
-    @FXML private TextField end_trend_year = new TextField();
 
     /**
      * This finds whether to login in to the manager side or the menu side.
@@ -463,16 +452,32 @@ public class SceneController {
         try {
             misc_col.setCellValueFactory(new PropertyValueFactory<Misc, String>("menuitem"));
             misc_list.setVisible(true);
-
+            //getting misc menu items
             List<Misc> list = new ArrayList<Misc>();
             this.connect();
-            String sqlStatement = "SELECT menu_item FROM menu WHERE menu_itemid > 29";
+
+            String sqlStatement = "SELECT menu_item FROM seasonal WHERE start_month>" + LocalDateTime.now().getMonthValue() + " OR end_month<" + LocalDateTime.now().getMonthValue();
             PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
             ResultSet result = stmt.executeQuery();
 
             while (result.next()) {
-                String menuItem = result.getString("menu_item");
+                String menu_item = result.getString("menu_item");
+                String deletion = "DELETE FROM seasonal WHERE menu_item='" + menu_item + "'";
+                PreparedStatement del_stmt = this.conn.prepareStatement(deletion);
+                del_stmt.executeUpdate();
+                deletion = "DELETE FROM menu WHERE menu_item='" + menu_item + "'";
+                del_stmt = this.conn.prepareStatement(deletion);
+                del_stmt.executeUpdate();
+                deletion = "DELETE FROM ingredients WHERE menu_item='" + menu_item + "'";
+                del_stmt = this.conn.prepareStatement(deletion);
+                del_stmt.executeUpdate();
+            }
 
+            sqlStatement = "SELECT menu_item FROM menu WHERE menu_itemid > 29";
+            stmt = this.conn.prepareStatement(sqlStatement);
+            result = stmt.executeQuery();
+            while (result.next()) {
+                String menuItem = result.getString("menu_item");
                 list.add(new Misc(menuItem));
             }
 
@@ -719,16 +724,6 @@ public class SceneController {
         sales_day2.setText("");
         sales_mth2.setText("");
         sales_yr2.setText("");
-
-        // order trend report text fields
-        st_trend_hr.setText("");
-        st_trend_day.setText("");
-        st_trend_month.setText("");
-        st_trend_year.setText("");
-        end_trend_hr.setText("");
-        end_trend_day.setText("");
-        end_trend_month.setText("");
-        end_trend_year.setText("");
     }
 
 
@@ -1557,113 +1552,6 @@ public class SceneController {
         }
         // If the ingredient is not found, or there was an error, return false
         return false;
-    }
-
-    public void loadOrderTrendReport(MouseEvent e)
-    {
-        StringBuilder trendStringBuilder = new StringBuilder();
-        System.out.println("load button clicked");
-
-        try {
-            String hour1 = st_trend_hr.getText();
-            String hour2 = end_trend_hr.getText();
-            int day1 = Integer.parseInt(st_trend_day.getText());
-            int day2 = Integer.parseInt(st_trend_day.getText());
-            int month1 = Integer.parseInt(st_trend_month.getText());
-            int month2 = Integer.parseInt(st_trend_month.getText());
-            int year1 = Integer.parseInt(st_trend_year.getText());
-            int year2 = Integer.parseInt(st_trend_year.getText());
-
-            if (hour1.isEmpty() || hour2.isEmpty()) {
-                order_trends_warning.setText("You must enter an hour.");
-                return;
-            }
-
-//            if (day1 ==  || hour2.isEmpty()) {
-//                order_trends_warning.setText("You must enter an hour.");
-//                return;
-//            }
-
-            connect();
-            Statement stmt = conn.createStatement();
-//            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders " +
-//                    "AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.day BETWEEN '2' AND '3' " +
-//                    "AND o1.month BETWEEN '2' AND '3' AND o1.year BETWEEN '2024' AND '2024' GROUP BY o1.menu_item, o2.menu_item ORDER BY " +
-//                    "times_ordered_together DESC";
-            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.hour BETWEEN '"+ hour1 + "' AND '" + hour2 + "' AND o1.day BETWEEN '"+ day1 + "' AND '"+ day2 + "'AND o1.month BETWEEN '" + month1 + "' AND '" + month2 + "' AND o1.year BETWEEN '" + year1 + "' AND '" + year2 + "' GROUP BY o1.menu_item, o2.menu_item ORDER BY times_ordered_together DESC";
-
-            System.out.println("sending sql command");
-            ResultSet loadOrderTrend = stmt.executeQuery(sqlStatement);
-            System.out.println("Entering while loop");
-            while(loadOrderTrend.next())
-            {
-                String menu1 = loadOrderTrend.getString("item1");
-                String menu2 = loadOrderTrend.getString("item2");
-                int frequency = loadOrderTrend.getInt("times_ordered_together");
-
-                System.out.println("printing stuff out");
-                trendStringBuilder.append(String.format("%-25s %-7s %10d%n", menu1, menu2, frequency));
-                trends_text.setText(trendStringBuilder.toString());
-                System.out.println("done printing");
-            }
-
-            if (!hour1.equals("11am") && !hour1.equals("12pm") && !hour1.equals("1pm") && !hour1.equals("2pm") && !hour1.equals("3pm") && !hour1.equals("4pm") && !hour1.equals("5pm") && !hour1.equals("6pm") && !hour1.equals("7pm") && !hour1.equals("8pm")) {
-                order_trends_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
-                return;
-            }
-
-            if (!hour2.equals("11am") && !hour2.equals("12pm") && !hour2.equals("1pm") && !hour2.equals("2pm") && !hour2.equals("3pm") && !hour2.equals("4pm") && !hour2.equals("5pm") && !hour2.equals("6pm") && !hour2.equals("7pm") && !hour2.equals("8pm")) {
-                order_trends_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
-                return;
-            }
-
-            if (hour1.compareTo(hour2) > 0) {
-                order_trends_warning.setText("The second hour cannot be earlier than the first hour.");
-                return;
-            }
-
-            if (day1 > 31 || day1 < 1)
-            {
-                order_trends_warning.setText("The days must be a number between 1 and 31.");
-                return;
-            }
-            if (month1 > 12 || month1 < 1 || month2 > 12 || month2 < 1)
-            {
-                order_trends_warning.setText("The months must be a number between 1 and 12.");
-                return;
-            }
-
-            if(year1 > year2)
-            {
-                order_trends_warning.setText("Second year must come after first year");
-                return;
-            }
-            if ((year1 + "").length() != 4 || (year2 + "").length() != 4) {
-                order_trends_warning.setText("The year must be four digits long.");
-                return;
-            }
-
-            if( (year1 > 2025)|| (year2 > 2025) || (year1 < 2023)|| (year2 < 2023)) {
-                order_trends_warning.setText("Year has to be within 2023 - 2025.");
-                return;
-            }
-
-            if (year1 == year2 && month1 > month2) {
-                order_trends_warning.setText("The second month cannot be earlier than the first month in the same year.");
-                return;
-            }
-
-            if (year1 == year2 && month1 == month2 && day1 > day2) {
-                order_trends_warning.setText("The second day cannot be earlier than the first in the same month and year.");
-                return;
-            }
-
-            clearTextFields();
-            order_trends_warning.setText("");
-        }
-        catch (Exception error) {
-            order_trends_warning.setText("Invalid value types");
-        }
     }
 
     /**
