@@ -18,6 +18,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.input.MouseEvent;
 
+import java.time.LocalTime;          // to get current hour for excess report
+
 public class SceneController {
 
     private Connection conn = null;
@@ -44,6 +46,8 @@ public class SceneController {
     @FXML private Label employees_text = new Label("");
     @FXML private Label menu_text = new Label("");
     @FXML private Label history_text = new Label("");
+    @FXML private Label excess_text = new Label("");
+    @FXML private Label trends_text = new Label("");
     @FXML private Label sales_report_text = new Label("");
     @FXML private Label restock_report_text = new Label("");
     @FXML private Label seasonal_text = new Label("");
@@ -55,6 +59,8 @@ public class SceneController {
     @FXML private Label menu_warning = new Label("");
     @FXML private Label orders_warning = new Label("");
     @FXML private Label history_warning = new Label("");
+    @FXML private Label excess_warning = new Label("");
+    @FXML private Label order_trends_warning = new Label("");
     @FXML private Label sales_report_warning = new Label("");
     @FXML private Label restock_report_warning = new Label("");
 
@@ -87,12 +93,28 @@ public class SceneController {
     @FXML private TextField upd_status = new TextField();
 
     //menu text fields
+    @FXML private TextField add_dish = new TextField();
+    @FXML private TextField add_price = new TextField();
     @FXML private TextField del_menu = new TextField();
     @FXML private TextField upd_menu = new TextField();
-    @FXML private TextField add_dish = new TextField();
     @FXML private TextField upd_dish = new TextField();
-    @FXML private TextField add_price = new TextField();
     @FXML private TextField upd_price = new TextField();
+
+    // excess report text fields
+    @FXML private TextField from_hr = new TextField();
+    @FXML private TextField from_day = new TextField();
+    @FXML private TextField from_month = new TextField();
+    @FXML private TextField from_year = new TextField();
+
+    // order trend report text fields
+    @FXML private TextField st_trend_hr = new TextField();
+    @FXML private TextField st_trend_day = new TextField();
+    @FXML private TextField st_trend_month = new TextField();
+    @FXML private TextField st_trend_year = new TextField();
+    @FXML private TextField end_trend_hr = new TextField();
+    @FXML private TextField end_trend_day = new TextField();
+    @FXML private TextField end_trend_month = new TextField();
+    @FXML private TextField end_trend_year = new TextField();
 
     //order history text fields
     @FXML private TextField del_id = new TextField();
@@ -499,7 +521,6 @@ public class SceneController {
         String name = misc_list.getSelectionModel().getSelectedItem().getMenuitem();
 
         connect();
-
         //querying the database for price
         try {
             Statement stmt = conn.createStatement();
@@ -701,6 +722,22 @@ public class SceneController {
         upd_menu.setText("");
         upd_dish.setText("");
         upd_price.setText("");
+
+        // excess report text fields
+        from_hr.setText("");
+        from_month.setText("");
+        from_day.setText("");
+        from_year.setText("");
+
+        // order trend report text fields
+        st_trend_hr.setText("");
+        st_trend_day.setText("");
+        st_trend_month.setText("");
+        st_trend_year.setText("");
+        end_trend_hr.setText("");
+        end_trend_day.setText("");
+        end_trend_month.setText("");
+        end_trend_year.setText("");
 
         //order history fields
         del_id.setText("");
@@ -932,8 +969,6 @@ public class SceneController {
         close();
     }
 
-
-
     /**
      * This allows the manager to add items to the inventory.
      * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
@@ -978,12 +1013,14 @@ public class SceneController {
         }
         close();
     }
+
     /**
      * This allows the manager to remove items from the inventory.
      * Manager has to enter the item id in the text field to remove it
      * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
      * Includes an SQL command to ensure that item is removed from database
      * Clears the text field once item has been removed from inventory
+     * 
      * @author Olivia Lee
      * @param e the MouseEvent that triggers this function
      */
@@ -1014,12 +1051,14 @@ public class SceneController {
         }
         close();
     }
+
     /**
      * This allows the manager to add extra items to the inventory when stock is running low.
      * Manager has to enter the item id, amount, and capacity of each the item to be updated
      * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
      * Includes an SQL command to ensure that change occurs in database as well
      * Clears the text field once item has been updated in inventory
+     * 
      * @author Olivia Lee
      * @param e the MouseEvent that triggers this function
      */
@@ -1366,15 +1405,13 @@ public class SceneController {
         close();
     }
 
-
-
-
     /**
      * This allows the manager to delete an order from order history
      * Manager has to enter the order id, hour, day, week, month, and year
      * Takes care of error handling, ensuring that an order from a different date is not accidentally deleted
      * Includes an SQL command to delete the order from order history
      * Clears the text field once item has been deleted
+     *
      * @author Olivia Lee
      * @param e the MouseEvent that triggers this function
      */
@@ -1417,6 +1454,7 @@ public class SceneController {
      * Takes care of error handling, ensuring that an order from a different date is not accidentally updated
      * Includes an SQL command to update the order from order history
      * Clears the text field once item has been deleted
+     *
      * @author Olivia Lee
      * @param e the MouseEvent that triggers this function
      */
@@ -1589,6 +1627,197 @@ public class SceneController {
         // If the ingredient is not found, or there was an error, return false
         return false;
     }
+
+    public void loadExcessReport(MouseEvent e) {
+        StringBuilder excessStringBuilder = new StringBuilder();
+
+        try {
+            connect(); // Ensure this method properly initializes and sets 'conn'
+            Statement stmt = conn.createStatement();
+            String hour = from_hr.getText();
+            int day = Integer.parseInt(from_day.getText());
+            int month = Integer.parseInt(from_month.getText());
+            int year = Integer.parseInt(from_year.getText());
+
+            int stop_hour = LocalTime.now().getHour();
+            int twelveHourFormat = stop_hour % 12 == 0 ? 12 : stop_hour % 12; // Convert 24-hour format to 12-hour format
+            boolean isPM = stop_hour >= 12; // Check if it's PM
+            String stop_string; // Declare stop_string here
+            if(isPM) {
+                stop_string = Integer.toString(twelveHourFormat) + "pm";
+            } else {
+                stop_string = Integer.toString(twelveHourFormat) + "am";
+            }
+            System.out.println("stop string is " + stop_string);
+            // Ensure SQL uses correct format and comparisons based on your database's time storage format
+            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients " +
+                    "i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '" + hour + "' " +
+                    "AND o.hour <= '12pm' AND o.day = " + day + " AND o.month = " + month + " AND o.year = " + year + " AND inv.amount >= 0.9 * inv.capacity";
+            ResultSet loadExcess = stmt.executeQuery(sqlStatement);
+
+            System.out.println("while loop");
+            while (loadExcess.next()) {
+                System.out.println("giving values");
+                String ingredient = loadExcess.getString("ingredient");
+                int amount = loadExcess.getInt("amount");
+                int capacity = loadExcess.getInt("capacity");
+                String hourDisplay = loadExcess.getString("hour");
+                int dayDisplay = loadExcess.getInt("day");
+                int monthDisplay = loadExcess.getInt("month");
+                int yearDisplay = loadExcess.getInt("year");
+
+                System.out.println("printing stuff out");
+                excessStringBuilder.append(String.format("%-25s %-7s %-7s %10d %10d %10d %10d%n", ingredient, hourDisplay, dayDisplay, monthDisplay, yearDisplay, amount, capacity));
+                excess_text.setText(excessStringBuilder.toString());
+                System.out.println("done printing");
+            }
+
+            System.out.println("error handling");
+            //error checking input good
+            if (!hour.equals("11am") && !hour.equals("12pm") && !hour.equals("1pm") && !hour.equals("2pm") && !hour.equals("3pm") && !hour.equals("4pm") && !hour.equals("5pm") && !hour.equals("6pm") && !hour.equals("7pm") && !hour.equals("8pm")) {
+                excess_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
+                return;
+            }
+
+            if (day > 31 || day < 1)
+            {
+                excess_warning.setText("The days must be a number between 1 and 31.");
+                return;
+            }
+            if (month > 12 || month < 1)
+            {
+                excess_warning.setText("The months must be a number between 1 and 12.");
+                return;
+            }
+
+            if ((year + "").length() != 4){
+                excess_warning.setText("The year must be four digits long.");
+                return;
+            }
+
+            if( (year > 2025) || (year < 2023)) {
+                excess_warning.setText("Year has to be within 2023 - 2025.");
+                return;
+            }
+
+            clearTextFields();
+            excess_warning.setText("");
+        }
+        catch (Exception error) {
+            error.printStackTrace();
+            excess_warning.setText("Invalid value types");
+//            System.out.println("invalid value type");
+
+        }
+    }
+
+    public void loadOrderTrendReport(MouseEvent e)
+    {
+        StringBuilder trendStringBuilder = new StringBuilder();
+        System.out.println("load button clicked");
+
+        try {
+            String hour1 = st_trend_hr.getText();
+            String hour2 = end_trend_hr.getText();
+            int day1 = Integer.parseInt(st_trend_day.getText());
+            int day2 = Integer.parseInt(st_trend_day.getText());
+            int month1 = Integer.parseInt(st_trend_month.getText());
+            int month2 = Integer.parseInt(st_trend_month.getText());
+            int year1 = Integer.parseInt(st_trend_year.getText());
+            int year2 = Integer.parseInt(st_trend_year.getText());
+
+            if (hour1.isEmpty() || hour2.isEmpty()) {
+                order_trends_warning.setText("You must enter an hour.");
+                return;
+            }
+
+//            if (day1 ==  || hour2.isEmpty()) {
+//                order_trends_warning.setText("You must enter an hour.");
+//                return;
+//            }
+
+            connect();
+            Statement stmt = conn.createStatement();
+//            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders " +
+//                    "AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.day BETWEEN '2' AND '3' " +
+//                    "AND o1.month BETWEEN '2' AND '3' AND o1.year BETWEEN '2024' AND '2024' GROUP BY o1.menu_item, o2.menu_item ORDER BY " +
+//                    "times_ordered_together DESC";
+            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.hour BETWEEN '"+ hour1 + "' AND '" + hour2 + "' AND o1.day BETWEEN '"+ day1 + "' AND '"+ day2 + "'AND o1.month BETWEEN '" + month1 + "' AND '" + month2 + "' AND o1.year BETWEEN '" + year1 + "' AND '" + year2 + "' GROUP BY o1.menu_item, o2.menu_item ORDER BY times_ordered_together DESC";
+
+            System.out.println("sending sql command");
+            ResultSet loadOrderTrend = stmt.executeQuery(sqlStatement);
+            System.out.println("Entering while loop");
+            while(loadOrderTrend.next())
+            {
+                String menu1 = loadOrderTrend.getString("item1");
+                String menu2 = loadOrderTrend.getString("item2");
+                int frequency = loadOrderTrend.getInt("times_ordered_together");
+
+                System.out.println("printing stuff out");
+                trendStringBuilder.append(String.format("%-25s %-25s %10d%n", menu1, menu2, frequency));
+                trends_text.setText(trendStringBuilder.toString());
+                System.out.println("done printing");
+            }
+
+            if (!hour1.equals("11am") && !hour1.equals("12pm") && !hour1.equals("1pm") && !hour1.equals("2pm") && !hour1.equals("3pm") && !hour1.equals("4pm") && !hour1.equals("5pm") && !hour1.equals("6pm") && !hour1.equals("7pm") && !hour1.equals("8pm")) {
+                order_trends_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
+                return;
+            }
+
+            if (!hour2.equals("11am") && !hour2.equals("12pm") && !hour2.equals("1pm") && !hour2.equals("2pm") && !hour2.equals("3pm") && !hour2.equals("4pm") && !hour2.equals("5pm") && !hour2.equals("6pm") && !hour2.equals("7pm") && !hour2.equals("8pm")) {
+                order_trends_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
+                return;
+            }
+
+            if (hour1.compareTo(hour2) > 0) {
+                order_trends_warning.setText("The second hour cannot be earlier than the first hour.");
+                return;
+            }
+
+            if (day1 > 31 || day1 < 1)
+            {
+                order_trends_warning.setText("The days must be a number between 1 and 31.");
+                return;
+            }
+            if (month1 > 12 || month1 < 1 || month2 > 12 || month2 < 1)
+            {
+                order_trends_warning.setText("The months must be a number between 1 and 12.");
+                return;
+            }
+
+            if(year1 > year2)
+            {
+                order_trends_warning.setText("Second year must come after first year");
+                return;
+            }
+            if ((year1 + "").length() != 4 || (year2 + "").length() != 4) {
+                order_trends_warning.setText("The year must be four digits long.");
+                return;
+            }
+
+            if( (year1 > 2025)|| (year2 > 2025) || (year1 < 2023)|| (year2 < 2023)) {
+                order_trends_warning.setText("Year has to be within 2023 - 2025.");
+                return;
+            }
+
+            if (year1 == year2 && month1 > month2) {
+                order_trends_warning.setText("The second month cannot be earlier than the first month in the same year.");
+                return;
+            }
+
+            if (year1 == year2 && month1 == month2 && day1 > day2) {
+                order_trends_warning.setText("The second day cannot be earlier than the first in the same month and year.");
+                return;
+            }
+
+            clearTextFields();
+            order_trends_warning.setText("");
+        }
+        catch (Exception error) {
+            order_trends_warning.setText("Invalid value types");
+        }
+    }
+
 
     /**
      * Opens the connection to the PostGres Database
