@@ -1125,15 +1125,16 @@ public class SceneController {
             } else {
                 stop_string = Integer.toString(twelveHourFormat) + "am";
             }
-
+            System.out.println("stop string is " + stop_string);
             // Ensure SQL uses correct format and comparisons based on your database's time storage format
-            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, " +
-                    "o.year FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON " +
-                    "i.ingredient = inv.ingredient WHERE o.hour >= '" + hour + "' AND o.hour < '" + stop_string + "' " +
-                    "AND o.day = " + day + " AND o.month = " + month + " AND o.year = " + year + " AND " +
-                    "inv.amount >= 0.9 * inv.capacity";
+            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients " +
+                    "i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '" + hour + "' " +
+                    "AND o.hour <= '12pm' AND o.day = " + day + " AND o.month = " + month + " AND o.year = " + year + " AND inv.amount >= 0.9 * inv.capacity";
             ResultSet loadExcess = stmt.executeQuery(sqlStatement);
+
+            System.out.println("while loop");
             while (loadExcess.next()) {
+                System.out.println("giving values");
                 String ingredient = loadExcess.getString("ingredient");
                 int amount = loadExcess.getInt("amount");
                 int capacity = loadExcess.getInt("capacity");
@@ -1142,10 +1143,13 @@ public class SceneController {
                 int monthDisplay = loadExcess.getInt("month");
                 int yearDisplay = loadExcess.getInt("year");
 
-                excessStringBuilder.append(String.format("%-25s %-10s %-7s %2s %9s %10d %10d%n", ingredient, hourDisplay, dayDisplay, monthDisplay, yearDisplay, amount, capacity));
+                System.out.println("printing stuff out");
+                excessStringBuilder.append(String.format("%-25s %-7s %-7s %10d %10d %10d %10d%n", ingredient, hourDisplay, dayDisplay, monthDisplay, yearDisplay, amount, capacity));
+                excess_text.setText(excessStringBuilder.toString());
+                System.out.println("done printing");
             }
-            excess_text.setText(excessStringBuilder.toString());
 
+            System.out.println("error handling");
             //error checking input good
             if (!hour.equals("11am") && !hour.equals("12pm") && !hour.equals("1pm") && !hour.equals("2pm") && !hour.equals("3pm") && !hour.equals("4pm") && !hour.equals("5pm") && !hour.equals("6pm") && !hour.equals("7pm") && !hour.equals("8pm")) {
                 excess_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
@@ -1177,8 +1181,9 @@ public class SceneController {
             excess_warning.setText("");
         }
         catch (Exception error) {
-//            excess_warning.setText("Invalid value types");
-            System.out.println("invalid value type");
+            error.printStackTrace();
+            excess_warning.setText("Invalid value types");
+//            System.out.println("invalid value type");
 
         }
     }
