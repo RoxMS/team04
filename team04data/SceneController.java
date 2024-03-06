@@ -1043,7 +1043,7 @@ public class SceneController {
                         "AND year=" + year1 + " " +
                         "AND ((month>" + month1 + " AND month<"+ month2 + ") " +
                         "OR (month=" + month1 + " AND day>=" + day1 + ") " +
-                        "OR (month=" + month2 + " AND day<=" + day2 + ") " +
+                        "OR (month=" + month2 + " AND day<=" + day2 + ")) " +
                         "GROUP BY menu_item";
             }
             else {
