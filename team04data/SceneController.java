@@ -1754,7 +1754,7 @@ public class SceneController {
                 int frequency = loadOrderTrend.getInt("times_ordered_together");
 
                 System.out.println("printing stuff out");
-                trendStringBuilder.append(String.format("%-25s %-25s %10d%n", menu1, menu2, frequency));
+                trendStringBuilder.append(String.format("%-27s %-27s %10d%n", menu1, menu2, frequency));
                 trends_text.setText(trendStringBuilder.toString());
                 System.out.println("done printing");
             }
