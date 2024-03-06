@@ -14,6 +14,7 @@
 
 <!-- Make my tabs into a drop down menu -->
 
+
 <AnchorPane prefHeight="713.0" prefWidth="794.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.revs_pos_331.SceneController">
     <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="39.0" stroke="BLACK" strokeType="INSIDE" width="746.0" AnchorPane.rightAnchor="48.0" />
     <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="495.0" prefWidth="773.0" style="-fx-background-color: white;" tabClosingPolicy="UNAVAILABLE">
@@ -327,7 +328,6 @@
         </Tab>
         <Tab style="-fx-background-color: #fcba03; -fx-font-weight: bold;" text="ORDER HISTORY">
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
-
                 <Label layoutX="111.0" layoutY="13.0" text="ID">
                     <!--                    <font>-->
                     <!--                        <Font name="Microsoft New Tai Lue Bold" size="15.0" />-->
@@ -363,7 +363,6 @@
                     <!--                        <Font name="Microsoft New Tai Lue Bold" size="15.0" />-->
                     <!--                    </font>-->
                 </Label>
-
                 <Label layoutX="701.0" layoutY="14.0" prefHeight="18.0" prefWidth="35.0" text="PRICE">
                     <!--                    <font>-->
                     <!--                        <Font name="Microsoft New Tai Lue Bold" size="15.0" />-->
@@ -681,7 +680,6 @@
                         <Font name="Monospaced Regular" size="15.0" />
                     </font>
                 </TextField>
-
                 <Label layoutX="386.0" layoutY="379.0" text="to" />
                 <TextField fx:id="end_trend_day" layoutX="416.0" layoutY="374.0" prefHeight="25.0" prefWidth="71.0" promptText="day2">
                     <font>
@@ -710,34 +708,118 @@
                 </TextField>
             </AnchorPane>
         </Tab>
-        <Tab style="-fx-background-color: #fcba03; -fx-font-weight: bold;" text="PRODUCT USAGE CHART">
-            <content>
-                <AnchorPane prefHeight="545.0" prefWidth="779.0">
-                    <children>
-                        <Label layoutX="37.0" layoutY="14.0" text="INGREDIENT" />
-                        <Label layoutX="287.0" layoutY="14.0" text="TOTAL COUNT" />
-                        <ScrollPane layoutX="14.0" layoutY="35.0" prefHeight="328.0" prefWidth="744.0">
-                            <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="328.0" prefWidth="743.0">
-                                    <children>
-                                        <Label fx:id="restock_report_text1" alignment="TOP_LEFT" prefHeight="684.0" prefWidth="750.0">
-                                            <font>
-                                                <Font name="Monospaced Regular" size="15.0" />
-                                            </font>
-                                        </Label>
-                                    </children>
-                                </AnchorPane>
-                            </content>
-                        </ScrollPane>
-                   <TextField fx:id="monthTextField" layoutX="150.0" layoutY="370.0" promptText="MONTH" />
-                   <TextField fx:id="startTimeTextField" layoutX="400.0" layoutY="371.0" promptText="START TIME" />
-                   <TextField fx:id="stopTimeTextField" layoutX="400.0" layoutY="400.0" promptText="STOP TIME" />
-                   <TextField fx:id="yearTextField" layoutX="150.0" layoutY="400.0" promptText="YEAR" />
-                   <Button layoutX="17.0" layoutY="369.0" mnemonicParsing="false" onMousePressed="#listIngredientCounts" prefHeight="25.0" prefWidth="73.0" style="-fx-background-color: #fcba03; -fx-font-weight: bold;" text="LOAD" />
-                    </children>
-                </AnchorPane>
-            </content>
-        </Tab>
+      <Tab style="-fx-background-color: #fcba03; -fx-font-weight: bold;" text="PRODUCT USAGE CHART">
+         <content>
+            <AnchorPane prefHeight="545.0" prefWidth="779.0">
+               <children>
+                  <Label layoutX="37.0" layoutY="14.0" text="INGREDIENT" />
+                  <Label layoutX="287.0" layoutY="14.0" text="TOTAL COUNT" />
+                  <ScrollPane layoutX="14.0" layoutY="35.0" prefHeight="328.0" prefWidth="744.0">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="328.0" prefWidth="743.0">
+                           <children>
+                              <Label fx:id="ingredient_text" alignment="TOP_LEFT" prefHeight="684.0" prefWidth="750.0">
+                                 <font>
+                                    <Font name="Monospaced Regular" size="15.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+                  <TextField fx:id="yearTextField" layoutX="146.0" layoutY="415.0" promptText="YEAR" />
+                  <Button layoutX="16.0" layoutY="375.0" mnemonicParsing="false" onMouseClicked="#listIngredientCounts" onMousePressed="#listIngredientCounts" prefHeight="25.0" prefWidth="73.0" style="-fx-background-color: #fcba03; -fx-font-weight: bold;" text="LOAD" />
+                  <Label fx:id="seasonalitem_warning" layoutX="500.0" layoutY="386.0" prefHeight="17.0" prefWidth="232.0" />
+                  <TextField fx:id="monthTextField" layoutX="145.0" layoutY="379.0" promptText="MONTH" />
+                  <TextField fx:id="startTimeTextField" layoutX="328.0" layoutY="412.0" promptText="START TIME" />
+                  <TextField fx:id="stopTimeTextField" layoutX="327.0" layoutY="375.0" promptText="STOP TIME" />
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+      <Tab style="-fx-background-color: #fcba03; -fx-font-weight: bold;" text="ADD SEASONAL ITEM">
+         <content>
+            <AnchorPane prefHeight="534.0" prefWidth="753.0">
+               <children>
+                  <Label layoutX="119.0" layoutY="13.0" text="ID" />
+                  <Label layoutX="172.0" layoutY="13.0" text="DISH" />
+                  <Label layoutX="668.0" layoutY="13.0" text="PRICE" />
+                  <ScrollPane layoutX="101.0" layoutY="35.0" prefHeight="245.0" prefWidth="660.0">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="559.0" prefWidth="659.0">
+                           <children>
+                              <Label fx:id="seasonal_text" alignment="TOP_LEFT" prefHeight="724.0" prefWidth="662.0" style="-fx-background-color: #d1d1d1;">
+                                 <font>
+                                    <Font name="Monospaced Regular" size="15.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </ScrollPane>
+                  <Button layoutX="18.0" layoutY="292.0" mnemonicParsing="false" onMouseClicked="#addSeasonalItem" prefHeight="25.0" prefWidth="70.0" style="-fx-background-color: #fcba03;" text="ADD">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                     </padding>
+                  </Button>
+                  <TextField fx:id="dish_nameTextField" layoutX="126.0" layoutY="290.0" prefHeight="25.0" prefWidth="454.0" promptText="dish">
+                     <font>
+                        <Font name="Monospaced Regular" size="15.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="price_textTextField" layoutX="629.0" layoutY="290.0" prefHeight="25.0" prefWidth="110.0" promptText="price">
+                     <font>
+                        <Font name="Monospaced Regular" size="15.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="start_monthTextField" layoutX="127.0" layoutY="332.0" prefHeight="29.0" prefWidth="144.0" promptText="Start Month">
+                     <font>
+                        <Font name="Monospaced Regular" size="15.0" />
+                     </font>
+                  </TextField>
+                  <Label fx:id="menu_warning1" layoutX="163.0" layoutY="342.0" text=" " textFill="#8a2e0d">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Button layoutX="17.0" layoutY="376.0" mnemonicParsing="false" onMouseClicked="#addSeasonalItemIngredients" prefHeight="25.0" prefWidth="136.0" style="-fx-background-color: #fcba03;" text="ADD INGREDIENT">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                     </padding>
+                  </Button>
+                  <TextField fx:id="end_monthTextField" layoutX="304.0" layoutY="331.0" prefHeight="29.0" prefWidth="144.0" promptText="End Month">
+                     <font>
+                        <Font name="Monospaced Regular" size="15.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="ingredientTextField" layoutX="242.0" layoutY="375.0" prefHeight="29.0" prefWidth="277.0" promptText="Ingredient">
+                     <font>
+                        <Font name="Monospaced Regular" size="15.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="intgr_countTextField" layoutX="172.0" layoutY="375.0" prefHeight="29.0" prefWidth="50.0" promptText="#">
+                     <font>
+                        <Font name="Monospaced Regular" size="15.0" />
+                     </font>
+                  </TextField>
+                  <Button layoutX="559.0" layoutY="418.0" mnemonicParsing="false" onMouseClicked="#loadSeasonalTable" prefHeight="25.0" prefWidth="70.0" style="-fx-background-color: #fcba03;" text="LOAD">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                     </padding>
+                  </Button>
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
     </TabPane>
     <Line endX="793.6262817382812" endY="-54.00001525878906" layoutX="-21.0" layoutY="54.0" startX="21.0" startY="-54.0" stroke="#590404" strokeWidth="15.0" />
     <Line endX="75.0" endY="25.0" layoutX="-75.0" layoutY="-25.0" startX="75.0000228881836" startY="499.1065673828125" stroke="#590404" strokeWidth="15.0" />
