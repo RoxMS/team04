@@ -932,7 +932,7 @@ public class SceneController {
 
             // Determine the hour in 24-hour format
             int military = currentTime.getHour();
-            String period = (military >= 12) ? "PM" : "AM";
+            String period = (military >= 12) ? "pm" : "am";
             String hour;
             if (military > 12) {
                 hour = String.format("%02d", military - 12); // Convert to 12-hour format
@@ -943,7 +943,7 @@ public class SceneController {
             }
 
             // Construct the complete hour string
-            hour = hour + ":00 " + period;
+            hour = hour + period;
 
             int week = 105;
             Statement stmt = this.conn.createStatement();
