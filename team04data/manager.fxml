@@ -652,7 +652,7 @@
                     <AnchorPane minHeight="0.0" minWidth="0.0">
                         <Label fx:id="trends_text" alignment="TOP_LEFT" prefHeight="684.0" prefWidth="750.0">
                             <font>
-                                <Font name="Monospaced Regular" size="14.0" />
+                                <Font name="Monospaced Regular" size="8.0" />
                             </font>
                         </Label>
                     </AnchorPane>
