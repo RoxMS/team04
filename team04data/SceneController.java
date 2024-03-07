@@ -8,7 +8,6 @@ import java.time.*;
 import java.sql.*;
 import java.util.List;
 
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +18,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.*;
 import javafx.scene.input.MouseEvent;
 
+
+
 public class SceneController {
 
     private Connection conn = null;
@@ -27,20 +28,10 @@ public class SceneController {
     @FXML private TableView<Misc> misc_list;
     @FXML private TableColumn<Misc, String> misc_col;
 
-
-
     String orders_string = "";
-    String sales_string = "";
-    String inventory_string = "";
-    String employees_string = "";
-    String menu_string = "";
-    String history_string = "";
-    String sales_report_string = "";
-    String restock_report_string = "";
-    String seasonal_string = "";
     int count = 1;
-    String ingredientstring = "";
 
+    //table textboxes
     @FXML private Label orders_text = new Label("");
     @FXML private Label sales_text = new Label("");
     @FXML private Label inventory_text = new Label("");
@@ -51,7 +42,8 @@ public class SceneController {
     @FXML private Label restock_report_text = new Label("");
     @FXML private Label ingredient_text = new Label("");
     @FXML private Label seasonal_text = new Label("");
-
+    @FXML private Label excess_text = new Label("");
+    @FXML private Label trends_text = new Label("");
 
     //warnings
     @FXML private Label login_warning = new Label("");
@@ -62,6 +54,10 @@ public class SceneController {
     @FXML private Label history_warning = new Label("");
     @FXML private Label sales_report_warning = new Label("");
     @FXML private Label restock_report_warning = new Label("");
+    @FXML private Label ingredient_count_warning = new Label("");
+    @FXML private Label excess_warning = new Label("");
+    @FXML private Label order_trends_warning = new Label("");
+    @FXML private Label seasonalitem_warning = new Label("");
 
     //login text fields
     @FXML private TextField id = new TextField();
@@ -83,7 +79,6 @@ public class SceneController {
     @FXML private TextField add_cap = new TextField();
     @FXML private TextField upd_cap = new TextField();
     @FXML private TextField deletion_Month = new TextField();
-
 
     //employees text fields
     @FXML private TextField del_emp = new TextField();
@@ -117,7 +112,7 @@ public class SceneController {
     @FXML private TextField upd_hist_item = new TextField();
     @FXML private TextField upd_sale = new TextField();
 
-    //sales restock text fields
+    //sales report text fields
     @FXML private TextField sales_hr1 = new TextField();
     @FXML private TextField sales_day1 = new TextField();
     @FXML private TextField sales_mth1 = new TextField();
@@ -127,16 +122,12 @@ public class SceneController {
     @FXML private TextField sales_mth2 = new TextField();
     @FXML private TextField sales_yr2 = new TextField();
 
+    //product usage text fields
     @FXML private TextField yearTextField = new TextField();
     @FXML private TextField startTimeTextField = new TextField();
     @FXML private TextField stopTimeTextField = new TextField();
     @FXML private TextField monthTextField = new TextField();
-    @FXML private Label ingredientcount_warning = new Label("");
-
-    @FXML private TextField dish_nameTextField = new TextField();
-    @FXML private TextField start_monthTextField = new TextField();
-    @FXML private TextField end_monthTextField = new TextField();
-    @FXML private TextField price_textTextField = new TextField();
+    @FXML private TextField dayTextField = new TextField();
 
     // excess report text fields
     @FXML private TextField from_hr = new TextField();
@@ -154,224 +145,17 @@ public class SceneController {
     @FXML private TextField end_trend_month = new TextField();
     @FXML private TextField end_trend_year = new TextField();
 
-    @FXML private Label excess_text = new Label("");
-    @FXML private Label trends_text = new Label("");
-    @FXML private Label excess_warning = new Label("");
-    @FXML private Label order_trends_warning = new Label("");
-
-    @FXML private TextField ingredient = new TextField();
-    @FXML private TextField ingredientCount = new TextField();
-
-    @FXML private Label seasonalitem_warning = new Label("");
-
+    //seasonal text fields
+    @FXML private TextField dish_nameTextField = new TextField();
+    @FXML private TextField start_monthTextField = new TextField();
+    @FXML private TextField end_monthTextField = new TextField();
+    @FXML private TextField price_textTextField = new TextField();
     @FXML private TextField ingredientTextField = new TextField();
     @FXML private TextField intgr_countTextField = new TextField();
     @FXML private TextField add_dish_nameTextField = new TextField();
 
-    @FXML private TextField dayTextField = new TextField();
 
 
-    public void loadSeasonalTable() {
-        seasonal_string = "";
-        //querying for menu table
-        try {
-            connect();
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT * FROM seasonal";
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            while (result.next()) {
-                int menu_itemID = result.getInt("menu_itemID");
-                String menu_item = result.getString("menu_item");
-                int start_month = result.getInt("start_month");
-                int end_month = result.getInt("end_month");
-                seasonal_string += " " + menu_itemID;
-                for(int i = 1; i <= 3-(menu_itemID+"").length(); i++) {
-                    seasonal_string += " ";
-                }
-                seasonal_string += "   " + menu_item;
-                for(int i = 1; i <= 51-menu_item.length(); i++) {
-                    seasonal_string += " ";
-                }
-                seasonal_string += "     " + start_month;
-                for(int i = 1; i <= 3-(menu_itemID+"").length(); i++) {
-                    seasonal_string += " ";
-                }
-                seasonal_string += "     " + end_month + "\n";
-            }
-            seasonal_text.setText(seasonal_string);
-        }
-        catch(Exception error) {
-            error.printStackTrace();
-            System.err.println(error.getClass().getName()+": "+error.getMessage());
-        }
-    }
-
-    //connected to the add
-    public void addSeasonalItem(MouseEvent e) {
-        try {
-            String dishName = dish_nameTextField.getText();
-
-            int startMonth = Integer.parseInt(start_monthTextField.getText());
-            int endMonth = Integer.parseInt(end_monthTextField.getText());
-            float price = Float.parseFloat(price_textTextField.getText());
-            String menu_item = dish_nameTextField.getText();
-
-
-            if (dishName.isEmpty()) {
-                seasonalitem_warning.setText("You must enter a value for all fields");
-                return;
-            }
-            if (startMonth == LocalDateTime.now().getMonthValue()) { // Modified condition
-                seasonalitem_warning.setText("Season is out of range");
-                return;
-            }
-            if (price < 0) {
-                seasonalitem_warning.setText("Price cannot be negative");
-                return;
-            }
-
-            // Insert item into menu table
-            this.connect();
-            String insertMenuStatement = "INSERT INTO menu (menu_item, price) VALUES (?, ?)";
-            PreparedStatement insertMenuStmt = this.conn.prepareStatement(insertMenuStatement);
-            insertMenuStmt.setString(1, dishName);
-            insertMenuStmt.setFloat(2, price);
-            insertMenuStmt.executeUpdate();
-
-            // Get menu item ID
-            String getMenuIdStatement = "SELECT menu_itemid FROM menu WHERE menu_item = ?";
-            PreparedStatement getMenuIdStmt = this.conn.prepareStatement(getMenuIdStatement);
-            getMenuIdStmt.setString(1, dishName);
-            ResultSet result = getMenuIdStmt.executeQuery();
-            int menuId = -1; // Initialize with a default value
-            if (result.next()) {
-                menuId = result.getInt("menu_itemid");
-            }
-
-            // Insert item into seasonal table
-            if (menuId != -1) { // Check if menu ID was retrieved successfully
-                String insertSeasonalStatement = "INSERT INTO seasonal (menu_itemID, menu_item, start_month, end_month) VALUES (?, ?, ?, ?)";
-                PreparedStatement insertSeasonalStmt = this.conn.prepareStatement(insertSeasonalStatement);
-                insertSeasonalStmt.setInt(1, menuId);
-                insertSeasonalStmt.setString(2, menu_item);
-                insertSeasonalStmt.setInt(3, startMonth);
-                insertSeasonalStmt.setInt(4, endMonth);
-                insertSeasonalStmt.executeUpdate();
-            } else {
-                seasonalitem_warning.setText("Unable to find menu item ID.");
-                return;
-            }
-
-            seasonalitem_warning.setText("");
-            loadSeasonalTable();
-
-
-        } catch (Exception error) {
-            seasonalitem_warning.setText("Unable to add seasonal item.");
-        }
-    }
-
-    // connected to add ingrediesnts
-    public void addSeasonalItemIngredients(MouseEvent e) {
-        try {
-            // Retrieve values from text fields
-            String dishName = add_dish_nameTextField.getText();
-            String ingredient = ingredientTextField.getText();
-            int ingredientCount = Integer.parseInt(intgr_countTextField.getText());
-            if (dishName.isEmpty() || ingredient.isEmpty()) {
-                seasonalitem_warning.setText("You must enter a value for all fields");
-                return;
-            }
-            if(ingredientCount < 0){
-                seasonalitem_warning.setText("no negatives");
-                return;
-            }
-            // Create SQL insert statement
-            String insertStatement = "INSERT INTO ingredients (menu_item, ingredient, count) VALUES (?, ?, ?)";
-
-            // Prepare and execute the statement
-            PreparedStatement stmt = conn.prepareStatement(insertStatement);
-            stmt.setString(1, dishName);
-            stmt.setString(2, ingredient);
-            stmt.setInt(3, ingredientCount);
-            stmt.executeUpdate();
-
-            // Clear text fields after successful insertion
-            dish_nameTextField.setText("");
-            ingredientTextField.setText("");
-            intgr_countTextField.setText("");
-        } catch (Exception error) {
-            error.printStackTrace();
-            // Handle any exceptions, e.g., display an error message
-        }
-
-    }
-    public void listIngredientCounts(MouseEvent e) {
-        try {
-            // Clear any previous warning messages
-            ingredientcount_warning.setText("");
-
-            // Get values from text fields
-            String startTime = startTimeTextField.getText();
-            String stopTime = stopTimeTextField.getText();
-            int month = Integer.parseInt(monthTextField.getText());
-            int year = Integer.parseInt(yearTextField.getText());
-            int day = Integer.parseInt(dayTextField.getText());
-            if (startTime.isEmpty() || stopTime.isEmpty()) {
-                ingredientcount_warning.setText("You must enter a value for all fields");
-                return;
-            }
-            if (year > 2023 || year < 2022) {
-                ingredientcount_warning.setText("Year is out of range");
-                return;
-            }
-            if (month > 12 || month < 1){
-                ingredientcount_warning.setText("Month entry is invalid");
-                return;
-            }
-            if (day < 1 || day > 30){
-                ingredientcount_warning.setText("Day entry is invalid");
-                return;
-            }
-
-            // Clear existing table data
-
-
-            this.connect();
-            String sqlStatement = "SELECT ingredients.ingredient, SUM(ingredients.count) AS total_count " +
-                    "FROM orders " +
-                    "JOIN ingredients ON orders.menu_item = ingredients.menu_item " +
-                    "WHERE orders.hour >= ? AND orders.hour <= ? " +
-                    "AND orders.month = ? AND orders.year = ? AND orders.day = ?" +
-                    "GROUP BY ingredients.ingredient";
-            PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
-            stmt.setString(1, startTime);
-            stmt.setString(2, stopTime);
-            stmt.setInt(3, month);
-            stmt.setInt(4, year);
-            stmt.setInt(4, day);
-
-            ResultSet result = stmt.executeQuery();
-            ingredientstring = "";
-            // Iterate over the result set and update the UI directly
-            while (result.next()) {
-                String ingredient = result.getString("ingredient");
-                int totalCount = result.getInt("total_count");
-                ingredientstring += " " + ingredient;
-                for(int i = 1; i <= 35 - ingredient.length(); i++){
-                    ingredientstring += "";
-                }
-                ingredientstring += "     " + totalCount + "\n";
-                // Update UI directly
-
-            }
-            ingredient_text.setText(ingredientstring);
-
-        } catch (Exception error) {
-            ingredientcount_warning.setText("Unable to load ingredient counts.");
-            error.printStackTrace();
-        }
-    }
 
     /**
      * This finds whether to login in to the manager side or the menu side.
@@ -490,9 +274,8 @@ public class SceneController {
      *
      * @author Olivia Lee
      */
-
     public void loadSalesTable() {
-        sales_string = "";
+        String sales_string = "";
         //querying for sales table
         try {
             Statement stmt = conn.createStatement();
@@ -527,7 +310,7 @@ public class SceneController {
      * @author Olivia Lee
      */
     public void loadInventoryTable() {
-        inventory_string = "";
+        String inventory_string = "";
         //querying for inventory table
         try {
             Statement stmt = conn.createStatement();
@@ -567,9 +350,9 @@ public class SceneController {
      * @author Olivia Lee
      */
     public void loadEmployeesTable() {
-        employees_string = "";
-        //querying for employees table
+        String employees_string = "";
         try {
+            //querying for employees table
             Statement stmt = conn.createStatement();
             String sqlStatement = "SELECT employeeID, name, status FROM employees ORDER BY employeeID ASC";
             ResultSet result = stmt.executeQuery(sqlStatement);
@@ -602,7 +385,7 @@ public class SceneController {
      * @author Olivia Lee
      */
     public void loadMenuTable() {
-        menu_string = "";
+        String menu_string = "";
         //querying for menu table
         try {
             Statement stmt = conn.createStatement();
@@ -637,7 +420,7 @@ public class SceneController {
      * @author Olivia Lee
      */
     public void loadOrderHistoryTable() {
-        history_string = "";
+        String history_string = "";
         //querying for order history table
         try {
             Statement stmt = conn.createStatement();
@@ -690,67 +473,1221 @@ public class SceneController {
         }
     }
 
-
-
     /**
-     * This loads the miscellaneous menu item names into an interactable table for the ordering terminal.
+     * This clears all the text fields in all the manager side tabs.
      *
      * @author Olivia Lee
      */
-    public void listMiscMenuItems(MouseEvent e) {
+    public void clearTextFields() {
+        //inventory text fields
+        add_item.setText("");
+        add_quant.setText("");
+        add_cap.setText("");
+        del_inv.setText("");
+        upd_inv.setText("");
+        upd_item.setText("");
+        upd_quant.setText("");
+        upd_cap.setText("");
+
+        //employee text fields
+        add_name.setText("");
+        add_status.setText("");
+        del_emp.setText("");
+        upd_name.setText("");
+        upd_status.setText("");
+        upd_emp.setText("");
+
+        //menu text fields
+        add_dish.setText("");
+        add_price.setText("");
+        del_menu.setText("");
+        upd_menu.setText("");
+        upd_dish.setText("");
+        upd_price.setText("");
+
+        //order history fields
+        del_id.setText("");
+        del_hr.setText("");
+        del_day.setText("");
+        del_mth.setText("");
+        del_wk.setText("");
+        del_yr.setText("");
+        upd_id.setText("");
+        upd_hr.setText("");
+        upd_day.setText("");
+        upd_mth.setText("");
+        upd_wk.setText("");
+        upd_yr.setText("");
+        upd_item.setText("");
+        upd_sale.setText("");
+
+        //sales text fields
+        sales_hr1.setText("");
+        sales_day1.setText("");
+        sales_mth1.setText("");
+        sales_yr1.setText("");
+        sales_hr2.setText("");
+        sales_day2.setText("");
+        sales_mth2.setText("");
+        sales_yr2.setText("");
+
+        // excess report text fields
+        from_hr.setText("");
+        from_month.setText("");
+        from_day.setText("");
+        from_year.setText("");
+
+        // order trend report text fields
+        st_trend_hr.setText("");
+        st_trend_day.setText("");
+        st_trend_month.setText("");
+        st_trend_year.setText("");
+        end_trend_hr.setText("");
+        end_trend_day.setText("");
+        end_trend_month.setText("");
+        end_trend_year.setText("");
+    }
+
+
+    /**
+     * This allows the manager to add items to the inventory.
+     * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
+     * Includes an SQL statement that gets a list of all the items currently in inventory after adding item
+     * Clears the text field once item has been added to inventory
+     *
+     * @author Olivia Lee
+     * @param e the MouseEvent that triggers this function
+     */
+    public void addInventoryItem(MouseEvent e) throws IOException {
         try {
-            misc_col.setCellValueFactory(new PropertyValueFactory<Misc, String>("menuitem"));
-            misc_list.setVisible(true);
+            connect();
 
-            List<Misc> list = new ArrayList<Misc>();
-            this.connect();
-            String sqlStatement = "SELECT menu_item FROM menu WHERE menu_itemid > 29";
-            PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
-            ResultSet result = stmt.executeQuery();
+            String ingredient = add_item.getText();
+            int amount = Integer.parseInt(add_quant.getText());
+            int capacity = Integer.parseInt(add_cap.getText());
 
-            while (result.next()) {
-                String menuItem = result.getString("menu_item");
-
-                list.add(new Misc(menuItem));
+            if (ingredient.isEmpty()) {
+                inventory_warning.setText("You must enter an ingredient.");
+                return;
+            }
+            if (amount > capacity) {
+                inventory_warning.setText("Amount cannot be greater than capacity.");
+                return;
+            }
+            if (amount < 0 || capacity < 0) {
+                inventory_warning.setText("Amount and capacity must both be positive numbers.");
+                return;
             }
 
-            misc_list.getItems().setAll(list);
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "INSERT INTO inventory(ingredient, amount, capacity) VALUES('" + ingredient + "', " + amount + ", " + capacity + ")";
+            stmt.executeUpdate(sqlStatement);
+
+            loadInventoryTable();
+
+            clearTextFields();
+            inventory_warning.setText("");
+        }
+        catch (Exception error) {
+            inventory_warning.setText("Invalid value types.");
+        }
+        close();
+    }
+
+    /**
+     * This allows the manager to remove items from the inventory.
+     * Manager has to enter the item id in the text field to remove it
+     * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
+     * Includes an SQL command to ensure that item is removed from database
+     * Clears the text field once item has been removed from inventory
+     * @author Olivia Lee
+     * @param e the MouseEvent that triggers this function
+     */
+    public void deleteInventoryItem(MouseEvent e) throws IOException {
+        try {
+            connect();
+
+            int inventoryID = Integer.parseInt(del_inv.getText());
+
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT inventoryID FROM inventory WHERE inventoryID=" + inventoryID;
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            if (!result.next()) {
+                inventory_warning.setText("Invalid inventory item ID.");
+                return;
+            }
+
+            sqlStatement = "DELETE FROM inventory WHERE inventoryID=" + inventoryID;
+            stmt.executeUpdate(sqlStatement);
+
+            loadInventoryTable();
+
+            clearTextFields();
+            inventory_warning.setText("");
+        }
+        catch (Exception error) {
+            inventory_warning.setText("Invalid value type.");
+        }
+        close();
+    }
+
+    /**
+     * This allows the manager to add extra items to the inventory when stock is running low.
+     * Manager has to enter the item id, amount, and capacity of each the item to be updated
+     * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
+     * Includes an SQL command to ensure that change occurs in database as well
+     * Clears the text field once item has been updated in inventory
+     * @author Olivia Lee
+     * @param e the MouseEvent that triggers this function
+     */
+    public void updateInventoryItem(MouseEvent e) throws IOException {
+        try {
+            connect();
+
+            int inventoryID = Integer.parseInt(upd_inv.getText());
+            String ingredient = upd_item.getText();
+            int amount = Integer.parseInt(upd_quant.getText());
+            int capacity = Integer.parseInt(upd_cap.getText());
+
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT ingredient, amount, capacity FROM inventory WHERE inventoryID=" + inventoryID;
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            if (!result.next()) {
+                inventory_warning.setText("Invalid inventory item ID.");
+                return;
+            }
+            result = stmt.executeQuery(sqlStatement);
+            while (result.next()) {
+                String ingredient_database = result.getString("ingredient");
+                int amount_database = result.getInt("amount");
+                int capacity_database = result.getInt("capacity");
+                if (ingredient_database.equals(ingredient) && amount_database == amount && capacity_database == capacity) {
+                    inventory_warning.setText("Nothing to update.");
+                    return;
+                }
+            }
+            if (ingredient.isEmpty()) {
+                inventory_warning.setText("You must enter an ingredient.");
+                return;
+            }
+            if (amount > capacity) {
+                inventory_warning.setText("Amount cannot be greater than capacity.");
+                return;
+            }
+            if (amount < 0 || capacity < 0) {
+                inventory_warning.setText("Amount and capacity must both be positive numbers.");
+                return;
+            }
+
+            stmt = conn.createStatement();
+            sqlStatement = "UPDATE inventory SET ingredient='" + ingredient + "', amount=" + amount + ", capacity=" + capacity + " WHERE inventoryID=" + inventoryID;
+            stmt.executeUpdate(sqlStatement);
+
+            loadInventoryTable();
+
+            clearTextFields();
+            inventory_warning.setText("");
+        }
+        catch (Exception error) {
+            inventory_warning.setText("Invalid value types.");
+        }
+        close();
+    }
+
+
+    /**
+     * Adds an employee item to the order.
+     * This adds an item in an order and its information to Order from the
+     * database using an SQL query when the mouse event is triggered.
+     *
+     * @author Olivia Lee
+     * @param e The MouseEvent triggered by the user action.
+     * @throws Exception error if the statement doesn't work and catches it as a GUI output warning
+     */
+    public void addEmployeeItem(MouseEvent e) throws IOException {
+        try {
+            connect();
+
+            //inserting employee item into database
+            String name = add_name.getText();
+            String status = add_status.getText();
+
+            if (name.isEmpty()) {
+                employees_warning.setText("You must enter a name.");
+                return;
+            }
+            if (!status.equals("manager") && !status.equals("employee")) {
+                employees_warning.setText("Invalid status.");
+                return;
+            }
+
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "INSERT INTO employees(name, status) VALUES('" + name + "', '" + status + "')";
+            stmt.executeUpdate(sqlStatement);
+
+            loadEmployeesTable();
+
+            clearTextFields();
+            employees_warning.setText("");
+        }
+        catch (Exception error) {
+            employees_warning.setText("Invalid value types.");
+        }
+        close();
+    }
+
+    /**
+     * Deletes an employee item to the order.
+     * This deletes an employee item in the employees table and its information from the
+     * database when the mouse event is triggered.
+     *
+     * @author Olivia Lee
+     * @param e The MouseEvent triggered by the user action.
+     * @throws Exception if the statement doesn't work and catches it as a GUI output warning
+     */
+    public void deleteEmployeeItem(MouseEvent e) throws IOException {
+        try {
+            connect();
+
+            //deleting inventory item in database
+            int employeeID = Integer.parseInt(del_emp.getText());
+
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT employeeID FROM employees WHERE employeeID=" + employeeID;
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            if (!result.next()) {
+                employees_warning.setText("Invalid employee ID.");
+                return;
+            }
+
+            sqlStatement = "DELETE FROM employees WHERE employeeID=" + employeeID;
+            stmt.executeUpdate(sqlStatement);
+
+            loadEmployeesTable();
+
+            clearTextFields();
+            employees_warning.setText("");
+        }
+        catch (Exception error) {
+            employees_warning.setText("Invalid value type.");
+        }
+        close();
+    }
+
+    /**
+     * Updates an existing employee item with new details.
+     * This method updates an employee item identified by its ID with new name and status.
+     * If the employee item name is empty or the status is not valid, appropriate warning messages are displayed.
+     *
+     * @author Olivia
+     * @param e The MouseEvent triggered by the user action.
+     * @throws IOException if there is an issue with input/output operations.
+     */
+    public void updateEmployeeItem(MouseEvent e) throws IOException {
+        try {
+            connect();
+
+            //updating employee item from database
+            int employeeID = Integer.parseInt(upd_emp.getText());
+            String name = upd_name.getText();
+            String status = upd_status.getText();
+
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT name, status FROM employees WHERE employeeID=" + employeeID;
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            if (!result.next()) {
+                employees_warning.setText("Invalid employee item ID.");
+                return;
+            }
+            result = stmt.executeQuery(sqlStatement);
+            while (result.next()) {
+                String name_database = result.getString("name");
+                String status_database = result.getString("status");
+                if (name_database.equals(name) && status_database.equals(status)) {
+                    employees_warning.setText("Nothing to update.");
+                    return;
+                }
+            }
+            if (name.isEmpty()) {
+                employees_warning.setText("You must enter a name.");
+                return;
+            }
+            if (!status.equals("manager") && !status.equals("employee")) {
+                employees_warning.setText("Invalid status.");
+                return;
+            }
+
+            stmt = conn.createStatement();
+            sqlStatement = "UPDATE employees SET name='" + name + "', status='" + status + "' WHERE employeeID=" + employeeID;
+            stmt.executeUpdate(sqlStatement);
+
+            loadEmployeesTable();
+
+            clearTextFields();
+            employees_warning.setText("");
+        }
+        catch (Exception error) {
+            employees_warning.setText("Invalid value types.");
+        }
+        close();
+    }
+
+
+    /**
+     * Adds a new menu item to the database.
+     * This method inserts a new menu item with its corresponding price into the database.
+     * If the menu item name is empty or the price is non-positive, appropriate warning messages are displayed.
+     *
+     * @author Olivia Lee
+     * @param e The MouseEvent triggered by the user action.
+     * @throws IOException if there is an issue with input/output operations.
+     */
+    public void addMenuItem(MouseEvent e) throws IOException {
+        try {
+            connect();
+
+            // Inserting menu item into the database
+            String menu_item = add_dish.getText();
+            float price = Float.parseFloat(add_price.getText());
+            int deletionMonth = Integer.parseInt(deletion_Month.getText()); // Retrieving the entered month
+
+            if (menu_item.isEmpty()) {
+                orders_warning.setText("You must enter a menu item.");
+                return;
+            }
+            if (price <= 0) {
+                menu_warning.setText("Price cannot be negative or zero.");
+                return;
+            }
+            if (deletionMonth > 12 | deletionMonth < 1){
+                orders_warning.setText("Month entry is invalid");
+                return;
+            }
+
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "INSERT INTO menu(menu_item, price) VALUES('" + menu_item + "', " + price + ")";
+            stmt.executeUpdate(sqlStatement);
+
+            loadMenuTable();
+
+            clearTextFields();
+            menu_warning.setText("");
+            LocalDateTime currentTime = LocalDateTime.now();
+            // Check if the current month matches the deletion month and delete the item if it does
+            int month = currentTime.getMonthValue();
+            if (month == deletionMonth) {
+                String deleteStatement = "DELETE FROM menu WHERE menu_item = '" + menu_item + "'";
+                stmt.executeUpdate(deleteStatement);
+                orders_warning.setText("The seasonal menu item has been deleted.");
+            }
+        }  catch (SQLException error) {
+            menu_warning.setText("Invalid value types.");
+        }
+        close();
+    }
+
+    /**
+     * Deletes a menu item from the database.
+     * This method deletes a menu item identified by its menu item ID from the database.
+     * If the menu item ID is invalid or corresponds to a standard menu item, appropriate warning messages are displayed.
+     *
+     * @author Olivia Lee
+     * @param e The MouseEvent triggered by the user action.
+     * @throws IOException if there is an issue with input/output operations.
+     */
+    public void deleteMenuItem(MouseEvent e) throws IOException {
+        try {
+            connect();
+
+            //deleting menu item in database
+            int menu_itemID = Integer.parseInt(del_menu.getText());
+
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT menu_itemID FROM menu WHERE menu_itemID=" + menu_itemID;
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            if (!result.next()) {
+                menu_warning.setText("Invalid menu item ID.");
+                return;
+            }
+
+            if(menu_itemID <= 28) {
+                menu_warning.setText("You cannot delete this item, this is a standard menu item.");
+                return;
+            }
+
+            sqlStatement = "DELETE FROM menu WHERE menu_itemID=" + menu_itemID;
+            stmt.executeUpdate(sqlStatement);
+
+            loadMenuTable();
+
+            clearTextFields();
+            menu_warning.setText("");
+        }
+        catch (Exception error) {
+            menu_warning.setText("Invalid value type.");
+        }
+        close();
+    }
+
+    /**
+     * Updates a menu item in the database.
+     * This method updates a menu item identified by its menu item ID with new menu item name and price in the database.
+     * If the menu item ID is invalid, the menu item name is empty, the price is non-positive, or the item is a standard menu item, appropriate warning messages are displayed.
+     *
+     * @author Olivia Lee
+     * @param e The MouseEvent triggered by the user action.
+     * @throws IOException if there is an issue with input/output operations.
+     */
+    public void updateMenuItem(MouseEvent e) throws IOException {
+        try {
+            connect();
+
+            //updating employee item from database
+            int menu_itemID = Integer.parseInt(upd_menu.getText());
+            String menu_item = upd_dish.getText();
+            float price = Float.parseFloat(upd_price.getText());
+
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT menu_item, price FROM menu WHERE menu_itemID=" + menu_itemID;
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            if (!result.next()) {
+                menu_warning.setText("Invalid menu item ID.");
+                return;
+            }
+            result = stmt.executeQuery(sqlStatement);
+            while (result.next()) {
+                String menu_item_database = result.getString("menu_item");
+                float price_database = result.getFloat("price");
+                if (menu_item_database.equals(menu_item) && price == price_database) {
+                    menu_warning.setText("Nothing to update.");
+                    return;
+                }
+            }
+            if (menu_item.isEmpty()) {
+                orders_warning.setText("You must enter a menu item.");
+                return;
+            }
+            if (price <= 0) {
+                menu_warning.setText("Price cannot be negative or zero.");
+                return;
+            }
+            if(menu_itemID <= 28 && !menu_item.equals(result.getString("menu_item"))) {
+                menu_warning.setText("You cannot change this item's name, this is a standard menu item.");
+                return;
+            }
+
+            stmt = conn.createStatement();
+            sqlStatement = "UPDATE menu SET menu_item='" + menu_item + "', price=" + price + " WHERE menu_itemID=" + menu_itemID;
+            stmt.executeUpdate(sqlStatement);
+
+            loadMenuTable();
+
+            clearTextFields();
+            menu_warning.setText("");
+        }
+        catch (Exception error) {
+            menu_warning.setText("Invalid value types.");
+        }
+        close();
+    }
+
+
+    /**
+     * This allows the manager to delete an order from order history
+     * Manager has to enter the order id, hour, day, week, month, and year
+     * Takes care of error handling, ensuring that an order from a different date is not accidentally deleted
+     * Includes an SQL command to delete the order from order history
+     * Clears the text field once item has been deleted
+     * @author Olivia Lee
+     * @param e the MouseEvent that triggers this function
+     */
+    public void deleteHistoryItem(MouseEvent e) throws IOException {
+        try {
+            connect();
+
+            int orderID = Integer.parseInt(del_id.getText());
+            String hour = del_hr.getText();
+            int day = Integer.parseInt(del_day.getText());
+            int month = Integer.parseInt(del_mth.getText());
+            int week = Integer.parseInt(del_wk.getText());
+            int year = Integer.parseInt(del_yr.getText());
+
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT menu_item FROM orders WHERE orderID=" + orderID + " AND hour='" + hour + "' AND day=" + day + " AND month=" + month + " AND week=" + week + " AND year=" + year;
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            if (!result.next()) {
+                history_warning.setText("There is no order item with the input date and order ID.");
+                return;
+            }
+
+            sqlStatement = "DELETE FROM orders WHERE orderID=" + orderID + " AND hour='" + hour + "' AND day=" + day + " AND month=" + month + " AND week=" + week + " AND year=" + year;
+            stmt.executeUpdate(sqlStatement);
+
+            loadOrderHistoryTable();
+
+            clearTextFields();
+            history_warning.setText("");
+        }
+        catch (Exception error) {
+            history_warning.setText("Invalid value types.");
+        }
+        close();
+    }
+
+    /**
+     * This allows the manager to update an order from order history
+     * Manager has to enter the order id, hour, day, week, month, year, and sale
+     * Takes care of error handling, ensuring that an order from a different date is not accidentally updated
+     * Includes an SQL command to update the order from order history
+     * Clears the text field once item has been deleted
+     * @author Olivia Lee
+     * @param e the MouseEvent that triggers this function
+     */
+    public void updateHistoryItem(MouseEvent e) throws IOException {
+        try {
+            connect();
+
+            int orderID = Integer.parseInt(upd_id.getText());
+            String hour = upd_hr.getText();
+            int day = Integer.parseInt(upd_day.getText());
+            int month = Integer.parseInt(upd_mth.getText());
+            int week = Integer.parseInt(upd_wk.getText());
+            int year = Integer.parseInt(upd_yr.getText());
+            String menu_item = upd_hist_item.getText();
+            float sale = Float.parseFloat(upd_sale.getText());
+
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT menu_item, sale FROM orders WHERE orderID=" + orderID + " AND hour='" + hour + "' AND day=" + day + " AND month=" + month + " AND week=" + week + " AND year=" + year;
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            if (!result.next()) {
+                history_warning.setText("There is no menu item with the input date and order ID.");
+                return;
+            }
+            result = stmt.executeQuery(sqlStatement);
+            while (result.next()) {
+                String menu_item_database = result.getString("menu_item");
+                float sale_database = result.getFloat("sale");
+                if (menu_item_database.equals(menu_item) && sale == sale_database) {
+                    history_warning.setText("Nothing to update.");
+                    return;
+                }
+            }
+            if (sale <= 0) {
+                history_warning.setText("Sale cannot be negative or zero.");
+                return;
+            }
+
+            stmt = conn.createStatement();
+            sqlStatement = "UPDATE orders SET menu_item='" + menu_item + "', sale=" + sale + " WHERE orderID=" + orderID + " AND hour='" + hour + "' AND day=" + day + " AND month=" + month + " AND week=" + week + " AND year=" + year;
+            stmt.executeUpdate(sqlStatement);
+
+            loadOrderHistoryTable();
+
+            clearTextFields();
+            history_warning.setText("");
+        }
+        catch (SQLException error) {
+            history_warning.setText("Invalid value types or input date and order ID.");
+        }
+        close();
+    }
+
+
+
+
+    /**
+     * Given a time window, displays the sales by menu item from the order history.
+     *
+     * @author Olivia Lee
+     * @param e the MouseEvent that triggers this function
+     */
+    public void loadSalesReport(MouseEvent e) {
+        String sales_report_string = "";
+        try {
+            connect();
+            //text field retrieval
+            String hour1 = sales_hr1.getText();
+            int day1 = Integer.parseInt(sales_day1.getText());
+            int month1 = Integer.parseInt(sales_mth1.getText());
+            int year1 = Integer.parseInt(sales_yr1.getText());
+            String hour2 = sales_hr2.getText();
+            int day2 = Integer.parseInt(sales_day2.getText());
+            int month2 = Integer.parseInt(sales_mth2.getText());
+            int year2 = Integer.parseInt(sales_yr2.getText());
+
+            //error checking input good
+            if (!hour1.equals("11am") && !hour1.equals("12pm") && !hour1.equals("1pm") && !hour1.equals("2pm") && !hour1.equals("3pm") && !hour1.equals("4pm") && !hour1.equals("5pm") && !hour1.equals("6pm") && !hour1.equals("7pm") && !hour1.equals("8pm")) {
+                sales_report_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
+                return;
+            }
+            if (!hour2.equals("11am") && !hour2.equals("12pm") && !hour2.equals("1pm") && !hour2.equals("2pm") && !hour2.equals("3pm") && !hour2.equals("4pm") && !hour2.equals("5pm") && !hour2.equals("6pm") && !hour2.equals("7pm") && !hour2.equals("8pm")) {
+                sales_report_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
+                return;
+            }
+            if (day1 > 31 || day1 < 1 || day2 > 31 || day2 < 1) {
+                sales_report_warning.setText("The days must be a number between 1 and 31.");
+                return;
+            }
+            if (month1 > 12 || month1 < 1 || month2 > 12 || month2 < 1) {
+                sales_report_warning.setText("The months must be a number between 1 and 12.");
+                return;
+            }
+            if ((year1 + "").length() != 4 || (year2 + "").length() != 4) {
+                sales_report_warning.setText("The year must be four digits long.");
+                return;
+            }
+            //error checking start time/date before end time/date
+            if (hour1.compareTo(hour2) > 0) {
+                sales_report_warning.setText("The second hour cannot be earlier than the first hour.");
+                return;
+            }
+            if (year1 > year2) {
+                sales_report_warning.setText("The second year cannot be earlier than the first year.");
+                return;
+            }
+            else if (year1 == year2 && month1 > month2) {
+                sales_report_warning.setText("The second month cannot be earlier than the first month in the same year.");
+                return;
+            }
+            else if (year1 == year2 && month1 == month2 && day1 > day2) {
+                sales_report_warning.setText("The second day cannot be earlier than the first day in the same month and year.");
+                return;
+            }
+            sales_report_text.setText("");
+
+            //querying the database
+            Statement stmt = conn.createStatement();
+            String sqlStatement;
+            if(year1 != year2) {
+                sqlStatement = "SELECT menu_item, SUM(sale) AS total_sales FROM orders " +
+                        "WHERE hour>='" + hour1 + "' AND hour<'"+ hour2 + "' " +
+                        "AND ((year>" + year1 + " AND year<"+ year2 + ") " +
+                        "OR (year=" + year1 + " AND month>" + month1 + ") " +
+                        "OR (year=" + year1 + " AND month=" + month1 + " AND day>=" + day1 + ") " +
+                        "OR (year=" + year2 + " AND month<" + month2 + ") " +
+                        "OR (year=" + year2 + " AND month=" + month2 + " AND day<=" + day2 + ")) " +
+                        "GROUP BY menu_item";
+            }
+            else if (month1 != month2) {
+                sqlStatement = "SELECT menu_item, SUM(sale) AS total_sales FROM orders " +
+                        "WHERE hour>='" + hour1 + "' AND hour<'"+ hour2 + "' " +
+                        "AND year=" + year1 + " " +
+                        "AND ((month>" + month1 + " AND month<"+ month2 + ") " +
+                        "OR (month=" + month1 + " AND day>=" + day1 + ") " +
+                        "OR (month=" + month2 + " AND day<=" + day2 + ")) " +
+                        "GROUP BY menu_item";
+            }
+            else {
+                sqlStatement = "SELECT menu_item, SUM(sale) AS total_sales FROM orders " +
+                        "WHERE hour>='" + hour1 + "' AND hour<'" + hour2 + "' " +
+                        "AND year=" + year1 + " " +
+                        "AND month=" + month1 + " " +
+                        "AND day>=" + day1 + " AND day<=" + day2 + " " +
+                        "GROUP BY menu_item";
+            }
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            if (!result.next()) {
+                sales_report_warning.setText("There are no menu items sold in that range.");
+                return;
+            }
+
+            result = stmt.executeQuery(sqlStatement);
+            //outputting the database results
+            while (result.next()) {
+                String menu_item = result.getString("menu_item");
+                float total_sales = result.getFloat("total_sales");
+                sales_report_string += " " + menu_item;
+                for(int i = 1; i <= 51-menu_item.length(); i++) {
+                    sales_report_string += " ";
+                }
+                sales_report_string += "    " + total_sales + "\n";
+            }
+            sales_report_text.setText(sales_report_string);
+            clearTextFields();
+            sales_report_warning.setText("");
+        }
+        catch (Exception error) {
+            sales_report_warning.setText("Invalid value types.");
+        }
+        close();
+    }
+
+    /**
+     * Given a timestamp, displays the list of inventory items of which less than 10% of their inventory was consumed
+     * between the timestamp and the current time, assuming no restocks have happened during the window.
+     *
+     * @author Manisha Subrahmanya
+     * @param e the MouseEvent that triggers this function
+     */
+    public void loadExcessReport(MouseEvent e) {
+        StringBuilder excessStringBuilder = new StringBuilder();
+
+        try {
+            connect(); // Ensure this method properly initializes and sets 'conn'
+            Statement stmt = conn.createStatement();
+            String hour = from_hr.getText();
+            int day = Integer.parseInt(from_day.getText());
+            int month = Integer.parseInt(from_month.getText());
+            int year = Integer.parseInt(from_year.getText());
+
+            int stop_hour = LocalTime.now().getHour();
+            int twelveHourFormat = stop_hour % 12 == 0 ? 12 : stop_hour % 12; // Convert 24-hour format to 12-hour format
+            boolean isPM = stop_hour >= 12; // Check if it's PM
+            String stop_string; // Declare stop_string here
+            if(isPM) {
+                stop_string = Integer.toString(twelveHourFormat) + "pm";
+            } else {
+                stop_string = Integer.toString(twelveHourFormat) + "am";
+            }
+            System.out.println("stop string is " + stop_string);
+            // Ensure SQL uses correct format and comparisons based on your database's time storage format
+            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients " +
+                    "i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '" + hour + "' " +
+                    "AND o.hour <= '12pm' AND o.day = " + day + " AND o.month = " + month + " AND o.year = " + year + " AND inv.amount >= 0.9 * inv.capacity";
+            ResultSet loadExcess = stmt.executeQuery(sqlStatement);
+
+            System.out.println("while loop");
+            while (loadExcess.next()) {
+                System.out.println("giving values");
+                String ingredient = loadExcess.getString("ingredient");
+                int amount = loadExcess.getInt("amount");
+                int capacity = loadExcess.getInt("capacity");
+                String hourDisplay = loadExcess.getString("hour");
+                int dayDisplay = loadExcess.getInt("day");
+                int monthDisplay = loadExcess.getInt("month");
+                int yearDisplay = loadExcess.getInt("year");
+
+                System.out.println("printing stuff out");
+                excessStringBuilder.append(String.format("%-25s %-7s %-7s %10d %10d %10d %10d%n", ingredient, hourDisplay, dayDisplay, monthDisplay, yearDisplay, amount, capacity));
+                excess_text.setText(excessStringBuilder.toString());
+                System.out.println("done printing");
+            }
+
+            System.out.println("error handling");
+            //error checking input good
+            if (!hour.equals("11am") && !hour.equals("12pm") && !hour.equals("1pm") && !hour.equals("2pm") && !hour.equals("3pm") && !hour.equals("4pm") && !hour.equals("5pm") && !hour.equals("6pm") && !hour.equals("7pm") && !hour.equals("8pm")) {
+                excess_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
+                return;
+            }
+
+            if (day > 31 || day < 1)
+            {
+                excess_warning.setText("The days must be a number between 1 and 31.");
+                return;
+            }
+            if (month > 12 || month < 1)
+            {
+                excess_warning.setText("The months must be a number between 1 and 12.");
+                return;
+            }
+
+            if ((year + "").length() != 4){
+                excess_warning.setText("The year must be four digits long.");
+                return;
+            }
+
+            if( (year > 2025) || (year < 2023)) {
+                excess_warning.setText("Year has to be within 2023 - 2025.");
+                return;
+            }
+
+            clearTextFields();
+            excess_warning.setText("");
+        }
+        catch (Exception error) {
+            error.printStackTrace();
+            excess_warning.setText("Invalid value types");
+//            System.out.println("invalid value type");
+
+        }
+    }
+
+    /**
+     * Given a time window, displays a list of pairs of menu items that sell together often, popular or not, sorted by
+     * most frequent.
+     *
+     * @author Olivia Lee
+     * @param e the MouseEvent that triggers this function
+     */
+    public void loadRestockReport(MouseEvent e) {
+        String restock_report_string = "";
+        restock_report_text.setText("");
+        try {
+            connect();
+            //querying the database
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT ingredient, amount, capacity FROM inventory WHERE amount<=10";
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            //error checking
+            if (!result.next()) {
+                restock_report_warning.setText("There are no menu items that need to be restocked.");
+                return;
+            }
+
+            //outputting the database results
+            result = stmt.executeQuery(sqlStatement);
+            while (result.next()) {
+                String ingredient = result.getString("ingredient");
+                int amount = result.getInt("amount");
+                int capacity = result.getInt("capacity");
+                restock_report_string += "   " + ingredient;
+                for(int i = 1; i <= 35-ingredient.length(); i++) {
+                    restock_report_string += " ";
+                }
+                restock_report_string += "        " + amount;
+                for(int i = 1; i <= 3-(amount+"").length(); i++) {
+                    restock_report_string += " ";
+                }
+                restock_report_string += "            " + capacity + "\n";
+            }
+            restock_report_text.setText(restock_report_string);
+            restock_report_warning.setText("");
+        }
+        catch (Exception error) {
+            restock_report_warning.setText("Invalid value types.");
+        }
+        close();
+    }
+
+    /**
+     * Given a timestamp, displays the list of inventory items of which less than 10% of their inventory was consumed
+     * between the timestamp and the current time, assuming no restocks have happened during the window.
+     *
+     * @author Manisha Subrahmanya
+     * @param e the MouseEvent that triggers this function
+     */
+    public void loadOrderTrendReport(MouseEvent e) {
+        String order_trend_string = "";
+        System.out.println("load button clicked");
+
+        try {
+            String hour1 = st_trend_hr.getText();
+            String hour2 = end_trend_hr.getText();
+            int day1 = Integer.parseInt(st_trend_day.getText());
+            int day2 = Integer.parseInt(end_trend_day.getText());
+            int month1 = Integer.parseInt(st_trend_month.getText());
+            int month2 = Integer.parseInt(end_trend_month.getText());
+            int year1 = Integer.parseInt(st_trend_year.getText());
+            int year2 = Integer.parseInt(end_trend_year.getText());
+
+            if (hour1.isEmpty() || hour2.isEmpty()) {
+                order_trends_warning.setText("You must enter an hour.");
+                return;
+            }
+            if (!hour1.equals("11am") && !hour1.equals("12pm") && !hour1.equals("1pm") && !hour1.equals("2pm") && !hour1.equals("3pm") && !hour1.equals("4pm") && !hour1.equals("5pm") && !hour1.equals("6pm") && !hour1.equals("7pm") && !hour1.equals("8pm")) {
+                order_trends_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
+                return;
+            }
+
+            if (!hour2.equals("11am") && !hour2.equals("12pm") && !hour2.equals("1pm") && !hour2.equals("2pm") && !hour2.equals("3pm") && !hour2.equals("4pm") && !hour2.equals("5pm") && !hour2.equals("6pm") && !hour2.equals("7pm") && !hour2.equals("8pm")) {
+                order_trends_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
+                return;
+            }
+
+            if (hour1.compareTo(hour2) > 0) {
+                order_trends_warning.setText("The second hour cannot be earlier than the first hour.");
+                return;
+            }
+
+            if (day1 > 31 || day1 < 1)
+            {
+                order_trends_warning.setText("The days must be a number between 1 and 31.");
+                return;
+            }
+            if (month1 > 12 || month1 < 1 || month2 > 12 || month2 < 1)
+            {
+                order_trends_warning.setText("The months must be a number between 1 and 12.");
+                return;
+            }
+
+            if(year1 > year2)
+            {
+                order_trends_warning.setText("Second year must come after first year");
+                return;
+            }
+            if ((year1 + "").length() != 4 || (year2 + "").length() != 4) {
+                order_trends_warning.setText("The year must be four digits long.");
+                return;
+            }
+
+            if( (year1 > 2025)|| (year2 > 2025) || (year1 < 2023)|| (year2 < 2023)) {
+                order_trends_warning.setText("Year has to be within 2023 - 2025.");
+                return;
+            }
+
+            if (year1 == year2 && month1 > month2) {
+                order_trends_warning.setText("The second month cannot be earlier than the first month in the same year.");
+                return;
+            }
+
+            if (year1 == year2 && month1 == month2 && day1 > day2) {
+                order_trends_warning.setText("The second day cannot be earlier than the first in the same month and year.");
+                return;
+            }
+
+//            if (day1 ==  || hour2.isEmpty()) {
+//                order_trends_warning.setText("You must enter an hour.");
+//                return;
+//            }
+
+            connect();
+            Statement stmt = conn.createStatement();
+//            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders " +
+//                    "AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.day BETWEEN '2' AND '3' " +
+//                    "AND o1.month BETWEEN '2' AND '3' AND o1.year BETWEEN '2024' AND '2024' GROUP BY o1.menu_item, o2.menu_item ORDER BY " +
+//                    "times_ordered_together DESC";
+            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.hour BETWEEN '"+ hour1 + "' AND '" + hour2 + "' AND o1.day BETWEEN '"+ day1 + "' AND '"+ day2 + "'AND o1.month BETWEEN '" + month1 + "' AND '" + month2 + "' AND o1.year BETWEEN '" + year1 + "' AND '" + year2 + "' GROUP BY o1.menu_item, o2.menu_item ORDER BY times_ordered_together DESC";
+
+            ResultSet loadOrderTrend = stmt.executeQuery(sqlStatement);
+            while(loadOrderTrend.next())
+            {
+                String menu1 = loadOrderTrend.getString("item1");
+                String menu2 = loadOrderTrend.getString("item2");
+                int frequency = loadOrderTrend.getInt("times_ordered_together");
+
+                order_trend_string += "   " + menu1;
+                for (int i = 0; i < 51-menu1.length(); i++) {
+                    order_trend_string += " ";
+                }
+                order_trend_string += "   " + menu2;
+                for (int i = 0; i < 51-menu2.length(); i++) {
+                    order_trend_string += " ";
+                }
+                order_trend_string += "   " + frequency + "\n";
+                trends_text.setText(order_trend_string);
+            }
+
+            clearTextFields();
+            order_trends_warning.setText("");
+        }
+        catch (Exception error) {
+            order_trends_warning.setText("Invalid value types");
+        }
+    }
+
+    /**
+     * Given a time window, displays a table that depicts the amount of inventory used during that time period
+     *
+     * @author Jaiah Steele
+     * @param e the MouseEvent that triggers this function
+     */
+    public void listIngredientCounts(MouseEvent e) {
+        try {
+            // Clear any previous warning messages
+            ingredient_count_warning.setText("");
+
+            // Get values from text fields
+            String startTime = startTimeTextField.getText();
+            String stopTime = stopTimeTextField.getText();
+            int month = Integer.parseInt(monthTextField.getText());
+            int year = Integer.parseInt(yearTextField.getText());
+            if (startTime.isEmpty() || stopTime.isEmpty()) {
+                ingredient_count_warning.setText("You must enter a value for all fields");
+                return;
+            }
+            if (year > 2023 || year < 2022) {
+                ingredient_count_warning.setText("Year is out of range");
+                return;
+            }
+            if (month > 12 || month < 1){
+                ingredient_count_warning.setText("Month entry is invalid");
+                return;
+            }
+
+            // Clear existing table data
+
+
+            this.connect();
+            String sqlStatement = "SELECT ingredients.ingredient, SUM(ingredients.count) AS total_count " +
+                    "FROM orders " +
+                    "JOIN ingredients ON orders.menu_item = ingredients.menu_item " +
+                    "WHERE orders.hour >= ? AND orders.hour <= ? " +
+                    "AND orders.month = ? AND orders.year = ? " +
+                    "GROUP BY ingredients.ingredient";
+            PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
+            stmt.setString(1, startTime);
+            stmt.setString(2, stopTime);
+            stmt.setInt(3, month);
+            stmt.setInt(4, year);
+            
+            ResultSet result = stmt.executeQuery();
+            if (!result.next()) {
+                ingredient_count_warning.setText("There are no orders in that month.");
+                return;
+            }
+            String ingredient_string = "";
+            // Iterate over the result set and update the UI directly
+            while (result.next()) {
+                String ingredient = result.getString("ingredient");
+                int totalCount = result.getInt("total_count");
+                ingredient_string += " " + ingredient;
+                for(int i = 1; i <= 51 - ingredient.length(); i++){
+                    ingredient_string += " ";
+                }
+                ingredient_string += "     " + totalCount + "\n";
+                // Update UI directly
+
+            }
+            ingredient_text.setText(ingredient_string);
 
         } catch (Exception error) {
-            orders_warning.setText("Unable to load items.");
+            ingredient_count_warning.setText("Unable to load ingredient counts.");
+            error.printStackTrace();
+        }
+    }
+
+
+    /**
+     * This loads the seasonal table with the columns menu item ID, menu item, start month, and end month.
+     *
+     * @author Olivia Lee
+     */
+    public void loadSeasonalTable() {
+        String seasonal_string = "";
+        //querying for menu table
+        try {
+            connect();
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT * FROM seasonal";
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            while (result.next()) {
+                int menu_itemID = result.getInt("menu_itemID");
+                String menu_item = result.getString("menu_item");
+                int start_month = result.getInt("start_month");
+                int end_month = result.getInt("end_month");
+                seasonal_string += " " + menu_itemID;
+                for(int i = 1; i <= 3-(menu_itemID+"").length(); i++) {
+                    seasonal_string += " ";
+                }
+                seasonal_string += "   " + menu_item;
+                for(int i = 1; i <= 51-menu_item.length(); i++) {
+                    seasonal_string += " ";
+                }
+                seasonal_string += "     " + start_month;
+                for(int i = 1; i <= 3-(menu_itemID+"").length(); i++) {
+                    seasonal_string += " ";
+                }
+                seasonal_string += "     " + end_month + "\n";
+            }
+            seasonal_text.setText(seasonal_string);
+        }
+        catch(Exception error) {
+            error.printStackTrace();
+            System.err.println(error.getClass().getName()+": "+error.getMessage());
         }
     }
 
     /**
-     * This adds a menu item from the Miscellaneous menu items table to the order reciept.
+     * Adds a seasonal item to the menu and records the time window it should be available in the database.
      *
-     * @author Olivia Lee
+     * @author Jaiah Steele
+     * @param e the MouseEvent that triggers this function
      */
-    public void addMiscItem(MouseEvent e) {
-        String name = misc_list.getSelectionModel().getSelectedItem().getMenuitem();
-
-        connect();
-
-        //querying the database for price
+    public void addSeasonalItem(MouseEvent e) {
         try {
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT price FROM menu WHERE menu_item='" + name + "' LIMIT 1";
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            while (result.next()) {
-                float price = result.getFloat("price");
-                orders_string += "  " + count + "   " + name;
-                for(int i = 1; i <= 41-name.length(); i++) {
-                    orders_string += " ";
-                }
-                orders_string += "$" + price + "\n";
-                orders_text.setText(orders_string);
-                orders.add(new Order(count, name, price));
-                count += 1;
+            String dishName = dish_nameTextField.getText();
+
+            int startMonth = Integer.parseInt(start_monthTextField.getText());
+            int endMonth = Integer.parseInt(end_monthTextField.getText());
+            float price = Float.parseFloat(price_textTextField.getText());
+            String menu_item = dish_nameTextField.getText();
+
+
+            if (dishName.isEmpty()) {
+                seasonalitem_warning.setText("You must enter a value for all fields");
+                return;
             }
-        } catch(Exception error) {
-            orders_warning.setText("Unable to add item.");
+            if (startMonth == LocalDateTime.now().getMonthValue()) { // Modified condition
+                seasonalitem_warning.setText("Season is out of range");
+                return;
+            }
+            if (price < 0) {
+                seasonalitem_warning.setText("Price cannot be negative");
+                return;
+            }
+
+            // Insert item into menu table
+            this.connect();
+            String insertMenuStatement = "INSERT INTO menu (menu_item, price) VALUES (?, ?)";
+            PreparedStatement insertMenuStmt = this.conn.prepareStatement(insertMenuStatement);
+            insertMenuStmt.setString(1, dishName);
+            insertMenuStmt.setFloat(2, price);
+            insertMenuStmt.executeUpdate();
+
+            // Get menu item ID
+            String getMenuIdStatement = "SELECT menu_itemid FROM menu WHERE menu_item = ?";
+            PreparedStatement getMenuIdStmt = this.conn.prepareStatement(getMenuIdStatement);
+            getMenuIdStmt.setString(1, dishName);
+            ResultSet result = getMenuIdStmt.executeQuery();
+            int menuId = -1; // Initialize with a default value
+            if (result.next()) {
+                menuId = result.getInt("menu_itemid");
+            }
+
+            // Insert item into seasonal table
+            if (menuId != -1) { // Check if menu ID was retrieved successfully
+                String insertSeasonalStatement = "INSERT INTO seasonal (menu_itemID, menu_item, start_month, end_month) VALUES (?, ?, ?, ?)";
+                PreparedStatement insertSeasonalStmt = this.conn.prepareStatement(insertSeasonalStatement);
+                insertSeasonalStmt.setInt(1, menuId);
+                insertSeasonalStmt.setString(2, menu_item);
+                insertSeasonalStmt.setInt(3, startMonth);
+                insertSeasonalStmt.setInt(4, endMonth);
+                insertSeasonalStmt.executeUpdate();
+            } else {
+                seasonalitem_warning.setText("Unable to find menu item ID.");
+                return;
+            }
+
+            seasonalitem_warning.setText("");
+            loadSeasonalTable();
+
+
+        } catch (Exception error) {
+            seasonalitem_warning.setText("Unable to add seasonal item.");
         }
     }
+
+    /**
+     * Adds a seasonal item's ingredient to its recipe so that ingredient will be used when the item is sold.
+     *
+     * @author Jaiah Steele
+     * @param e the MouseEvent that triggers this function
+     */
+    public void addSeasonalItemIngredients(MouseEvent e) {
+        try {
+            // Retrieve values from text fields
+            String dishName = add_dish_nameTextField.getText();
+            String ingredient = ingredientTextField.getText();
+            int ingredientCount = Integer.parseInt(intgr_countTextField.getText());
+            if (dishName.isEmpty() || ingredient.isEmpty()) {
+                seasonalitem_warning.setText("You must enter a value for all fields");
+                return;
+            }
+            if(ingredientCount < 0){
+                seasonalitem_warning.setText("no negatives");
+                return;
+            }
+            // Create SQL insert statement
+            String insertStatement = "INSERT INTO ingredients (menu_item, ingredient, count) VALUES (?, ?, ?)";
+
+            // Prepare and execute the statement
+            PreparedStatement stmt = conn.prepareStatement(insertStatement);
+            stmt.setString(1, dishName);
+            stmt.setString(2, ingredient);
+            stmt.setInt(3, ingredientCount);
+            stmt.executeUpdate();
+
+            // Clear text fields after successful insertion
+            add_dish_nameTextField.setText("");
+            ingredientTextField.setText("");
+            intgr_countTextField.setText("");
+        } catch (Exception error) {
+            error.printStackTrace();
+            // Handle any exceptions, e.g., display an error message
+        }
+
+    }
+
 
 
 
@@ -898,994 +1835,65 @@ public class SceneController {
     }
 
 
-
-
     /**
-     * This clears all the text fields in all the manager side tabs.
+     * This loads the miscellaneous menu item names into an interactable table for the ordering terminal.
      *
      * @author Olivia Lee
      */
-    public void clearTextFields() {
-        //inventory text fields
-        add_item.setText("");
-        add_quant.setText("");
-        add_cap.setText("");
-        del_inv.setText("");
-        upd_inv.setText("");
-        upd_item.setText("");
-        upd_quant.setText("");
-        upd_cap.setText("");
-
-        //employee text fields
-        add_name.setText("");
-        add_status.setText("");
-        del_emp.setText("");
-        upd_name.setText("");
-        upd_status.setText("");
-        upd_emp.setText("");
-
-        //menu text fields
-        add_dish.setText("");
-        add_price.setText("");
-        del_menu.setText("");
-        upd_menu.setText("");
-        upd_dish.setText("");
-        upd_price.setText("");
-
-        //order history fields
-        del_id.setText("");
-        del_hr.setText("");
-        del_day.setText("");
-        del_mth.setText("");
-        del_wk.setText("");
-        del_yr.setText("");
-        upd_id.setText("");
-        upd_hr.setText("");
-        upd_day.setText("");
-        upd_mth.setText("");
-        upd_wk.setText("");
-        upd_yr.setText("");
-        upd_item.setText("");
-        upd_sale.setText("");
-
-        //sales text fields
-        sales_hr1.setText("");
-        sales_day1.setText("");
-        sales_mth1.setText("");
-        sales_yr1.setText("");
-        sales_hr2.setText("");
-        sales_day2.setText("");
-        sales_mth2.setText("");
-        sales_yr2.setText("");
-
-        // excess report text fields
-        from_hr.setText("");
-        from_month.setText("");
-        from_day.setText("");
-        from_year.setText("");
-
-        // order trend report text fields
-        st_trend_hr.setText("");
-        st_trend_day.setText("");
-        st_trend_month.setText("");
-        st_trend_year.setText("");
-        end_trend_hr.setText("");
-        end_trend_day.setText("");
-        end_trend_month.setText("");
-        end_trend_year.setText("");
-    }
-
-
-
-    /**
-     * Given a time window, display the sales by menu item from the order history.
-     *
-     * @author Olivia Lee
-     * @param e the MouseEvent that triggers this function
-     */
-    public void loadSalesReport(MouseEvent e) {
-        sales_report_string = "";
+    public void listMiscMenuItems(MouseEvent e) {
         try {
-            connect();
-            //text field retrieval
-            String hour1 = sales_hr1.getText();
-            int day1 = Integer.parseInt(sales_day1.getText());
-            int month1 = Integer.parseInt(sales_mth1.getText());
-            int year1 = Integer.parseInt(sales_yr1.getText());
-            String hour2 = sales_hr2.getText();
-            int day2 = Integer.parseInt(sales_day2.getText());
-            int month2 = Integer.parseInt(sales_mth2.getText());
-            int year2 = Integer.parseInt(sales_yr2.getText());
+            misc_col.setCellValueFactory(new PropertyValueFactory<Misc, String>("menuitem"));
+            misc_list.setVisible(true);
 
-            //error checking input good
-            if (!hour1.equals("11am") && !hour1.equals("12pm") && !hour1.equals("1pm") && !hour1.equals("2pm") && !hour1.equals("3pm") && !hour1.equals("4pm") && !hour1.equals("5pm") && !hour1.equals("6pm") && !hour1.equals("7pm") && !hour1.equals("8pm")) {
-                sales_report_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
-                return;
-            }
-            if (!hour2.equals("11am") && !hour2.equals("12pm") && !hour2.equals("1pm") && !hour2.equals("2pm") && !hour2.equals("3pm") && !hour2.equals("4pm") && !hour2.equals("5pm") && !hour2.equals("6pm") && !hour2.equals("7pm") && !hour2.equals("8pm")) {
-                sales_report_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
-                return;
-            }
-            if (day1 > 31 || day1 < 1 || day2 > 31 || day2 < 1) {
-                sales_report_warning.setText("The days must be a number between 1 and 31.");
-                return;
-            }
-            if (month1 > 12 || month1 < 1 || month2 > 12 || month2 < 1) {
-                sales_report_warning.setText("The months must be a number between 1 and 12.");
-                return;
-            }
-            if ((year1 + "").length() != 4 || (year2 + "").length() != 4) {
-                sales_report_warning.setText("The year must be four digits long.");
-                return;
-            }
-            //error checking start time/date before end time/date
-            if (hour1.compareTo(hour2) > 0) {
-                sales_report_warning.setText("The second hour cannot be earlier than the first hour.");
-                return;
-            }
-            if (year1 > year2) {
-                sales_report_warning.setText("The second year cannot be earlier than the first year.");
-                return;
-            }
-            else if (year1 == year2 && month1 > month2) {
-                sales_report_warning.setText("The second month cannot be earlier than the first month in the same year.");
-                return;
-            }
-            else if (year1 == year2 && month1 == month2 && day1 > day2) {
-                sales_report_warning.setText("The second day cannot be earlier than the first day in the same month and year.");
-                return;
-            }
-            sales_report_text.setText("");
+            List<Misc> list = new ArrayList<Misc>();
+            this.connect();
+            String sqlStatement = "SELECT menu_item FROM menu WHERE menu_itemid > 29";
+            PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
+            ResultSet result = stmt.executeQuery();
 
-            //querying the database
-            Statement stmt = conn.createStatement();
-            String sqlStatement;
-            if(year1 != year2) {
-                sqlStatement = "SELECT menu_item, SUM(sale) AS total_sales FROM orders " +
-                        "WHERE hour>='" + hour1 + "' AND hour<'"+ hour2 + "' " +
-                        "AND ((year>" + year1 + " AND year<"+ year2 + ") " +
-                        "OR (year=" + year1 + " AND month>" + month1 + ") " +
-                        "OR (year=" + year1 + " AND month=" + month1 + " AND day>=" + day1 + ") " +
-                        "OR (year=" + year2 + " AND month<" + month2 + ") " +
-                        "OR (year=" + year2 + " AND month=" + month2 + " AND day<=" + day2 + ")) " +
-                        "GROUP BY menu_item";
-            }
-            else if (month1 != month2) {
-                sqlStatement = "SELECT menu_item, SUM(sale) AS total_sales FROM orders " +
-                        "WHERE hour>='" + hour1 + "' AND hour<'"+ hour2 + "' " +
-                        "AND year=" + year1 + " " +
-                        "AND ((month>" + month1 + " AND month<"+ month2 + ") " +
-                        "OR (month=" + month1 + " AND day>=" + day1 + ") " +
-                        "OR (month=" + month2 + " AND day<=" + day2 + ")) " +
-                        "GROUP BY menu_item";
-            }
-            else {
-                sqlStatement = "SELECT menu_item, SUM(sale) AS total_sales FROM orders " +
-                        "WHERE hour>='" + hour1 + "' AND hour<'" + hour2 + "' " +
-                        "AND year=" + year1 + " " +
-                        "AND month=" + month1 + " " +
-                        "AND day>=" + day1 + " AND day<=" + day2 + " " +
-                        "GROUP BY menu_item";
-            }
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            if (!result.next()) {
-                sales_report_warning.setText("There are no menu items sold in that range.");
-                return;
-            }
-
-            result = stmt.executeQuery(sqlStatement);
-            //outputting the database results
             while (result.next()) {
-                String menu_item = result.getString("menu_item");
-                float total_sales = result.getFloat("total_sales");
-                sales_report_string += " " + menu_item;
-                for(int i = 1; i <= 51-menu_item.length(); i++) {
-                    sales_report_string += " ";
-                }
-                sales_report_string += "    " + total_sales + "\n";
+                String menuItem = result.getString("menu_item");
+
+                list.add(new Misc(menuItem));
             }
-            sales_report_text.setText(sales_report_string);
-            clearTextFields();
-            sales_report_warning.setText("");
+
+            misc_list.getItems().setAll(list);
+
+        } catch (Exception error) {
+            orders_warning.setText("Unable to load items.");
         }
-        catch (Exception error) {
-            sales_report_warning.setText("Invalid value types.");
-        }
-        close();
     }
 
     /**
-     * Display the list of inventory items whose current inventory is less than the item's minimum amount to have
-     * around before needing to restock.
+     * This adds a menu item from the Miscellaneous menu items table to the order reciept.
      *
      * @author Olivia Lee
-     * @param e the MouseEvent that triggers this function
      */
-    public void loadRestockReport(MouseEvent e) {
-        restock_report_string = "";
-        restock_report_text.setText("");
-        try {
-            connect();
-            //querying the database
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT ingredient, amount, capacity FROM inventory WHERE amount<=10";
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            //error checking
-            if (!result.next()) {
-                restock_report_warning.setText("There are no menu items that need to be restocked.");
-                return;
-            }
+    public void addMiscItem(MouseEvent e) {
+        String name = misc_list.getSelectionModel().getSelectedItem().getMenuitem();
 
-            //outputting the database results
-            result = stmt.executeQuery(sqlStatement);
+        connect();
+
+        //querying the database for price
+        try {
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT price FROM menu WHERE menu_item='" + name + "' LIMIT 1";
+            ResultSet result = stmt.executeQuery(sqlStatement);
             while (result.next()) {
-                String ingredient = result.getString("ingredient");
-                int amount = result.getInt("amount");
-                int capacity = result.getInt("capacity");
-                restock_report_string += "   " + ingredient;
-                for(int i = 1; i <= 35-ingredient.length(); i++) {
-                    restock_report_string += " ";
+                float price = result.getFloat("price");
+                orders_string += "  " + count + "   " + name;
+                for(int i = 1; i <= 41-name.length(); i++) {
+                    orders_string += " ";
                 }
-                restock_report_string += "        " + amount;
-                for(int i = 1; i <= 3-(amount+"").length(); i++) {
-                    restock_report_string += " ";
-                }
-                restock_report_string += "            " + capacity + "\n";
+                orders_string += "$" + price + "\n";
+                orders_text.setText(orders_string);
+                orders.add(new Order(count, name, price));
+                count += 1;
             }
-            restock_report_text.setText(restock_report_string);
-            restock_report_warning.setText("");
-        }
-        catch (Exception error) {
-            restock_report_warning.setText("Invalid value types.");
-        }
-        close();
-    }
-
-
-
-
-    /**
-     * This allows the manager to add items to the inventory.
-     * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
-     * Includes an SQL statement that gets a list of all the items currently in inventory after adding item
-     * Clears the text field once item has been added to inventory
-     *
-     * @author Olivia Lee
-     * @param e the MouseEvent that triggers this function
-     */
-    public void addInventoryItem(MouseEvent e) throws IOException {
-        try {
-            connect();
-
-            String ingredient = add_item.getText();
-            int amount = Integer.parseInt(add_quant.getText());
-            int capacity = Integer.parseInt(add_cap.getText());
-
-            if (ingredient.isEmpty()) {
-                inventory_warning.setText("You must enter an ingredient.");
-                return;
-            }
-            if (amount > capacity) {
-                inventory_warning.setText("Amount cannot be greater than capacity.");
-                return;
-            }
-            if (amount < 0 || capacity < 0) {
-                inventory_warning.setText("Amount and capacity must both be positive numbers.");
-                return;
-            }
-
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "INSERT INTO inventory(ingredient, amount, capacity) VALUES('" + ingredient + "', " + amount + ", " + capacity + ")";
-            stmt.executeUpdate(sqlStatement);
-
-            loadInventoryTable();
-
-            clearTextFields();
-            inventory_warning.setText("");
-        }
-        catch (Exception error) {
-            inventory_warning.setText("Invalid value types.");
-        }
-        close();
-    }
-    /**
-     * This allows the manager to remove items from the inventory.
-     * Manager has to enter the item id in the text field to remove it
-     * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
-     * Includes an SQL command to ensure that item is removed from database
-     * Clears the text field once item has been removed from inventory
-     * @author Olivia Lee
-     * @param e the MouseEvent that triggers this function
-     */
-    public void deleteInventoryItem(MouseEvent e) throws IOException {
-        try {
-            connect();
-
-            int inventoryID = Integer.parseInt(del_inv.getText());
-
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT inventoryID FROM inventory WHERE inventoryID=" + inventoryID;
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            if (!result.next()) {
-                inventory_warning.setText("Invalid inventory item ID.");
-                return;
-            }
-
-            sqlStatement = "DELETE FROM inventory WHERE inventoryID=" + inventoryID;
-            stmt.executeUpdate(sqlStatement);
-
-            loadInventoryTable();
-
-            clearTextFields();
-            inventory_warning.setText("");
-        }
-        catch (Exception error) {
-            inventory_warning.setText("Invalid value type.");
-        }
-        close();
-    }
-    /**
-     * This allows the manager to add extra items to the inventory when stock is running low.
-     * Manager has to enter the item id, amount, and capacity of each the item to be updated
-     * Takes care of error handling, ensuring that there are no empty text fields or negative numbers for amount
-     * Includes an SQL command to ensure that change occurs in database as well
-     * Clears the text field once item has been updated in inventory
-     * @author Olivia Lee
-     * @param e the MouseEvent that triggers this function
-     */
-    public void updateInventoryItem(MouseEvent e) throws IOException {
-        try {
-            connect();
-
-            int inventoryID = Integer.parseInt(upd_inv.getText());
-            String ingredient = upd_item.getText();
-            int amount = Integer.parseInt(upd_quant.getText());
-            int capacity = Integer.parseInt(upd_cap.getText());
-
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT ingredient, amount, capacity FROM inventory WHERE inventoryID=" + inventoryID;
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            if (!result.next()) {
-                inventory_warning.setText("Invalid inventory item ID.");
-                return;
-            }
-            result = stmt.executeQuery(sqlStatement);
-            while (result.next()) {
-                String ingredient_database = result.getString("ingredient");
-                int amount_database = result.getInt("amount");
-                int capacity_database = result.getInt("capacity");
-                if (ingredient_database.equals(ingredient) && amount_database == amount && capacity_database == capacity) {
-                    inventory_warning.setText("Nothing to update.");
-                    return;
-                }
-            }
-            if (ingredient.isEmpty()) {
-                inventory_warning.setText("You must enter an ingredient.");
-                return;
-            }
-            if (amount > capacity) {
-                inventory_warning.setText("Amount cannot be greater than capacity.");
-                return;
-            }
-            if (amount < 0 || capacity < 0) {
-                inventory_warning.setText("Amount and capacity must both be positive numbers.");
-                return;
-            }
-
-            stmt = conn.createStatement();
-            sqlStatement = "UPDATE inventory SET ingredient='" + ingredient + "', amount=" + amount + ", capacity=" + capacity + " WHERE inventoryID=" + inventoryID;
-            stmt.executeUpdate(sqlStatement);
-
-            loadInventoryTable();
-
-            clearTextFields();
-            inventory_warning.setText("");
-        }
-        catch (Exception error) {
-            inventory_warning.setText("Invalid value types.");
-        }
-        close();
-    }
-
-
-
-
-    /**
-     * Adds an employee item to the order.
-     * This adds an item in an order and its information to Order from the
-     * database using an SQL query when the mouse event is triggered.
-     *
-     * @author Olivia Lee
-     * @param e The MouseEvent triggered by the user action.
-     * @throws Exception error if the statement doesn't work and catches it as a GUI output warning
-     */
-    public void addEmployeeItem(MouseEvent e) throws IOException {
-        try {
-            connect();
-
-            //inserting employee item into database
-            String name = add_name.getText();
-            String status = add_status.getText();
-
-            if (name.isEmpty()) {
-                employees_warning.setText("You must enter a name.");
-                return;
-            }
-            if (!status.equals("manager") && !status.equals("employee")) {
-                employees_warning.setText("Invalid status.");
-                return;
-            }
-
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "INSERT INTO employees(name, status) VALUES('" + name + "', '" + status + "')";
-            stmt.executeUpdate(sqlStatement);
-
-            loadEmployeesTable();
-
-            clearTextFields();
-            employees_warning.setText("");
-        }
-        catch (Exception error) {
-            employees_warning.setText("Invalid value types.");
-        }
-        close();
-    }
-
-    /**
-     * Deletes an employee item to the order.
-     * This deletes an employee item in the employees table and its information from the
-     * database when the mouse event is triggered.
-     *
-     * @author Olivia Lee
-     * @param e The MouseEvent triggered by the user action.
-     * @throws Exception if the statement doesn't work and catches it as a GUI output warning
-     */
-    public void deleteEmployeeItem(MouseEvent e) throws IOException {
-        try {
-            connect();
-
-            //deleting inventory item in database
-            int employeeID = Integer.parseInt(del_emp.getText());
-
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT employeeID FROM employees WHERE employeeID=" + employeeID;
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            if (!result.next()) {
-                employees_warning.setText("Invalid employee ID.");
-                return;
-            }
-
-            sqlStatement = "DELETE FROM employees WHERE employeeID=" + employeeID;
-            stmt.executeUpdate(sqlStatement);
-
-            loadEmployeesTable();
-
-            clearTextFields();
-            employees_warning.setText("");
-        }
-        catch (Exception error) {
-            employees_warning.setText("Invalid value type.");
-        }
-        close();
-    }
-
-    /**
-     * Updates an existing employee item with new details.
-     * This method updates an employee item identified by its ID with new name and status.
-     * If the employee item name is empty or the status is not valid, appropriate warning messages are displayed.
-     *
-     * @author Olivia
-     * @param e The MouseEvent triggered by the user action.
-     * @throws IOException if there is an issue with input/output operations.
-     */
-    public void updateEmployeeItem(MouseEvent e) throws IOException {
-        try {
-            connect();
-
-            //updating employee item from database
-            int employeeID = Integer.parseInt(upd_emp.getText());
-            String name = upd_name.getText();
-            String status = upd_status.getText();
-
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT name, status FROM employees WHERE employeeID=" + employeeID;
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            if (!result.next()) {
-                employees_warning.setText("Invalid employee item ID.");
-                return;
-            }
-            result = stmt.executeQuery(sqlStatement);
-            while (result.next()) {
-                String name_database = result.getString("name");
-                String status_database = result.getString("status");
-                if (name_database.equals(name) && status_database.equals(status)) {
-                    employees_warning.setText("Nothing to update.");
-                    return;
-                }
-            }
-            if (name.isEmpty()) {
-                employees_warning.setText("You must enter a name.");
-                return;
-            }
-            if (!status.equals("manager") && !status.equals("employee")) {
-                employees_warning.setText("Invalid status.");
-                return;
-            }
-
-            stmt = conn.createStatement();
-            sqlStatement = "UPDATE employees SET name='" + name + "', status='" + status + "' WHERE employeeID=" + employeeID;
-            stmt.executeUpdate(sqlStatement);
-
-            loadEmployeesTable();
-
-            clearTextFields();
-            employees_warning.setText("");
-        }
-        catch (Exception error) {
-            employees_warning.setText("Invalid value types.");
-        }
-        close();
-    }
-
-
-
-
-
-    public void loadExcessReport(MouseEvent e) {
-        StringBuilder excessStringBuilder = new StringBuilder();
-
-        try {
-            connect(); // Ensure this method properly initializes and sets 'conn'
-            Statement stmt = conn.createStatement();
-            String hour = from_hr.getText();
-            int day = Integer.parseInt(from_day.getText());
-            int month = Integer.parseInt(from_month.getText());
-            int year = Integer.parseInt(from_year.getText());
-
-            int stop_hour = LocalTime.now().getHour();
-            int twelveHourFormat = stop_hour % 12 == 0 ? 12 : stop_hour % 12; // Convert 24-hour format to 12-hour format
-            boolean isPM = stop_hour >= 12; // Check if it's PM
-            String stop_string; // Declare stop_string here
-            if(isPM) {
-                stop_string = Integer.toString(twelveHourFormat) + "pm";
-            } else {
-                stop_string = Integer.toString(twelveHourFormat) + "am";
-            }
-            System.out.println("stop string is " + stop_string);
-            // Ensure SQL uses correct format and comparisons based on your database's time storage format
-            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients " +
-                    "i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '" + hour + "' " +
-                    "AND o.hour <= '12pm' AND o.day = " + day + " AND o.month = " + month + " AND o.year = " + year + " AND inv.amount >= 0.9 * inv.capacity";
-            ResultSet loadExcess = stmt.executeQuery(sqlStatement);
-
-            System.out.println("while loop");
-            while (loadExcess.next()) {
-                System.out.println("giving values");
-                String ingredient = loadExcess.getString("ingredient");
-                int amount = loadExcess.getInt("amount");
-                int capacity = loadExcess.getInt("capacity");
-                String hourDisplay = loadExcess.getString("hour");
-                int dayDisplay = loadExcess.getInt("day");
-                int monthDisplay = loadExcess.getInt("month");
-                int yearDisplay = loadExcess.getInt("year");
-
-                System.out.println("printing stuff out");
-                excessStringBuilder.append(String.format("%-25s %-7s %-7s %10d %10d %10d %10d%n", ingredient, hourDisplay, dayDisplay, monthDisplay, yearDisplay, amount, capacity));
-                excess_text.setText(excessStringBuilder.toString());
-                System.out.println("done printing");
-            }
-
-            System.out.println("error handling");
-            //error checking input good
-            if (!hour.equals("11am") && !hour.equals("12pm") && !hour.equals("1pm") && !hour.equals("2pm") && !hour.equals("3pm") && !hour.equals("4pm") && !hour.equals("5pm") && !hour.equals("6pm") && !hour.equals("7pm") && !hour.equals("8pm")) {
-                excess_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
-                return;
-            }
-
-            if (day > 31 || day < 1)
-            {
-                excess_warning.setText("The days must be a number between 1 and 31.");
-                return;
-            }
-            if (month > 12 || month < 1)
-            {
-                excess_warning.setText("The months must be a number between 1 and 12.");
-                return;
-            }
-
-            if ((year + "").length() != 4){
-                excess_warning.setText("The year must be four digits long.");
-                return;
-            }
-
-            if( (year > 2025) || (year < 2023)) {
-                excess_warning.setText("Year has to be within 2023 - 2025.");
-                return;
-            }
-
-            clearTextFields();
-            excess_warning.setText("");
-        }
-        catch (Exception error) {
-            error.printStackTrace();
-            excess_warning.setText("Invalid value types");
-//            System.out.println("invalid value type");
-
+        } catch(Exception error) {
+            orders_warning.setText("Unable to add item.");
         }
     }
-
-    public void loadOrderTrendReport(MouseEvent e)
-    {
-        String order_trend_string = "";
-        System.out.println("load button clicked");
-
-        try {
-            String hour1 = st_trend_hr.getText();
-            String hour2 = end_trend_hr.getText();
-            int day1 = Integer.parseInt(st_trend_day.getText());
-            int day2 = Integer.parseInt(end_trend_day.getText());
-            int month1 = Integer.parseInt(st_trend_month.getText());
-            int month2 = Integer.parseInt(end_trend_month.getText());
-            int year1 = Integer.parseInt(st_trend_year.getText());
-            int year2 = Integer.parseInt(end_trend_year.getText());
-
-            if (hour1.isEmpty() || hour2.isEmpty()) {
-                order_trends_warning.setText("You must enter an hour.");
-                return;
-            }
-            if (!hour1.equals("11am") && !hour1.equals("12pm") && !hour1.equals("1pm") && !hour1.equals("2pm") && !hour1.equals("3pm") && !hour1.equals("4pm") && !hour1.equals("5pm") && !hour1.equals("6pm") && !hour1.equals("7pm") && !hour1.equals("8pm")) {
-                order_trends_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
-                return;
-            }
-
-            if (!hour2.equals("11am") && !hour2.equals("12pm") && !hour2.equals("1pm") && !hour2.equals("2pm") && !hour2.equals("3pm") && !hour2.equals("4pm") && !hour2.equals("5pm") && !hour2.equals("6pm") && !hour2.equals("7pm") && !hour2.equals("8pm")) {
-                order_trends_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
-                return;
-            }
-
-            if (hour1.compareTo(hour2) > 0) {
-                order_trends_warning.setText("The second hour cannot be earlier than the first hour.");
-                return;
-            }
-
-            if (day1 > 31 || day1 < 1)
-            {
-                order_trends_warning.setText("The days must be a number between 1 and 31.");
-                return;
-            }
-            if (month1 > 12 || month1 < 1 || month2 > 12 || month2 < 1)
-            {
-                order_trends_warning.setText("The months must be a number between 1 and 12.");
-                return;
-            }
-
-            if(year1 > year2)
-            {
-                order_trends_warning.setText("Second year must come after first year");
-                return;
-            }
-            if ((year1 + "").length() != 4 || (year2 + "").length() != 4) {
-                order_trends_warning.setText("The year must be four digits long.");
-                return;
-            }
-
-            if( (year1 > 2025)|| (year2 > 2025) || (year1 < 2023)|| (year2 < 2023)) {
-                order_trends_warning.setText("Year has to be within 2023 - 2025.");
-                return;
-            }
-
-            if (year1 == year2 && month1 > month2) {
-                order_trends_warning.setText("The second month cannot be earlier than the first month in the same year.");
-                return;
-            }
-
-            if (year1 == year2 && month1 == month2 && day1 > day2) {
-                order_trends_warning.setText("The second day cannot be earlier than the first in the same month and year.");
-                return;
-            }
-
-//            if (day1 ==  || hour2.isEmpty()) {
-//                order_trends_warning.setText("You must enter an hour.");
-//                return;
-//            }
-
-            connect();
-            Statement stmt = conn.createStatement();
-//            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders " +
-//                    "AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.day BETWEEN '2' AND '3' " +
-//                    "AND o1.month BETWEEN '2' AND '3' AND o1.year BETWEEN '2024' AND '2024' GROUP BY o1.menu_item, o2.menu_item ORDER BY " +
-//                    "times_ordered_together DESC";
-            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.hour BETWEEN '"+ hour1 + "' AND '" + hour2 + "' AND o1.day BETWEEN '"+ day1 + "' AND '"+ day2 + "'AND o1.month BETWEEN '" + month1 + "' AND '" + month2 + "' AND o1.year BETWEEN '" + year1 + "' AND '" + year2 + "' GROUP BY o1.menu_item, o2.menu_item ORDER BY times_ordered_together DESC";
-
-            ResultSet loadOrderTrend = stmt.executeQuery(sqlStatement);
-            while(loadOrderTrend.next())
-            {
-                String menu1 = loadOrderTrend.getString("item1");
-                String menu2 = loadOrderTrend.getString("item2");
-                int frequency = loadOrderTrend.getInt("times_ordered_together");
-
-                order_trend_string += "   " + menu1;
-                for (int i = 0; i < 51-menu1.length(); i++) {
-                    order_trend_string += " ";
-                }
-                order_trend_string += "   " + menu2;
-                for (int i = 0; i < 51-menu2.length(); i++) {
-                    order_trend_string += " ";
-                }
-                order_trend_string += "   " + frequency + "\n";
-                trends_text.setText(order_trend_string);
-            }
-
-            clearTextFields();
-            order_trends_warning.setText("");
-        }
-        catch (Exception error) {
-            order_trends_warning.setText("Invalid value types");
-        }
-    }
-
-
-    /**
-     * Adds a new menu item to the database.
-     * This method inserts a new menu item with its corresponding price into the database.
-     * If the menu item name is empty or the price is non-positive, appropriate warning messages are displayed.
-     *
-     * @author Olivia Lee
-     * @param e The MouseEvent triggered by the user action.
-     * @throws IOException if there is an issue with input/output operations.
-     */
-    public void addMenuItem(MouseEvent e) throws IOException {
-        try {
-            connect();
-
-            // Inserting menu item into the database
-            String menu_item = add_dish.getText();
-            float price = Float.parseFloat(add_price.getText());
-            int deletionMonth = Integer.parseInt(deletion_Month.getText()); // Retrieving the entered month
-
-            if (menu_item.isEmpty()) {
-                orders_warning.setText("You must enter a menu item.");
-                return;
-            }
-            if (price <= 0) {
-                menu_warning.setText("Price cannot be negative or zero.");
-                return;
-            }
-            if (deletionMonth > 12 | deletionMonth < 1){
-                orders_warning.setText("Month entry is invalid");
-                return;
-            }
-
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "INSERT INTO menu(menu_item, price) VALUES('" + menu_item + "', " + price + ")";
-            stmt.executeUpdate(sqlStatement);
-
-            loadMenuTable();
-
-            clearTextFields();
-            menu_warning.setText("");
-            LocalDateTime currentTime = LocalDateTime.now();
-            // Check if the current month matches the deletion month and delete the item if it does
-            int month = currentTime.getMonthValue();
-            if (month == deletionMonth) {
-                String deleteStatement = "DELETE FROM menu WHERE menu_item = '" + menu_item + "'";
-                stmt.executeUpdate(deleteStatement);
-                orders_warning.setText("The seasonal menu item has been deleted.");
-            }
-        }  catch (SQLException error) {
-            menu_warning.setText("Invalid value types.");
-        }
-        close();
-    }
-    /**
-     * Deletes a menu item from the database.
-     * This method deletes a menu item identified by its menu item ID from the database.
-     * If the menu item ID is invalid or corresponds to a standard menu item, appropriate warning messages are displayed.
-     *
-     * @author Olivia Lee
-     * @param e The MouseEvent triggered by the user action.
-     * @throws IOException if there is an issue with input/output operations.
-     */
-    public void deleteMenuItem(MouseEvent e) throws IOException {
-        try {
-            connect();
-
-            //deleting menu item in database
-            int menu_itemID = Integer.parseInt(del_menu.getText());
-
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT menu_itemID FROM menu WHERE menu_itemID=" + menu_itemID;
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            if (!result.next()) {
-                menu_warning.setText("Invalid menu item ID.");
-                return;
-            }
-
-            if(menu_itemID <= 28) {
-                menu_warning.setText("You cannot delete this item, this is a standard menu item.");
-                return;
-            }
-
-            sqlStatement = "DELETE FROM menu WHERE menu_itemID=" + menu_itemID;
-            stmt.executeUpdate(sqlStatement);
-
-            loadMenuTable();
-
-            clearTextFields();
-            menu_warning.setText("");
-        }
-        catch (Exception error) {
-            menu_warning.setText("Invalid value type.");
-        }
-        close();
-    }
-
-    /**
-     * Updates a menu item in the database.
-     * This method updates a menu item identified by its menu item ID with new menu item name and price in the database.
-     * If the menu item ID is invalid, the menu item name is empty, the price is non-positive, or the item is a standard menu item, appropriate warning messages are displayed.
-     *
-     * @author Olivia Lee
-     * @param e The MouseEvent triggered by the user action.
-     * @throws IOException if there is an issue with input/output operations.
-     */
-    public void updateMenuItem(MouseEvent e) throws IOException {
-        try {
-            connect();
-
-            //updating employee item from database
-            int menu_itemID = Integer.parseInt(upd_menu.getText());
-            String menu_item = upd_dish.getText();
-            float price = Float.parseFloat(upd_price.getText());
-
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT menu_item, price FROM menu WHERE menu_itemID=" + menu_itemID;
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            if (!result.next()) {
-                menu_warning.setText("Invalid menu item ID.");
-                return;
-            }
-            result = stmt.executeQuery(sqlStatement);
-            while (result.next()) {
-                String menu_item_database = result.getString("menu_item");
-                float price_database = result.getFloat("price");
-                if (menu_item_database.equals(menu_item) && price == price_database) {
-                    menu_warning.setText("Nothing to update.");
-                    return;
-                }
-            }
-            if (menu_item.isEmpty()) {
-                orders_warning.setText("You must enter a menu item.");
-                return;
-            }
-            if (price <= 0) {
-                menu_warning.setText("Price cannot be negative or zero.");
-                return;
-            }
-            if(menu_itemID <= 28 && !menu_item.equals(result.getString("menu_item"))) {
-                menu_warning.setText("You cannot change this item's name, this is a standard menu item.");
-                return;
-            }
-
-            stmt = conn.createStatement();
-            sqlStatement = "UPDATE menu SET menu_item='" + menu_item + "', price=" + price + " WHERE menu_itemID=" + menu_itemID;
-            stmt.executeUpdate(sqlStatement);
-
-            loadMenuTable();
-
-            clearTextFields();
-            menu_warning.setText("");
-        }
-        catch (Exception error) {
-            menu_warning.setText("Invalid value types.");
-        }
-        close();
-    }
-
-
-
-
-    /**
-     * This allows the manager to delete an order from order history
-     * Manager has to enter the order id, hour, day, week, month, and year
-     * Takes care of error handling, ensuring that an order from a different date is not accidentally deleted
-     * Includes an SQL command to delete the order from order history
-     * Clears the text field once item has been deleted
-     * @author Olivia Lee
-     * @param e the MouseEvent that triggers this function
-     */
-    public void deleteHistoryItem(MouseEvent e) throws IOException {
-        try {
-            connect();
-
-            int orderID = Integer.parseInt(del_id.getText());
-            String hour = del_hr.getText();
-            int day = Integer.parseInt(del_day.getText());
-            int month = Integer.parseInt(del_mth.getText());
-            int week = Integer.parseInt(del_wk.getText());
-            int year = Integer.parseInt(del_yr.getText());
-
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT menu_item FROM orders WHERE orderID=" + orderID + " AND hour='" + hour + "' AND day=" + day + " AND month=" + month + " AND week=" + week + " AND year=" + year;
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            if (!result.next()) {
-                history_warning.setText("There is no order item with the input date and order ID.");
-                return;
-            }
-
-            sqlStatement = "DELETE FROM orders WHERE orderID=" + orderID + " AND hour='" + hour + "' AND day=" + day + " AND month=" + month + " AND week=" + week + " AND year=" + year;
-            stmt.executeUpdate(sqlStatement);
-
-            loadOrderHistoryTable();
-
-            clearTextFields();
-            history_warning.setText("");
-        }
-        catch (Exception error) {
-            history_warning.setText("Invalid value types.");
-        }
-        close();
-    }
-
-    /**
-     * This allows the manager to update an order from order history
-     * Manager has to enter the order id, hour, day, week, month, year, and sale
-     * Takes care of error handling, ensuring that an order from a different date is not accidentally updated
-     * Includes an SQL command to update the order from order history
-     * Clears the text field once item has been deleted
-     * @author Olivia Lee
-     * @param e the MouseEvent that triggers this function
-     */
-    public void updateHistoryItem(MouseEvent e) throws IOException {
-        try {
-            connect();
-
-            int orderID = Integer.parseInt(upd_id.getText());
-            String hour = upd_hr.getText();
-            int day = Integer.parseInt(upd_day.getText());
-            int month = Integer.parseInt(upd_mth.getText());
-            int week = Integer.parseInt(upd_wk.getText());
-            int year = Integer.parseInt(upd_yr.getText());
-            String menu_item = upd_hist_item.getText();
-            float sale = Float.parseFloat(upd_sale.getText());
-
-            Statement stmt = conn.createStatement();
-            String sqlStatement = "SELECT menu_item, sale FROM orders WHERE orderID=" + orderID + " AND hour='" + hour + "' AND day=" + day + " AND month=" + month + " AND week=" + week + " AND year=" + year;
-            ResultSet result = stmt.executeQuery(sqlStatement);
-            if (!result.next()) {
-                history_warning.setText("There is no menu item with the input date and order ID.");
-                return;
-            }
-            result = stmt.executeQuery(sqlStatement);
-            while (result.next()) {
-                String menu_item_database = result.getString("menu_item");
-                float sale_database = result.getFloat("sale");
-                if (menu_item_database.equals(menu_item) && sale == sale_database) {
-                    history_warning.setText("Nothing to update.");
-                    return;
-                }
-            }
-            if (sale <= 0) {
-                history_warning.setText("Sale cannot be negative or zero.");
-                return;
-            }
-
-            stmt = conn.createStatement();
-            sqlStatement = "UPDATE orders SET menu_item='" + menu_item + "', sale=" + sale + " WHERE orderID=" + orderID + " AND hour='" + hour + "' AND day=" + day + " AND month=" + month + " AND week=" + week + " AND year=" + year;
-            stmt.executeUpdate(sqlStatement);
-
-            loadOrderHistoryTable();
-
-            clearTextFields();
-            history_warning.setText("");
-        }
-        catch (SQLException error) {
-            history_warning.setText("Invalid value types or input date and order ID.");
-        }
-        close();
-    }
-
-
 
 
     /**
@@ -2005,6 +2013,9 @@ public class SceneController {
         // If the ingredient is not found, or there was an error, return false
         return false;
     }
+
+
+
 
     /**
      * Opens the connection to the PostGres Database
