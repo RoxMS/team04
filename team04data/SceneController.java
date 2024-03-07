@@ -166,6 +166,7 @@ public class SceneController {
 
     @FXML private TextField ingredientTextField = new TextField();
     @FXML private TextField intgr_countTextField = new TextField();
+    @FXML private TextField add_dish_nameTextField = new TextField();
 
 
     public void loadSeasonalTable() {
@@ -272,7 +273,7 @@ public class SceneController {
     public void addSeasonalItemIngredients(MouseEvent e) {
         try {
             // Retrieve values from text fields
-            String dishName = dish_nameTextField.getText();
+            String dishName = add_dish_nameTextField.getText();
             String ingredient = ingredientTextField.getText();
             int ingredientCount = Integer.parseInt(intgr_countTextField.getText());
             if (dishName.isEmpty() || ingredient.isEmpty()) {
