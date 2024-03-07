@@ -2,6 +2,7 @@ package application.revs_pos_331;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import java.time.*;
 
@@ -40,7 +41,7 @@ public class SceneController {
     @FXML private Label history_text = new Label("");
     @FXML private Label sales_report_text = new Label("");
     @FXML private Label restock_report_text = new Label("");
-    @FXML private Label ingredient_text = new Label("");
+    @FXML private Label product_usage_text = new Label("");
     @FXML private Label seasonal_text = new Label("");
     @FXML private Label excess_text = new Label("");
     @FXML private Label trends_text = new Label("");
@@ -54,7 +55,7 @@ public class SceneController {
     @FXML private Label history_warning = new Label("");
     @FXML private Label sales_report_warning = new Label("");
     @FXML private Label restock_report_warning = new Label("");
-    @FXML private Label ingredient_count_warning = new Label("");
+    @FXML private Label product_usage_warning = new Label("");
     @FXML private Label excess_warning = new Label("");
     @FXML private Label order_trends_warning = new Label("");
     @FXML private Label seasonalitem_warning = new Label("");
@@ -123,11 +124,14 @@ public class SceneController {
     @FXML private TextField sales_yr2 = new TextField();
 
     //product usage text fields
-    @FXML private TextField yearTextField = new TextField();
-    @FXML private TextField startTimeTextField = new TextField();
-    @FXML private TextField stopTimeTextField = new TextField();
-    @FXML private TextField monthTextField = new TextField();
-    @FXML private TextField dayTextField = new TextField();
+    @FXML private TextField pu_hr1 = new TextField();
+    @FXML private TextField pu_day1 = new TextField();
+    @FXML private TextField pu_mth1 = new TextField();
+    @FXML private TextField pu_yr1 = new TextField();
+    @FXML private TextField pu_hr2 = new TextField();
+    @FXML private TextField pu_day2 = new TextField();
+    @FXML private TextField pu_mth2 = new TextField();
+    @FXML private TextField pu_yr2 = new TextField();
 
     // excess report text fields
     @FXML private TextField from_hr = new TextField();
@@ -153,8 +157,6 @@ public class SceneController {
     @FXML private TextField ingredientTextField = new TextField();
     @FXML private TextField intgr_countTextField = new TextField();
     @FXML private TextField add_dish_nameTextField = new TextField();
-
-
 
 
     /**
@@ -1104,7 +1106,6 @@ public class SceneController {
     public void loadSalesReport(MouseEvent e) {
         String sales_report_string = "";
         try {
-            connect();
             //text field retrieval
             String hour1 = sales_hr1.getText();
             int day1 = Integer.parseInt(sales_day1.getText());
@@ -1116,12 +1117,16 @@ public class SceneController {
             int year2 = Integer.parseInt(sales_yr2.getText());
 
             //error checking input good
-            if (!hour1.equals("11am") && !hour1.equals("12pm") && !hour1.equals("1pm") && !hour1.equals("2pm") && !hour1.equals("3pm") && !hour1.equals("4pm") && !hour1.equals("5pm") && !hour1.equals("6pm") && !hour1.equals("7pm") && !hour1.equals("8pm")) {
-                sales_report_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
+            if (hour1.isEmpty() && hour2.isEmpty()) {
+                hour1 = "11am";
+                hour2 = "8pm";
+            }
+            else if (!hour1.equals("11am") && !hour1.equals("12pm") && !hour1.equals("1pm") && !hour1.equals("2pm") && !hour1.equals("3pm") && !hour1.equals("4pm") && !hour1.equals("5pm") && !hour1.equals("6pm") && !hour1.equals("7pm") && !hour1.equals("8pm")) {
+                product_usage_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
                 return;
             }
-            if (!hour2.equals("11am") && !hour2.equals("12pm") && !hour2.equals("1pm") && !hour2.equals("2pm") && !hour2.equals("3pm") && !hour2.equals("4pm") && !hour2.equals("5pm") && !hour2.equals("6pm") && !hour2.equals("7pm") && !hour2.equals("8pm")) {
-                sales_report_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
+            else if (!hour2.equals("11am") && !hour2.equals("12pm") && !hour2.equals("1pm") && !hour2.equals("2pm") && !hour2.equals("3pm") && !hour2.equals("4pm") && !hour2.equals("5pm") && !hour2.equals("6pm") && !hour2.equals("7pm") && !hour2.equals("8pm")) {
+                product_usage_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
                 return;
             }
             if (day1 > 31 || day1 < 1 || day2 > 31 || day2 < 1) {
@@ -1156,6 +1161,7 @@ public class SceneController {
             sales_report_text.setText("");
 
             //querying the database
+            connect();
             Statement stmt = conn.createStatement();
             String sqlStatement;
             if(year1 != year2) {
@@ -1166,7 +1172,7 @@ public class SceneController {
                         "OR (year=" + year1 + " AND month=" + month1 + " AND day>=" + day1 + ") " +
                         "OR (year=" + year2 + " AND month<" + month2 + ") " +
                         "OR (year=" + year2 + " AND month=" + month2 + " AND day<=" + day2 + ")) " +
-                        "GROUP BY menu_item";
+                        "GROUP BY menu_item ORDER BY total_sales DESC";
             }
             else if (month1 != month2) {
                 sqlStatement = "SELECT menu_item, SUM(sale) AS total_sales FROM orders " +
@@ -1175,7 +1181,7 @@ public class SceneController {
                         "AND ((month>" + month1 + " AND month<"+ month2 + ") " +
                         "OR (month=" + month1 + " AND day>=" + day1 + ") " +
                         "OR (month=" + month2 + " AND day<=" + day2 + ")) " +
-                        "GROUP BY menu_item";
+                        "GROUP BY menu_item ORDER BY total_sales DESC";
             }
             else {
                 sqlStatement = "SELECT menu_item, SUM(sale) AS total_sales FROM orders " +
@@ -1183,7 +1189,7 @@ public class SceneController {
                         "AND year=" + year1 + " " +
                         "AND month=" + month1 + " " +
                         "AND day>=" + day1 + " AND day<=" + day2 + " " +
-                        "GROUP BY menu_item";
+                        "GROUP BY menu_item ORDER BY total_sales DESC";
             }
             ResultSet result = stmt.executeQuery(sqlStatement);
             if (!result.next()) {
@@ -1239,16 +1245,13 @@ public class SceneController {
             } else {
                 stop_string = Integer.toString(twelveHourFormat) + "am";
             }
-            System.out.println("stop string is " + stop_string);
             // Ensure SQL uses correct format and comparisons based on your database's time storage format
             String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients " +
                     "i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '" + hour + "' " +
                     "AND o.hour <= '12pm' AND o.day = " + day + " AND o.month = " + month + " AND o.year = " + year + " AND inv.amount >= 0.9 * inv.capacity";
             ResultSet loadExcess = stmt.executeQuery(sqlStatement);
 
-            System.out.println("while loop");
             while (loadExcess.next()) {
-                System.out.println("giving values");
                 String ingredient = loadExcess.getString("ingredient");
                 int amount = loadExcess.getInt("amount");
                 int capacity = loadExcess.getInt("capacity");
@@ -1257,13 +1260,10 @@ public class SceneController {
                 int monthDisplay = loadExcess.getInt("month");
                 int yearDisplay = loadExcess.getInt("year");
 
-                System.out.println("printing stuff out");
                 excessStringBuilder.append(String.format("%-25s %-7s %-7s %10d %10d %10d %10d%n", ingredient, hourDisplay, dayDisplay, monthDisplay, yearDisplay, amount, capacity));
                 excess_text.setText(excessStringBuilder.toString());
-                System.out.println("done printing");
             }
 
-            System.out.println("error handling");
             //error checking input good
             if (!hour.equals("11am") && !hour.equals("12pm") && !hour.equals("1pm") && !hour.equals("2pm") && !hour.equals("3pm") && !hour.equals("4pm") && !hour.equals("5pm") && !hour.equals("6pm") && !hour.equals("7pm") && !hour.equals("8pm")) {
                 excess_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
@@ -1295,10 +1295,7 @@ public class SceneController {
             excess_warning.setText("");
         }
         catch (Exception error) {
-            error.printStackTrace();
             excess_warning.setText("Invalid value types");
-//            System.out.println("invalid value type");
-
         }
     }
 
@@ -1358,7 +1355,6 @@ public class SceneController {
      */
     public void loadOrderTrendReport(MouseEvent e) {
         String order_trend_string = "";
-        System.out.println("load button clicked");
 
         try {
             String hour1 = st_trend_hr.getText();
@@ -1471,68 +1467,123 @@ public class SceneController {
      * @author Jaiah Steele
      * @param e the MouseEvent that triggers this function
      */
-    public void listIngredientCounts(MouseEvent e) {
+    public void loadProductUsageReport(MouseEvent e) {
+        String product_usage_string = "";
         try {
-            // Clear any previous warning messages
-            ingredient_count_warning.setText("");
+            //text field retrieval
+            String hour1 = pu_hr1.getText();
+            int day1 = Integer.parseInt(pu_day1.getText());
+            int month1 = Integer.parseInt(pu_mth1.getText());
+            int year1 = Integer.parseInt(pu_yr1.getText());
+            String hour2 = pu_hr2.getText();
+            int day2 = Integer.parseInt(pu_day2.getText());
+            int month2 = Integer.parseInt(pu_mth2.getText());
+            int year2 = Integer.parseInt(pu_yr2.getText());
 
-            // Get values from text fields
-            String startTime = startTimeTextField.getText();
-            String stopTime = stopTimeTextField.getText();
-            int month = Integer.parseInt(monthTextField.getText());
-            int year = Integer.parseInt(yearTextField.getText());
-            if (startTime.isEmpty() || stopTime.isEmpty()) {
-                ingredient_count_warning.setText("You must enter a value for all fields");
+            //error checking input good
+            if (hour1.isEmpty() && hour2.isEmpty()) {
+                hour1 = "11am";
+                hour2 = "8pm";
+            }
+            else if (!hour1.equals("11am") && !hour1.equals("12pm") && !hour1.equals("1pm") && !hour1.equals("2pm") && !hour1.equals("3pm") && !hour1.equals("4pm") && !hour1.equals("5pm") && !hour1.equals("6pm") && !hour1.equals("7pm") && !hour1.equals("8pm")) {
+                product_usage_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
                 return;
             }
-            if (year > 2023 || year < 2022) {
-                ingredient_count_warning.setText("Year is out of range");
+            else if (!hour2.equals("11am") && !hour2.equals("12pm") && !hour2.equals("1pm") && !hour2.equals("2pm") && !hour2.equals("3pm") && !hour2.equals("4pm") && !hour2.equals("5pm") && !hour2.equals("6pm") && !hour2.equals("7pm") && !hour2.equals("8pm")) {
+                product_usage_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
                 return;
             }
-            if (month > 12 || month < 1){
-                ingredient_count_warning.setText("Month entry is invalid");
+            if (day1 > 31 || day1 < 1 || day2 > 31 || day2 < 1) {
+                product_usage_warning.setText("The days must be a number between 1 and 31.");
                 return;
             }
+            if (month1 > 12 || month1 < 1 || month2 > 12 || month2 < 1) {
+                product_usage_warning.setText("The months must be a number between 1 and 12.");
+                return;
+            }
+            if ((year1 + "").length() != 4 || (year2 + "").length() != 4) {
+                product_usage_warning.setText("The year must be four digits long.");
+                return;
+            }
+            //error checking start time/date before end time/date
+            if (hour1.compareTo(hour2) > 0) {
+                product_usage_warning.setText("The second hour cannot be earlier than the first hour.");
+                return;
+            }
+            if (year1 > year2) {
+                product_usage_warning.setText("The second year cannot be earlier than the first year.");
+                return;
+            }
+            else if (year1 == year2 && month1 > month2) {
+                product_usage_warning.setText("The second month cannot be earlier than the first month in the same year.");
+                return;
+            }
+            else if (year1 == year2 && month1 == month2 && day1 > day2) {
+                product_usage_warning.setText("The second day cannot be earlier than the first day in the same month and year.");
+                return;
+            }
+            product_usage_text.setText("");
 
-            // Clear existing table data
+            //querying the database
+            connect();
+            Statement stmt = conn.createStatement();
+            String sqlStatement;
+            if(year1 != year2) {
+                sqlStatement = "SELECT ingredients.ingredient, SUM(ingredients.count) AS total_count FROM orders o " +
+                        "JOIN ingredients ON o.menu_item = ingredients.menu_item " +
+                        "WHERE o.hour>='" + hour1 + "' AND o.hour<'"+ hour2 + "' " +
+                        "AND ((o.year>" + year1 + " AND o.year<"+ year2 + ") " +
+                        "OR (o.year=" + year1 + " AND o.month>" + month1 + ") " +
+                        "OR (o.year=" + year1 + " AND o.month=" + month1 + " AND o.day>=" + day1 + ") " +
+                        "OR (o.year=" + year2 + " AND o.month<" + month2 + ") " +
+                        "OR (o.year=" + year2 + " AND o.month=" + month2 + " AND o.day<=" + day2 + ")) " +
+                        "GROUP BY ingredients.ingredient ORDER BY total_count DESC";
+            }
+            else if (month1 != month2) {
+                sqlStatement = "SELECT ingredients.ingredient, SUM(ingredients.count) AS total_count FROM orders o " +
+                        "JOIN ingredients ON o.menu_item = ingredients.menu_item " +
+                        "WHERE o.hour>='" + hour1 + "' AND o.hour<'"+ hour2 + "' " +
+                        "AND o.year=" + year1 + " " +
+                        "AND ((o.month>" + month1 + " AND o.month<"+ month2 + ") " +
+                        "OR (o.month=" + month1 + " AND o.day>=" + day1 + ") " +
+                        "OR (o.month=" + month2 + " AND o.day<=" + day2 + ")) " +
+                        "GROUP BY ingredients.ingredient ORDER BY total_count DESC";
+            }
+            else {
+                sqlStatement = "SELECT ingredients.ingredient, SUM(ingredients.count) AS total_count FROM orders o " +
+                        "JOIN ingredients ON o.menu_item = ingredients.menu_item " +
+                        "WHERE o.hour>='" + hour1 + "' AND o.hour<'" + hour2 + "' " +
+                        "AND o.year=" + year1 + " " +
+                        "AND o.month=" + month1 + " " +
+                        "AND o.day>=" + day1 + " AND o.day<=" + day2 + " " +
+                        "GROUP BY ingredients.ingredient ORDER BY total_count DESC";
+            }
 
+            ResultSet result = stmt.executeQuery(sqlStatement);
 
-            this.connect();
-            String sqlStatement = "SELECT ingredients.ingredient, SUM(ingredients.count) AS total_count " +
-                    "FROM orders " +
-                    "JOIN ingredients ON orders.menu_item = ingredients.menu_item " +
-                    "WHERE orders.hour >= ? AND orders.hour <= ? " +
-                    "AND orders.month = ? AND orders.year = ? " +
-                    "GROUP BY ingredients.ingredient";
-            PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
-            stmt.setString(1, startTime);
-            stmt.setString(2, stopTime);
-            stmt.setInt(3, month);
-            stmt.setInt(4, year);
-            
-            ResultSet result = stmt.executeQuery();
             if (!result.next()) {
-                ingredient_count_warning.setText("There are no orders in that month.");
+                product_usage_warning.setText("There are no menu items sold in that range.");
                 return;
             }
-            String ingredient_string = "";
+
+            result = stmt.executeQuery(sqlStatement);
+            //outputting the database results
             // Iterate over the result set and update the UI directly
             while (result.next()) {
                 String ingredient = result.getString("ingredient");
                 int totalCount = result.getInt("total_count");
-                ingredient_string += " " + ingredient;
+                product_usage_string += " " + ingredient;
                 for(int i = 1; i <= 51 - ingredient.length(); i++){
-                    ingredient_string += " ";
+                    product_usage_string += " ";
                 }
-                ingredient_string += "     " + totalCount + "\n";
+                product_usage_string += "     " + totalCount + "\n";
                 // Update UI directly
 
             }
-            ingredient_text.setText(ingredient_string);
+            product_usage_text.setText(product_usage_string);
 
         } catch (Exception error) {
-            ingredient_count_warning.setText("Unable to load ingredient counts.");
-            error.printStackTrace();
+            product_usage_warning.setText("Invalid value types.");
         }
     }
 
