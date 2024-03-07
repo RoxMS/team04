@@ -1346,6 +1346,26 @@ public class SceneController {
         close();
     }
 
+    public void restock(MouseEvent e) {
+        try {
+            connect();
+            Statement stmt = conn.createStatement();
+            String sqlStatement = "SELECT * FROM inventory WHERE amount<=10";
+            ResultSet result = stmt.executeQuery(sqlStatement);
+            if (!result.next()) {
+                restock_report_warning.setText("No items to restock.");
+                return;
+            }
+            sqlStatement = "UPDATE inventory SET amount=30 WHERE amount<=10";
+            stmt.executeUpdate(sqlStatement);
+            loadRestockReport(e);
+        }
+        catch (Exception error) {
+            restock_report_warning.setText("Unable to restock");
+        }
+
+    }
+
     /**
      * Given a timestamp, displays the list of inventory items of which less than 10% of their inventory was consumed
      * between the timestamp and the current time, assuming no restocks have happened during the window.
