@@ -1346,6 +1346,12 @@ public class SceneController {
         close();
     }
 
+    /**
+     * Restocks all items with amount below 10.
+     *
+     * @author Olivia Lee
+     * @param e the MouseEvent that triggers this function
+     */
     public void restock(MouseEvent e) {
         try {
             connect();
