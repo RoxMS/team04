@@ -60,6 +60,8 @@ public class SceneController {
     @FXML private Label order_trends_warning = new Label("");
     @FXML private Label seasonalitem_warning = new Label("");
 
+
+
     //login text fields
     @FXML private TextField id = new TextField();
     @FXML private TextField password = new TextField();
@@ -151,12 +153,15 @@ public class SceneController {
 
     //seasonal text fields
     @FXML private TextField dish_nameTextField = new TextField();
-    @FXML private TextField start_monthTextField = new TextField();
+   // @FXML private TextField start_monthTextField = new TextField();
     @FXML private TextField end_monthTextField = new TextField();
     @FXML private TextField price_textTextField = new TextField();
     @FXML private TextField ingredientTextField = new TextField();
     @FXML private TextField intgr_countTextField = new TextField();
     @FXML private TextField add_dish_nameTextField = new TextField();
+    @FXML private TextField endDayTextField = new TextField();
+    @FXML private TextField endYearTextField = new TextField();
+
 
 
     /**
@@ -1661,20 +1666,20 @@ public class SceneController {
     /**
      * This loads the seasonal table with the columns menu item ID, menu item, start month, and end month.
      *
-     * @author Olivia Lee
+     * @author Olivia Lee, Jaiah Steele
      */
+// altered slightly to account for the change in table. Should now display end day and end month Should still work fine.
     public void loadSeasonalTable() {
         String seasonal_string = "";
         //querying for menu table
         try {
-            connect();
             Statement stmt = conn.createStatement();
             String sqlStatement = "SELECT * FROM seasonal";
             ResultSet result = stmt.executeQuery(sqlStatement);
             while (result.next()) {
                 int menu_itemID = result.getInt("menu_itemID");
-                String menu_item = result.getString("menu_item");
-                int start_month = result.getInt("start_month");
+                String menu_item = result.getString("dishname");
+                int end_day = result.getInt("end_day");
                 int end_month = result.getInt("end_month");
                 seasonal_string += " " + menu_itemID;
                 for(int i = 1; i <= 3-(menu_itemID+"").length(); i++) {
@@ -1684,7 +1689,7 @@ public class SceneController {
                 for(int i = 1; i <= 51-menu_item.length(); i++) {
                     seasonal_string += " ";
                 }
-                seasonal_string += "     " + start_month;
+                seasonal_string += "     " + end_day;
                 for(int i = 1; i <= 3-(menu_itemID+"").length(); i++) {
                     seasonal_string += " ";
                 }
@@ -1698,28 +1703,28 @@ public class SceneController {
         }
     }
 
+
     /**
      * Adds a seasonal item to the menu and records the time window it should be available in the database.
      *
      * @author Jaiah Steele
      * @param e the MouseEvent that triggers this function
      */
+    //connected to the add button on addSeasonalItem
+    /*need new Fxids for  endDayTextField, endYearTextField */
+    /*keep old Fxids for price and dish_nameTextField and end_monthTextField */
+    /*delete the old Fxid for the startmonth */
+    /*also I remade the seasonal table to accompany the changes I have made */
     public void addSeasonalItem(MouseEvent e) {
         try {
-            String dishName = dish_nameTextField.getText();
-
-            int startMonth = Integer.parseInt(start_monthTextField.getText());
+            int endDay = Integer.parseInt(endDayTextField.getText());
             int endMonth = Integer.parseInt(end_monthTextField.getText());
+            int endYear = Integer.parseInt(endYearTextField.getText());
+            String dishName = dish_nameTextField.getText();
             float price = Float.parseFloat(price_textTextField.getText());
-            String menu_item = dish_nameTextField.getText();
 
-
-            if (dishName.isEmpty()) {
+            if (dishName.isEmpty() || endDay <= 0 || endMonth <= 0 || endYear <= 0) {
                 seasonalitem_warning.setText("You must enter a value for all fields");
-                return;
-            }
-            if (startMonth == LocalDateTime.now().getMonthValue()) { // Modified condition
-                seasonalitem_warning.setText("Season is out of range");
                 return;
             }
             if (price < 0) {
@@ -1747,12 +1752,14 @@ public class SceneController {
 
             // Insert item into seasonal table
             if (menuId != -1) { // Check if menu ID was retrieved successfully
-                String insertSeasonalStatement = "INSERT INTO seasonal (menu_itemID, menu_item, start_month, end_month) VALUES (?, ?, ?, ?)";
+                String insertSeasonalStatement = "INSERT INTO seasonal (menu_itemID, dishname, end_day, end_month, end_year) VALUES (?, ?, ?, ?, ?)";
                 PreparedStatement insertSeasonalStmt = this.conn.prepareStatement(insertSeasonalStatement);
                 insertSeasonalStmt.setInt(1, menuId);
-                insertSeasonalStmt.setString(2, menu_item);
-                insertSeasonalStmt.setInt(3, startMonth);
+                insertSeasonalStmt.setString(2, dishName); // Corrected line
+                insertSeasonalStmt.setInt(3, endDay);
                 insertSeasonalStmt.setInt(4, endMonth);
+                insertSeasonalStmt.setInt(5, endYear);
+
                 insertSeasonalStmt.executeUpdate();
             } else {
                 seasonalitem_warning.setText("Unable to find menu item ID.");
@@ -1761,7 +1768,6 @@ public class SceneController {
 
             seasonalitem_warning.setText("");
             loadSeasonalTable();
-
 
         } catch (Exception error) {
             seasonalitem_warning.setText("Unable to add seasonal item.");
@@ -1959,8 +1965,9 @@ public class SceneController {
     /**
      * This loads the miscellaneous menu item names into an interactable table for the ordering terminal.
      *
-     * @author Olivia Lee
+     * @author Olivia Lee, Jaiah Steele
      */
+    /* will not require any new FX ID's but may require debugging */
     public void listMiscMenuItems(MouseEvent e) {
         try {
             misc_col.setCellValueFactory(new PropertyValueFactory<Misc, String>("menuitem"));
@@ -1968,6 +1975,47 @@ public class SceneController {
 
             List<Misc> list = new ArrayList<Misc>();
             this.connect();
+            //new added to check and see if anyitems from seasonal should be deleted.
+            LocalDateTime currentTime = LocalDateTime.now();
+            int year = currentTime.getYear();
+            int month = currentTime.getMonthValue();
+            int day = currentTime.getDayOfMonth();
+
+            // Determine the hour in 24-hour format
+            int military = currentTime.getHour();
+            String period = (military >= 12) ? "am" : "pm";
+            String hour;
+            if (military > 12) {
+                hour = (military - 12) + ""; // Convert to 12-hour format
+            } else if (military == 0) {
+                hour = "12"; // Midnight
+            } else {
+                hour = military + ""; // Keep in 24-hour format
+            }
+
+            // Construct the complete hour string
+            hour = hour + period;
+            String query = "SELECT menu_itemid FROM seasonal WHERE end_day = ? AND end_month = ? AND end_year = ?";
+
+            // Prepare statement
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, day);
+            statement.setInt(2, month);
+            statement.setInt(3, year);
+
+            // Execute query
+            ResultSet resultSet = statement.executeQuery();
+
+            // Check if any matching entry found
+            while (resultSet.next()) {
+                int menuItemId = resultSet.getInt("menu_itemid");
+                String deleteQuery = "DELETE FROM menu WHERE menu_itemid = ?";
+                PreparedStatement deleteStatement = conn.prepareStatement(deleteQuery);
+                deleteStatement.setInt(1, menuItemId);
+                deleteStatement.executeUpdate();
+            }
+
+
             String sqlStatement = "SELECT menu_item FROM menu WHERE menu_itemid > 29";
             PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
             ResultSet result = stmt.executeQuery();
