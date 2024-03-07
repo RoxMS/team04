@@ -713,7 +713,7 @@
                 <AnchorPane prefHeight="545.0" prefWidth="779.0">
                     <children>
                         <Label layoutX="37.0" layoutY="14.0" text="INGREDIENT" />
-                        <Label layoutX="287.0" layoutY="14.0" text="TOTAL COUNT" />
+                        <Label layoutX="500.0" layoutY="14.0" text="TOTAL COUNT" />
                         <ScrollPane layoutX="14.0" layoutY="35.0" prefHeight="328.0" prefWidth="744.0">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0">
@@ -733,7 +733,6 @@
                         <TextField fx:id="monthTextField" layoutX="311.0" layoutY="379.0" promptText="MONTH" />
                         <TextField fx:id="startTimeTextField" layoutX="311.0" layoutY="412.0" promptText="START TIME" />
                         <TextField fx:id="stopTimeTextField" layoutX="481.0" layoutY="411.0" promptText="STOP TIME" />
-                        <TextField fx:id="dayTextField" layoutX="479.0" layoutY="373.0" promptText="DAY" />
                     </children>
                 </AnchorPane>
             </content>
