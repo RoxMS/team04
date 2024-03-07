@@ -14,7 +14,7 @@
 
 <!-- Make my tabs into a drop down menu -->
 
-<AnchorPane prefHeight="713.0" prefWidth="794.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.revs_pos_331.SceneController">
+<AnchorPane prefHeight="713.0" prefWidth="794.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.revs_pos_331.SceneController">
     <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="39.0" stroke="BLACK" strokeType="INSIDE" width="746.0" AnchorPane.rightAnchor="48.0" />
     <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="495.0" prefWidth="773.0" style="-fx-background-color: white;" tabClosingPolicy="UNAVAILABLE">
         <Tab style="-fx-background-color: #fcba03; -fx-font-weight: bold;" text="SALES">
@@ -624,13 +624,13 @@
                     </padding>
                 </Button>
                 <Button layoutX="658.0" layoutY="375.0" mnemonicParsing="false" onMouseClicked="#restock" prefHeight="25.0" prefWidth="100.0" style="-fx-background-color: #fcba03;" text="RESTOCK ALL">
-                <font>
-                    <Font name="System Bold" size="14.0" />
-                </font>
-                <padding>
-                    <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-                </padding>
-            </Button>
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                    <padding>
+                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+                    </padding>
+                </Button>
                 <Label fx:id="restock_report_warning" layoutX="122.0" layoutY="408.0" textFill="#b9310b">
                     <font>
                         <Font size="16.0" />
@@ -795,7 +795,7 @@
                         <Label layoutX="119.0" layoutY="13.0" text="ID" />
                         <Label layoutX="172.0" layoutY="13.0" text="DISH" />
                         <Label fx:id="seasonalitem_warning" layoutX="529.0" layoutY="381.0" prefHeight="17.0" prefWidth="232.0" />
-                        <Label layoutX="668.0" layoutY="13.0" text="PRICE" />
+                        <Label layoutX="664.0" layoutY="13.0" text="Month" />
                         <ScrollPane layoutX="101.0" layoutY="35.0" prefHeight="245.0" prefWidth="660.0">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="559.0" prefWidth="659.0">
@@ -827,9 +827,9 @@
                                 <Font name="Monospaced Regular" size="15.0" />
                             </font>
                         </TextField>
-                        <TextField fx:id="start_monthTextField" layoutX="127.0" layoutY="332.0" prefHeight="29.0" prefWidth="144.0" promptText="Start Month">
+                        <TextField fx:id="end_monthTextField" layoutX="301.0" layoutY="332.0" prefHeight="29.0" prefWidth="100.0" promptText="Month">
                             <font>
-                                <Font name="Monospaced Regular" size="15.0" />
+                                <Font name="Monospaced Regular" size="13.0" />
                             </font>
                         </TextField>
                         <Label fx:id="menu_warning1" layoutX="163.0" layoutY="342.0" text=" " textFill="#8a2e0d">
@@ -845,11 +845,6 @@
                                 <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                             </padding>
                         </Button>
-                        <TextField fx:id="end_monthTextField" layoutX="304.0" layoutY="331.0" prefHeight="29.0" prefWidth="144.0" promptText="End Month">
-                            <font>
-                                <Font name="Monospaced Regular" size="15.0" />
-                            </font>
-                        </TextField>
                         <TextField fx:id="ingredientTextField" layoutX="242.0" layoutY="375.0" prefHeight="29.0" prefWidth="277.0" promptText="Ingredient">
                             <font>
                                 <Font name="Monospaced Regular" size="15.0" />
@@ -865,14 +860,17 @@
                                 <Font name="Monospaced Regular" size="15.0" />
                             </font>
                         </TextField>
-                        <Button layoutX="559.0" layoutY="418.0" mnemonicParsing="false" onMouseClicked="#loadSeasonalTable" prefHeight="25.0" prefWidth="70.0" style="-fx-background-color: #fcba03;" text="LOAD">
-                            <font>
-                                <Font name="System Bold" size="14.0" />
-                            </font>
-                            <padding>
-                                <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-                            </padding>
-                        </Button>
+                  <TextField fx:id="endYearTextField" layoutX="176.0" layoutY="330.0" prefHeight="29.0" prefWidth="93.0" promptText="Year">
+                     <font>
+                        <Font name="Monospaced Regular" size="13.0" />
+                     </font>
+                  </TextField>
+                  <TextField fx:id="endDayTextField" layoutX="435.0" layoutY="334.0" prefHeight="29.0" prefWidth="87.0" promptText="Day">
+                     <font>
+                        <Font name="Monospaced Regular" size="13.0" />
+                     </font>
+                  </TextField>
+                  <Label layoutX="719.0" layoutY="14.0" text="Day" />
                     </children>
                 </AnchorPane>
             </content>
