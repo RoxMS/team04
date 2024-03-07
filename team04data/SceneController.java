@@ -1236,6 +1236,12 @@ public class SceneController {
             int month = Integer.parseInt(from_month.getText());
             int year = Integer.parseInt(from_year.getText());
 
+            LocalDateTime now = LocalDateTime.now();
+//            String tohour = now.getHour() + "";
+            int today = now.getDayOfMonth();
+            int tomonth = now.getMonthValue();
+            int toyear = now.getYear();
+
             int stop_hour = LocalTime.now().getHour();
             int twelveHourFormat = stop_hour % 12 == 0 ? 12 : stop_hour % 12; // Convert 24-hour format to 12-hour format
             boolean isPM = stop_hour >= 12; // Check if it's PM
@@ -1245,13 +1251,27 @@ public class SceneController {
             } else {
                 stop_string = Integer.toString(twelveHourFormat) + "am";
             }
+            System.out.println("stop string is " + stop_string);
             // Ensure SQL uses correct format and comparisons based on your database's time storage format
-            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients " +
-                    "i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '" + hour + "' " +
-                    "AND o.hour <= '12pm' AND o.day = " + day + " AND o.month = " + month + " AND o.year = " + year + " AND inv.amount >= 0.9 * inv.capacity";
+//            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '11am' AND o.hour <= '2pm' AND o.day >= 1 AND o.day <= 7 AND o.month >= 3 AND o.month <= 4 AND o.year >= 2024 AND o.year <= 2024 AND inv.amount >= 0.9 * inv.capacity";
+            String sqlStatement = "SELECT DISTINCT i.ingredient, inv.amount, inv.capacity, o.hour, o.day, o.month, o.year FROM ingredients i JOIN orders o ON o.menu_item = i.menu_item JOIN inventory inv ON i.ingredient = inv.ingredient WHERE o.hour >= '"+ hour + "' AND o.day >= " + day + " AND o.day <= " + today + " AND o.month >= " + month + " AND o.month <= " + tomonth + " AND o.year >= " + year + " AND o.year <= " + toyear + " AND inv.amount >= 0.9 * inv.capacity";
             ResultSet loadExcess = stmt.executeQuery(sqlStatement);
 
+            System.out.println("stop string: " + stop_string);
+            System.out.println("today: " + today);
+            System.out.println("tomonth: " + tomonth);
+            System.out.println("toyear: " + toyear);
+            System.out.println("o.hour: " + hour);
+            System.out.println("o.day: " + day);
+            System.out.println("o.month: " + month);
+            System.out.println("o.year: " + year);
+
+//            System.out.println("load excess" + loadExcess);
+
+
+            System.out.println("while loop");
             while (loadExcess.next()) {
+                System.out.println("giving values");
                 String ingredient = loadExcess.getString("ingredient");
                 int amount = loadExcess.getInt("amount");
                 int capacity = loadExcess.getInt("capacity");
@@ -1260,13 +1280,34 @@ public class SceneController {
                 int monthDisplay = loadExcess.getInt("month");
                 int yearDisplay = loadExcess.getInt("year");
 
-                excessStringBuilder.append(String.format("%-25s %-7s %-7s %10d %10d %10d %10d%n", ingredient, hourDisplay, dayDisplay, monthDisplay, yearDisplay, amount, capacity));
+                System.out.println("printing stuff out");
+                excessStringBuilder.append(String.format("%-27s %-8s %-3s %7d %8d %7d %6d%n", ingredient, hourDisplay, dayDisplay, monthDisplay, yearDisplay, amount, capacity));
                 excess_text.setText(excessStringBuilder.toString());
+                System.out.println("done printing");
             }
 
+            System.out.println("error handling");
             //error checking input good
             if (!hour.equals("11am") && !hour.equals("12pm") && !hour.equals("1pm") && !hour.equals("2pm") && !hour.equals("3pm") && !hour.equals("4pm") && !hour.equals("5pm") && !hour.equals("6pm") && !hour.equals("7pm") && !hour.equals("8pm")) {
                 excess_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
+                return;
+            }
+
+            if((month == tomonth) && (year == toyear) && (day > today))
+            {
+                excess_warning.setText("Cannot exceed current day in the same month and year");
+                return;
+            }
+
+            if((year == toyear) && (month  > tomonth))
+            {
+                excess_warning.setText("Cannot exceed current month in the same year");
+                return;
+            }
+
+            if(year > toyear)
+            {
+                excess_warning.setText("Cannot exceed current year");
                 return;
             }
 
@@ -1295,7 +1336,10 @@ public class SceneController {
             excess_warning.setText("");
         }
         catch (Exception error) {
+            error.printStackTrace();
             excess_warning.setText("Invalid value types");
+//            System.out.println("invalid value type");
+
         }
     }
 
