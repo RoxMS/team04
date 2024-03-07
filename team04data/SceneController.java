@@ -168,6 +168,8 @@ public class SceneController {
     @FXML private TextField intgr_countTextField = new TextField();
     @FXML private TextField add_dish_nameTextField = new TextField();
 
+    @FXML private TextField dayTextField = new TextField();
+
 
     public void loadSeasonalTable() {
         seasonal_string = "";
@@ -314,6 +316,7 @@ public class SceneController {
             String stopTime = stopTimeTextField.getText();
             int month = Integer.parseInt(monthTextField.getText());
             int year = Integer.parseInt(yearTextField.getText());
+            int day = Integer.parseInt(dayTextField.getText());
             if (startTime.isEmpty() || stopTime.isEmpty()) {
                 ingredientcount_warning.setText("You must enter a value for all fields");
                 return;
@@ -326,6 +329,10 @@ public class SceneController {
                 ingredientcount_warning.setText("Month entry is invalid");
                 return;
             }
+            if (day < 1 || day > 30){
+                ingredientcount_warning.setText("Day entry is invalid");
+                return;
+            }
 
             // Clear existing table data
 
@@ -335,13 +342,14 @@ public class SceneController {
                     "FROM orders " +
                     "JOIN ingredients ON orders.menu_item = ingredients.menu_item " +
                     "WHERE orders.hour >= ? AND orders.hour <= ? " +
-                    "AND orders.month = ? AND orders.year = ? " +
+                    "AND orders.month = ? AND orders.year = ? AND orders.day = ?" +
                     "GROUP BY ingredients.ingredient";
             PreparedStatement stmt = this.conn.prepareStatement(sqlStatement);
             stmt.setString(1, startTime);
             stmt.setString(2, stopTime);
             stmt.setInt(3, month);
             stmt.setInt(4, year);
+            stmt.setInt(4, day);
 
             ResultSet result = stmt.executeQuery();
             ingredientstring = "";
@@ -349,7 +357,11 @@ public class SceneController {
             while (result.next()) {
                 String ingredient = result.getString("ingredient");
                 int totalCount = result.getInt("total_count");
-                ingredientstring += ingredient + "            " + totalCount + "\n";
+                ingredientstring += " " + ingredient;
+                for(int i = 1; i <= 35 - ingredient.length(); i++){
+                    ingredientstring += "";
+                }
+                ingredientstring += "     " + totalCount + "\n";
                 // Update UI directly
 
             }
@@ -1418,46 +1430,6 @@ public class SceneController {
 
 
 
-    /**
-     * Adds a new menu item to the database.
-     * This method inserts a new menu item with its corresponding price into the database.
-     * If the menu item name is empty or the price is non-positive, appropriate warning messages are displayed.
-     *
-     * @author Olivia Lee
-     * @param e The MouseEvent triggered by the user action.
-     * @throws IOException if there is an issue with input/output operations.
-     */
-//    public void addMenuItem(MouseEvent e) throws IOException {
-//        try {
-//            connect();
-//
-//            //inserting menu item into database
-//            String menu_item = add_dish.getText();
-//            float price = Float.parseFloat(add_price.getText());
-//
-//            if (menu_item.isEmpty()) {
-//                menu_warning.setText("You must enter a menu item.");
-//                return;
-//            }
-//            if (price <= 0) {
-//                menu_warning.setText("Price cannot be negative or zero.");
-//                return;
-//            }
-//
-//            Statement stmt = conn.createStatement();
-//            String sqlStatement = "INSERT INTO menu(menu_item, price) VALUES('" + menu_item + "', " + price + ")";
-//            stmt.executeUpdate(sqlStatement);
-//
-//            loadMenuTable();
-//
-//            clearTextFields();
-//            menu_warning.setText("");
-//        }
-//        catch (Exception error) {
-//            menu_warning.setText("Invalid value types.");
-//        }
-//        close();
-//    }
 
     public void loadExcessReport(MouseEvent e) {
         StringBuilder excessStringBuilder = new StringBuilder();
@@ -1544,52 +1516,23 @@ public class SceneController {
 
     public void loadOrderTrendReport(MouseEvent e)
     {
-        StringBuilder trendStringBuilder = new StringBuilder();
+        String order_trend_string = "";
         System.out.println("load button clicked");
 
         try {
             String hour1 = st_trend_hr.getText();
             String hour2 = end_trend_hr.getText();
             int day1 = Integer.parseInt(st_trend_day.getText());
-            int day2 = Integer.parseInt(st_trend_day.getText());
+            int day2 = Integer.parseInt(end_trend_day.getText());
             int month1 = Integer.parseInt(st_trend_month.getText());
-            int month2 = Integer.parseInt(st_trend_month.getText());
+            int month2 = Integer.parseInt(end_trend_month.getText());
             int year1 = Integer.parseInt(st_trend_year.getText());
-            int year2 = Integer.parseInt(st_trend_year.getText());
+            int year2 = Integer.parseInt(end_trend_year.getText());
 
             if (hour1.isEmpty() || hour2.isEmpty()) {
                 order_trends_warning.setText("You must enter an hour.");
                 return;
             }
-
-//            if (day1 ==  || hour2.isEmpty()) {
-//                order_trends_warning.setText("You must enter an hour.");
-//                return;
-//            }
-
-            connect();
-            Statement stmt = conn.createStatement();
-//            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders " +
-//                    "AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.day BETWEEN '2' AND '3' " +
-//                    "AND o1.month BETWEEN '2' AND '3' AND o1.year BETWEEN '2024' AND '2024' GROUP BY o1.menu_item, o2.menu_item ORDER BY " +
-//                    "times_ordered_together DESC";
-            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.hour BETWEEN '"+ hour1 + "' AND '" + hour2 + "' AND o1.day BETWEEN '"+ day1 + "' AND '"+ day2 + "'AND o1.month BETWEEN '" + month1 + "' AND '" + month2 + "' AND o1.year BETWEEN '" + year1 + "' AND '" + year2 + "' GROUP BY o1.menu_item, o2.menu_item ORDER BY times_ordered_together DESC";
-
-            System.out.println("sending sql command");
-            ResultSet loadOrderTrend = stmt.executeQuery(sqlStatement);
-            System.out.println("Entering while loop");
-            while(loadOrderTrend.next())
-            {
-                String menu1 = loadOrderTrend.getString("item1");
-                String menu2 = loadOrderTrend.getString("item2");
-                int frequency = loadOrderTrend.getInt("times_ordered_together");
-
-                System.out.println("printing stuff out");
-                trendStringBuilder.append(String.format("%-27s %-27s %10d%n", menu1, menu2, frequency));
-                trends_text.setText(trendStringBuilder.toString());
-                System.out.println("done printing");
-            }
-
             if (!hour1.equals("11am") && !hour1.equals("12pm") && !hour1.equals("1pm") && !hour1.equals("2pm") && !hour1.equals("3pm") && !hour1.equals("4pm") && !hour1.equals("5pm") && !hour1.equals("6pm") && !hour1.equals("7pm") && !hour1.equals("8pm")) {
                 order_trends_warning.setText("The hours must be between 11am and 8pm with a <number><am/pm> format.");
                 return;
@@ -1641,6 +1584,38 @@ public class SceneController {
                 return;
             }
 
+//            if (day1 ==  || hour2.isEmpty()) {
+//                order_trends_warning.setText("You must enter an hour.");
+//                return;
+//            }
+
+            connect();
+            Statement stmt = conn.createStatement();
+//            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders " +
+//                    "AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.day BETWEEN '2' AND '3' " +
+//                    "AND o1.month BETWEEN '2' AND '3' AND o1.year BETWEEN '2024' AND '2024' GROUP BY o1.menu_item, o2.menu_item ORDER BY " +
+//                    "times_ordered_together DESC";
+            String sqlStatement = "SELECT o1.menu_item AS item1, o2.menu_item AS item2, COUNT(*) AS times_ordered_together FROM orders AS o1 JOIN orders AS o2 ON o1.orderID = o2.orderID AND o1.menu_item < o2.menu_item WHERE o1.hour BETWEEN '"+ hour1 + "' AND '" + hour2 + "' AND o1.day BETWEEN '"+ day1 + "' AND '"+ day2 + "'AND o1.month BETWEEN '" + month1 + "' AND '" + month2 + "' AND o1.year BETWEEN '" + year1 + "' AND '" + year2 + "' GROUP BY o1.menu_item, o2.menu_item ORDER BY times_ordered_together DESC";
+
+            ResultSet loadOrderTrend = stmt.executeQuery(sqlStatement);
+            while(loadOrderTrend.next())
+            {
+                String menu1 = loadOrderTrend.getString("item1");
+                String menu2 = loadOrderTrend.getString("item2");
+                int frequency = loadOrderTrend.getInt("times_ordered_together");
+
+                order_trend_string += "   " + menu1;
+                for (int i = 0; i < 51-menu1.length(); i++) {
+                    order_trend_string += " ";
+                }
+                order_trend_string += "   " + menu2;
+                for (int i = 0; i < 51-menu2.length(); i++) {
+                    order_trend_string += " ";
+                }
+                order_trend_string += "   " + frequency + "\n";
+                trends_text.setText(order_trend_string);
+            }
+
             clearTextFields();
             order_trends_warning.setText("");
         }
@@ -1649,6 +1624,16 @@ public class SceneController {
         }
     }
 
+
+    /**
+     * Adds a new menu item to the database.
+     * This method inserts a new menu item with its corresponding price into the database.
+     * If the menu item name is empty or the price is non-positive, appropriate warning messages are displayed.
+     *
+     * @author Olivia Lee
+     * @param e The MouseEvent triggered by the user action.
+     * @throws IOException if there is an issue with input/output operations.
+     */
     public void addMenuItem(MouseEvent e) throws IOException {
         try {
             connect();
