@@ -1,3 +1,28 @@
+INSTRUCTIONS FOR RUNNING OUR PROGRAM:
+This program was made in IntelliJ using JavaFX.
+Please use the folder included in the email from team04. This folder contains all the files including our images.
+
+MANAGER SIDE
+Username: 13
+Password: Revs123
+
+
+EMPLOYEE SIDE:
+Username: 16
+Password: Revs123
+
+
+
+
+
+
+
+
+
+
+
+
+
 members of the team: Jaiah Steele, Olivia Lee, Roxana Morales Sobrevilla, Nicole Hernandez, and Manisha Subrahmanya
 
 About Query: 
