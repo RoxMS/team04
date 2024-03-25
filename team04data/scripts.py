@@ -69,10 +69,10 @@ with open('output.sql', 'w') as sql_file:
     "Kettle Chips" : 2.99
     }
 
-    current_date = date.today() - timedelta(days=365)
+    current_date = date.today() - timedelta(days=730)
     hours = ["11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm"]
 
-    # Loop over 52 weeks
+    # Loop over 104 weeks
     for week in range(104):
         # Loop over 7 work days in a week
         for day in range(7):
@@ -174,17 +174,48 @@ with open('output.sql', 'w') as sql_file:
     "Plastic Bags"
 ]
 
+    menu_category = {
+    "Revs Burger" : "Burgers",
+    "Double Stack Cheese Burger" : "Burgers",
+    "Classic Burger" : "Burgers",
+    "Bacon Chesseburger" : "Burgers",
+    "Three Tender Basket" : "Baskets",
+    "Four Steak Finger Basket" : "Baskets",
+    "Gig Em Patty Melt" : "Sandwiches",
+    "Howdy Spicy Ranch Chicken Strip Sandwich" : "Sandwiches",
+    "Classic Crispy or Grilled Chicken Tender Sandwich" : "Sandwiches",
+    "Grilled Cheese" : "Sandwiches",
+    "Aggie Shake" : "Dessert",
+    "Double Scoop Ice Cream Cup" : "Dessert",
+    "Chocolate Chip Chunk Cookie" : "Dessert",
+    "Chocolate Fudge Brownie" : "Dessert",
+    "Salad Bar" : 8.99,
+    "Gig Em Sauce" : "Sauces",
+    "Buffalo" : "Sauces",
+    "Ranch" : "Sauces",
+    "BBQ Sauce" : "Sauces",
+    "Honey Mustard" : "Sauces",
+    "Spicy Ranch" : "Sauces",
+    "Fountain Drink" : "Drinks",
+    "Drip Coffee" : "Drinks",
+    "Cold Brew" : "Drinks",
+    "Seasoned Fries" : "Sides",
+    "Tater Tots" : "Sides",
+    "Onion Rings" : "Sides",
+    "Kettle Chips" : "Sides"
+    }
+
     # Create 'ingredient' table
     sql_file.write("CREATE TABLE ingredients (menu_item varchar(255), ingredient varchar(255), count int);\n")
     # Write CREATE TABLE statement for 'menu' table
-    sql_file.write("CREATE TABLE menu (menu_itemID int NOT NULL AUTO_INCREMENT, menu_item varchar(255), price float, PRIMARY KEY (menu_itemID));\n")
+    sql_file.write("CREATE TABLE menu (menu_itemID int NOT NULL AUTO_INCREMENT, menu_item varchar(255), price float, category varchar(255), PRIMARY KEY (menu_itemID));\n")
     # Write CREATE TABLE statement for 'inventory' table
     sql_file.write("CREATE TABLE inventory (inventoryID SERIAL PRIMARY KEY, ingredient varchar(255), amount int, capacity int);\n")
 
     # Generate and write INSERT INTO statements for 'menu' table
-    insert_statement = "INSERT INTO menu (menu_item, price) VALUES "
+    insert_statement = "INSERT INTO menu (menu_item, price, category) VALUES "
     for item, price in menu_prices.items():
-        insert_statement += f"('{item}', {price}), "
+        insert_statement += f"('{item}', {price}, '{menu_category[item]}'), "
     sql_file.write(insert_statement[:-2] + ";\n")
 
     # Generate and write INSERT INTO statements for 'ingredient' table
